@@ -556,8 +556,8 @@ async function restore(ev){
  }catch(err){alert("Import fehlgeschlagen: "+err.message)}
 }
 /* Version 3: Original-Tischansicht beibehalten, Spielregeln erweitert */
-const APP_VERSION='1.2.4';
-const VERSION_NOTES=['1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
+const APP_VERSION='1.2.5';
+const VERSION_NOTES=['1.2.5 · Spielabend direkt aus Abrechnung beenden; Abwesende automatisch als offen führen','1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
 const oldRender=render;
 function stamp(ms){return ms?new Date(ms).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'}):'–'}
 function isClosed(e){return !!e.endedAt}
@@ -689,8 +689,8 @@ function results(){
    <td class="${game===null?'':game>=0?'good':'bad'}">${game===null?'–':(game>0?'+':'')+euro(game)}</td>
    <td>${start===null?'–':euro(start)}</td><td>${solo===null?'–':euro(solo)}</td>
    <td><b>${euro(x.fee)}</b></td><td>${euro(paid)}</td><td>${euro(rest)}</td>
-   <td>${rest>0?`<label class="check"><input type="checkbox" onchange="if(this.checked)payEveningFull('${x.id}')"> Bezahlt</label>`:'✓ Bezahlt'}</td>
-   <td>${rest>0?`<div class="actions" style="flex-wrap:nowrap"><input id="partial_${x.id}" type="number" min="0.01" max="${rest.toFixed(2)}" step="0.01" placeholder="€" style="min-width:80px;width:90px"><button onclick="payEveningPartial('${x.id}')">Buchen</button></div>`:'–'}</td></tr>`;
+   <td>${!x.present?(rest>0?'Automatisch offen':'✓ Bezahlt'):rest>0?`<label class="check"><input type="checkbox" onchange="if(this.checked)payEveningFull('${x.id}')"> Bezahlt</label>`:'✓ Bezahlt'}</td>
+   <td>${!x.present?'–':rest>0?`<div class="actions" style="flex-wrap:nowrap"><input id="partial_${x.id}" type="number" min="0.01" max="${rest.toFixed(2)}" step="0.01" placeholder="€" style="min-width:80px;width:90px"><button onclick="payEveningPartial('${x.id}')">Buchen</button></div>`:'–'}</td></tr>`;
  }).join('');
  return `<div class="card"><h2>Abrechnung ${esc(e.date)}</h2>
  <p class="mini">Gastgeber: ${esc(name(e.host))} · ${isClosed(e)?'Abgeschlossen':'Noch offen'} · Start ${stamp(e.startedAt)} · Ende ${stamp(e.endedAt)}</p>
@@ -700,7 +700,7 @@ function results(){
  <div class="row"><span>Gesamt (Soll)</span><b>${euro(sum)}</b></div>
  <div class="row"><span>Bereits bezahlt</span><b class="good">${euro(received)}</b></div>
  <div class="row"><span>Noch offen</span><b class="bad">${euro(Math.max(0,sum-received))}</b></div></div>
- ${button('Zurück',"go('evening')")}</div>`;
+ <div class="actions">${button('Zurück',"go('evening')")}${!isClosed(e)?button('Spielabend beenden','closeEvening()','danger'):''}</div></div>`;
 }
 function cashTransactions(){
  const tx=db.cash.map(c=>({id:c.id,at:c.at||0,amount:Number(c.amount||0),text:c.text||'Freie Buchung',kind:'free'}));

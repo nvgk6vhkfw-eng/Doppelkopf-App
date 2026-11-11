@@ -556,8 +556,8 @@ async function restore(ev){
  }catch(err){alert("Import fehlgeschlagen: "+err.message)}
 }
 /* Version 3: Original-Tischansicht beibehalten, Spielregeln erweitert */
-const APP_VERSION='1.2.2';
-const VERSION_NOTES=['1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
+const APP_VERSION='1.2.3';
+const VERSION_NOTES=['1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
 const oldRender=render;
 function stamp(ms){return ms?new Date(ms).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'}):'–'}
 function isClosed(e){return !!e.endedAt}
@@ -626,7 +626,6 @@ function payEveningFull(id){
  const e=current();if(!e)return;const r=dueRows(e).find(x=>x.id===id);if(!r)return;
  const rest=Math.max(0,Math.round((r.fee-paidAmount(e,id))*100)/100);
  if(rest<=0)return;
- if(!confirm(`${name(id)}: ${euro(rest)} vollständig als bezahlt buchen?`))return;
  recordPayment(e,id,rest);save();render();
 }
 function payEveningPartial(id){
@@ -639,7 +638,6 @@ function payEveningPartial(id){
 }
 function payAllPlayer(id){
  const owed=outstandingByPlayer().find(x=>x.id===id);if(!owed)return;
- if(!confirm(`${name(id)}: gesamte offene Schuld von ${euro(owed.amount)} als bezahlt buchen?`))return;
  db.evenings.forEach(e=>{const r=dueRows(e).find(x=>x.id===id);if(!r)return;const rest=Math.max(0,Math.round((r.fee-paidAmount(e,id))*100)/100);if(rest>0)recordPayment(e,id,rest)});
  save();render();
 }

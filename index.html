@@ -535,6 +535,8 @@ async function restore(ev){
  }catch(err){alert("Import fehlgeschlagen: "+err.message)}
 }
 /* Version 3: Original-Tischansicht beibehalten, Spielregeln erweitert */
+const APP_VERSION='1.1.0';
+const VERSION_NOTES=['1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
 const oldRender=render;
 function stamp(ms){return ms?new Date(ms).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'}):'–'}
 function isClosed(e){return !!e.endedAt}
@@ -566,7 +568,7 @@ function evening(){
  ${closed?`<div class="bockbar off">✓ Spielabend abgeschlossen · ${e.expiredBock||0} Bockspiele verfallen</div>`:`<div class="row"><span class="pill">Runde ${rot.number}</span><b>★ ${esc(name(rot.mixer))} mischt</b></div>${bockBanner(e)}`}
  ${table(e.present.length,assigned,'game',closed?null:rot)}
  ${!closed?`<p class="muted">${rot.sitting.length?'Setzen aus: '+rot.sitting.map(id=>esc(name(id))).join(', '):'Alle vier spielen.'}</p><div class="actions">
- ${button('＋ Neue Runde',"go('round')",'primary')}${button('♠ Solo',"go('solo')")}${button('♛ Hochzeit',"go('hochzeit')")}${button('Abrechnung',"go('results')")}</div>`:`<div class="actions">${button('Abrechnung',"go('results')")}</div>`}
+ ${button('Auszählen',"go('round')",'primary')}${button('♠ Solo',"go('solo')")}${button('♛ Hochzeit',"go('hochzeit')")}${button('Abrechnung',"go('results')")}</div>`:`<div class="actions">${button('Abrechnung',"go('results')")}</div>`}
  </div><div class="card"><h2>Aktueller Stand</h2><div class="scroll"><table><tr><th>Spieler</th><th>Tacken</th><th>€</th><th>Solo</th></tr>
  ${e.present.map(id=>`<tr><td>${esc(name(id))}</td><td>${t[id]>0?'+':''}${t[id]}</td><td class="${t[id]>=0?'good':'bad'}">${euro(t[id]*db.settings.tack)}</td><td>${soloCount(e,id)?'✓ '+soloCount(e,id):'✕'}</td></tr>`).join('')}</table></div></div>
  <div class="card"><h2>Spielprotokoll</h2>${allEvents(e).map(x=>x.kind==='special'?`<div class="row"><div><b>♛ Hochzeit – ${esc(name(x.s.player))}</b><div class="mini">${stamp(x.s.at)} · +3 / −1 / −1 / −1 · kein Mischerwechsel</div></div>${closed?'':button('✕',`removeSpecial('${x.s.id}')`,'danger')}</div>`:
@@ -591,11 +593,38 @@ function hochzeit(){const e=current();if(!assertOpen(e))return '<div class="card
 function chooseHochzeit(id){const e=current();if(!assertOpen(e))return;const rot=rotation(e);if(!rot.playing.includes(id))return;const points={};rot.playing.forEach(p=>points[p]=p===id?3:-1);e.specials.push({id:uid(),type:'hochzeit',at:Date.now(),player:id,points,playing:[...rot.playing],mixer:rot.mixer,beforeRound:rot.number});save();go('evening')}
 function removeSpecial(id){const e=current();if(!assertOpen(e)||!confirm('Hochzeit-Sonderbuchung löschen?'))return;e.specials=e.specials.filter(s=>s.id!==id);save();render()}
 function removeRound(id){const e=current();if(!assertOpen(e)||!confirm('Runde löschen? Die Bockfolge wird anschließend neu berechnet.'))return;e.rounds=e.rounds.filter(r=>r.id!==id);e.soloPlayers=[...new Set(e.rounds.filter(x=>x.solo).map(x=>x.soloPlayer))];save();render()}
-function results(){const e=current();if(!e)return '<div class="card">Kein Spielabend geöffnet.</div>';const t=totals(e),rows=dueRows(e);return `<div class="card"><h2>Abrechnung ${esc(e.date)}</h2><p class="mini">Gastgeber: ${esc(name(e.host))} · ${isClosed(e)?'Abgeschlossen':'Noch offen'} · Start ${stamp(e.startedAt)} · Ende ${stamp(e.endedAt)}</p><div class="scroll"><table><tr><th>Spieler</th><th>Tacken</th><th>Solo</th><th>Zu zahlen</th><th>Offen</th></tr>${rows.map(x=>`<tr><td>${esc(name(x.id))}${x.present?'':' (abwesend)'}</td><td>${x.present?t[x.id]:'–'}</td><td>${x.present?(soloCount(e,x.id)?'✓':'✕'):'–'}</td><td>${euro(x.fee)}</td><td>${euro(Math.max(0,x.fee-paidAmount(e,x.id)))}</td></tr>`).join('')}</table></div><p class="muted">Anwesende: 5 € Startgebühr, 5 € ohne Solo, nur negative Tacken als Verlust. Abwesende Stammspieler: höchster Gesamtbetrag der Anwesenden + 10 €.</p>${button('Zurück',"go('evening')")}</div>`}
+function results(){
+ const e=current();if(!e)return '<div class="card">Kein Spielabend geöffnet.</div>';
+ const t=totals(e),rows=dueRows(e);
+ const sum=rows.reduce((a,x)=>a+x.fee,0);
+ const received=rows.reduce((a,x)=>a+paidAmount(e,x.id),0);
+ const body=rows.map(x=>{
+  const game=x.present?t[x.id]*db.settings.tack:null;
+  const start=x.present?db.settings.startFee:null;
+  const solo=x.present?(soloCount(e,x.id)?0:db.settings.soloFee):null;
+  const paid=paidAmount(e,x.id);
+  return `<tr><td>${esc(name(x.id))}${x.present?'':'<small> (abwesend)</small>'}</td>
+   <td class="${game===null?'':game>=0?'good':'bad'}">${game===null?'–':(game>0?'+':'')+euro(game)}</td>
+   <td>${start===null?'–':euro(start)}</td><td>${solo===null?'–':euro(solo)}</td>
+   <td><b>${euro(x.fee)}</b></td><td>${euro(paid)}</td><td>${euro(Math.max(0,x.fee-paid))}</td></tr>`;
+ }).join('');
+ return `<div class="card"><h2>Abrechnung ${esc(e.date)}</h2>
+ <p class="mini">Gastgeber: ${esc(name(e.host))} · ${isClosed(e)?'Abgeschlossen':'Noch offen'} · Start ${stamp(e.startedAt)} · Ende ${stamp(e.endedAt)}</p>
+ <div class="scroll"><table><tr><th>Spieler</th><th>Spiel +/−</th><th>Start</th><th>Solo</th><th>Gesamt</th><th>Bezahlt</th><th>Offen</th></tr>${body}</table></div>
+ <p class="muted">Spiel +/− zeigt den erspielten Euro-Gewinn oder -Verlust. Nur Verluste erhöhen die Zahlung an die Kasse. Bei Abwesenden gilt die vereinbarte Pauschalregel.</p>
+ <div class="preview"><h3>💶 Ohne Moos nix los!</h3>
+ <div class="row"><span>Gesamt für die Clubkasse (Soll)</span><b>${euro(sum)}</b></div>
+ <div class="row"><span>Bereits bezahlt</span><b class="good">${euro(received)}</b></div>
+ <div class="row"><span>Noch offen</span><b class="bad">${euro(Math.max(0,sum-received))}</b></div></div>
+ ${button('Zurück',"go('evening')")}</div>`;
+}
 function cash(){const e=current(),sum=db.cash.reduce((s,c)=>s+Number(c.amount||0),0)+db.evenings.reduce((s,x)=>s+Object.values(x.payments||{}).flat().reduce((a,p)=>a+Number(p.amount||0),0),0);return `<div class="card"><h2>Clubkasse</h2><div class="big">${euro(sum)}</div><p class="mini">Erfasste Zahlungen und freie Kassenbuchungen</p></div>${e?`<div class="card"><h3>Zahlungen – ${esc(e.date)}</h3>${dueRows(e).map(x=>{const paid=paidAmount(e,x.id),rest=Math.max(0,x.fee-paid);return `<div class="row"><div><b>${esc(name(x.id))}</b><div class="mini">Soll ${euro(x.fee)} · Bezahlt ${euro(paid)} · Offen ${euro(rest)}</div></div>${rest>0?button('Zahlung',`payDialog('${x.id}')`,'primary'):'✓ Bezahlt'}</div>`}).join('')}</div>`:`<div class="card"><p>Öffne einen Spielabend, um Zahlungen zu erfassen.</p></div>`}<div class="card"><h2>Freie Kassenbuchung</h2><form onsubmit="addCash(event)"><label>Beschreibung</label><input id="ct" maxlength="150" required><label>Betrag in € (Ausgaben negativ)</label><input id="ca" type="number" step=".01" required><button class="primary">Buchen</button></form></div><div class="card"><h2>Kassenbuch</h2>${[...db.cash].reverse().map(c=>`<div class="row"><span>${esc(c.text)}</span><b>${euro(c.amount)}</b></div>`).join('')||'Noch keine freien Buchungen.'}</div>`}
 function payDialog(id){const e=current();if(!e)return;const row=dueRows(e).find(x=>x.id===id);if(!row)return;const rest=Math.max(0,row.fee-paidAmount(e,id));if(rest<=0)return;const raw=prompt(`Zahlung von ${name(id)} in € (noch ${euro(rest)} offen):`,rest.toFixed(2).replace('.',','));if(raw===null)return;const amount=Number(raw.replace(',','.'));if(!Number.isFinite(amount)||amount<=0||amount>rest+.001)return alert('Bitte einen Betrag zwischen 0 und dem offenen Betrag eingeben.');e.payments=e.payments||{};e.payments[id]=e.payments[id]||[];e.payments[id].push({id:uid(),at:Date.now(),amount:Math.round(amount*100)/100});save();render()}
 function showResults(){if(db.evenings.length){eveningId=db.evenings[db.evenings.length-1].id;go('results')}else go('evening')}
-function home(){return `<div class="tiles">${button('<b>♠</b>Spielabend',"go('evening')",'tile')}${button('<b>♣</b>Spieler',"go('players')",'tile')}${button('<b>🏆</b>Ergebnisse','showResults()','tile')}${button('<b>€</b>Clubkasse',"go('cash')",'tile')}</div><div class="card"><h2>Willkommen im Kartenclub</h2><div class="row"><span>Stammspieler</span><b>${db.players.filter(p=>!p.guest).length}</b></div><div class="row"><span>Spielabende</span><b>${db.evenings.length}</b></div><div class="row"><span>Gespielte Runden</span><b>${db.evenings.reduce((a,e)=>a+e.rounds.length,0)}</b></div></div><div class="card"><h2>Letzte Spielabende</h2>${[...db.evenings].reverse().slice(0,8).map(e=>`<div class="row"><span>${esc(e.date)} · ${esc(name(e.host))} · ${e.endedAt?'Abgeschlossen':'Offen'}</span>${button('Öffnen',`openEvening('${e.id}')`)}</div>`).join('')||'Noch kein Spielabend.'}</div>`}
+function home(){return `<div class="tiles">${button('<b>♠</b>Spielabend',"go('evening')",'tile')}${button('<b>♣</b>Spieler',"go('players')",'tile')}${button('<b>🏆</b>Ergebnisse','showResults()','tile')}${button('<b>€</b>Clubkasse',"go('cash')",'tile')}</div>
+<div class="card"><h2>Willkommen im Kartenclub</h2><div class="row"><span>Stammspieler</span><b>${db.players.filter(p=>!p.guest).length}</b></div><div class="row"><span>Spielabende</span><b>${db.evenings.length}</b></div><div class="row"><span>Gespielte Runden</span><b>${db.evenings.reduce((a,e)=>a+e.rounds.length,0)}</b></div></div>
+<div class="card"><h2>Letzte Spielabende</h2>${[...db.evenings].reverse().slice(0,8).map(e=>`<div class="row"><span>${esc(e.date)} · ${esc(name(e.host))} · ${e.endedAt?'Abgeschlossen':'Offen'}</span>${button('Öffnen',`openEvening('${e.id}')`)}</div>`).join('')||'Noch kein Spielabend.'}</div>
+<div class="card"><div class="row"><b>App-Version ${APP_VERSION}</b><span class="muted">Doppelkopf Club</span></div><details><summary style="cursor:pointer;padding:9px 0;color:#e9bd82">Versionsverlauf anzeigen</summary>${VERSION_NOTES.map(n=>`<p class="muted">${esc(n)}</p>`).join('')}</details></div>`}
 
 render();
 </script>

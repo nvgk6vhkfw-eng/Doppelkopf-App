@@ -1,853 +1,532 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#102c25">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#123429">
 <title>Doppelkopf Club</title>
 <style>
-:root{
-  font-family:system-ui,-apple-system,sans-serif;
-  color:#f4ead9;background:#102c25
-}
+:root{font-family:system-ui,-apple-system,sans-serif;background:#102d24;color:#f5eddf}
 *{box-sizing:border-box}
 body{margin:0}
-header{
-  padding:20px;background:#17382e;
-  border-bottom:2px solid #b58b58
-}
-h1{margin:0;color:#eac18b;font-size:26px}
-header p{margin:5px 0;color:#cbbba3}
-main{max-width:1200px;margin:auto;padding:15px}
-nav{
-  display:grid;grid-template-columns:repeat(5,1fr);
-  gap:7px;margin-bottom:18px
-}
-button{
-  font:inherit;cursor:pointer;border-radius:11px;
-  border:1px solid #9d805b;background:#284b3c;
-  color:#fff2df;padding:12px 10px
-}
-button:hover,.primary,.active{background:#a87949;color:white}
-button:disabled{opacity:.45;cursor:not-allowed}
-.card{
-  background:#1c3c30;border:1px solid #77664e;
-  border-radius:17px;padding:18px;margin-bottom:15px
-}
-h2{color:#eac18b;margin:0 0 14px;font-size:21px}
-h3{color:#eac18b}
-input,select{
-  width:100%;background:#102c25;color:white;
-  border:1px solid #9d805b;border-radius:9px;
-  padding:11px;font:inherit;margin:6px 0 12px
-}
-label{display:block;margin-top:8px}
-.check{display:flex;gap:10px;align-items:center;padding:7px}
+header{padding:19px;background:#183b2e;border-bottom:2px solid #b68b56}
+h1{margin:0;color:#e9bd82;font-size:25px}
+header small{color:#d1bda0}
+main{max-width:1100px;margin:auto;padding:14px}
+nav{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:15px}
+button{background:#315342;color:#fff5e7;border:1px solid #9b805b;border-radius:11px;padding:12px 9px;font:inherit;cursor:pointer}
+button:disabled{opacity:.4;cursor:not-allowed}
+button.primary,button.active{background:#a47748;color:white}
+button.danger{background:#633c36}
+.card{background:#1d3d30;border:1px solid #76674f;border-radius:16px;padding:16px;margin-bottom:15px}
+h2,h3{color:#e9bd82;margin-top:0}
+h2{font-size:21px}
+p{line-height:1.5}
+.muted{color:#cbbba4;font-size:13px}
+input,select{width:100%;padding:12px;background:#102d24;color:white;border:1px solid #ab9067;border-radius:9px;font:inherit;margin:7px 0 13px}
+label{display:block;margin-top:10px}
+.check{display:flex;align-items:center;gap:10px;padding:8px 0}
 .check input{width:auto;margin:0}
-.row{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:12px;border-bottom:1px solid #526b58;padding:11px 0
-}
-.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.row{display:flex;align-items:center;justify-content:space-between;gap:9px;padding:11px 0;border-bottom:1px solid #536e59}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
 .actions button{flex:1}
 .tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.tile{min-height:110px;background:#27503e}
-.tile span{display:block;color:#eac18b;font-size:30px}
-.muted{color:#cbbba3;font-size:13px}
-.big{font-size:30px;color:#eac18b;font-weight:bold}
-.good{color:#b5dbad}
-.bad{color:#f0ab9a}
-.danger{background:#653b35}
-table{width:100%;border-collapse:collapse}
-td,th{padding:10px 5px;border-bottom:1px solid #526b58;text-align:left}
+.tile{min-height:115px}
+.tile b{display:block;color:#edc48d;font-size:30px}
+.good{color:#b9e2b0}
+.bad{color:#f4afa1}
+.big{font-size:29px;color:#edc48d;font-weight:700}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:10px 5px;border-bottom:1px solid #526b58}
 .scroll{overflow-x:auto}
-
-/* Virtueller Kartentisch */
-.setup{
-  background:#082b20;border-radius:18px;
-  padding:16px;margin-top:12px
-}
-.name-pool{
-  display:grid;grid-template-columns:repeat(3,1fr);
-  gap:9px;margin:15px 0 20px
-}
-.chip{
-  padding:12px 6px;text-align:center;border-radius:12px;
-  background:#194b37;border:2px solid #a88a5c;
-  color:#fff;font-weight:600;touch-action:none;
-  user-select:none;cursor:grab;min-height:49px
-}
-.chip.chosen{background:#aa7949}
-.chip.used{opacity:.3}
-.table-layout{
-  display:grid;
-  grid-template-columns:minmax(75px,1fr) minmax(0,4fr) minmax(75px,1fr);
-  grid-template-rows:84px minmax(155px,220px) 84px;
-  gap:9px;align-items:center
-}
-.top-seats,.bottom-seats{
-  grid-column:2;display:flex;justify-content:center;
-  gap:10px;height:100%
-}
-.top-seats{grid-row:1}
-.bottom-seats{grid-row:3}
-.left-seat{grid-column:1;grid-row:2}
-.right-seat{grid-column:3;grid-row:2}
-.table-center{grid-column:2;grid-row:2}
-.top-seats .drop,.bottom-seats .drop{
-  width:42%;height:100%
-}
-.left-seat .drop,.right-seat .drop{
-  width:100%;min-height:150px
-}
-.drop{
-  display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:4px;text-align:center;
-  border:3px dashed #b4d1b7;border-radius:15px;
-  background:#174334;color:#f7f0e4;
-  padding:5px;cursor:pointer;min-width:0;
-  overflow-wrap:anywhere
-}
-.drop .plus{font-size:29px;line-height:1}
-.drop .hint{font-size:11px}
-.drop .person{font-weight:700;font-size:14px}
-.drop.first{border-color:#f0bb72;background:#3b4730}
-.drop.first .hint{color:#f5ca8a}
-.drop.filled{border-style:solid;background:#315a43}
-.drop.mixer{border-color:#f1bd76;background:#665032}
-.drop.out{opacity:.4;filter:grayscale(1)}
-.drop.target{background:#64855d;border-color:white}
-.table-center{
-  height:100%;border-radius:35px;
-  background:linear-gradient(135deg,#087047,#075137);
-  border:10px solid #a46c38;
-  box-shadow:inset 0 0 0 3px #d3a26a,0 5px 14px #071e17;
-  display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:5px;min-width:0
-}
-.table-center strong{
-  color:#eec18a;font-family:Georgia,serif;
-  font-size:clamp(14px,3vw,27px)
-}
-.cards-art{position:relative;width:95px;height:95px}
-.play-card{
-  position:absolute;top:8px;left:24px;width:54px;height:76px;
-  background:#fff7e7;border-radius:6px;border:1px solid #967b59;
-  color:#b62e2e;font:bold 27px Georgia,serif;
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 4px 8px #12392d
-}
-.play-card.one{transform:rotate(-24deg);left:12px;color:#222}
-.play-card.two{transform:rotate(-7deg);left:22px}
-.play-card.three{transform:rotate(13deg);left:33px;color:#222}
-.play-card.four{transform:rotate(28deg);left:44px}
-.status{
-  display:flex;justify-content:space-between;
-  align-items:center;gap:10px;margin:15px 0
-}
-.smalltag{
-  background:#a87949;color:white;padding:5px 10px;
-  border-radius:20px;font-size:12px
-}
+.pill{background:#9d754b;border-radius:25px;padding:7px 12px;font-size:12px}
+.name-pool{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:15px 0}
+.chip{background:#20513a;border:2px solid #aa885b;border-radius:11px;text-align:center;padding:13px 4px;font-weight:650;cursor:grab;touch-action:none;user-select:none}
+.chip.chosen{background:#a47748}
+.chip.used{opacity:.3;pointer-events:none}
+.setup{background:#092c21;padding:10px;border-radius:17px}
+.layout{display:grid;grid-template-columns:minmax(68px,1fr) minmax(0,3fr) minmax(68px,1fr);grid-template-rows:78px 180px 78px;gap:7px;align-items:center}
+.top,.bottom{grid-column:2;display:flex;justify-content:center;gap:8px;height:100%}
+.top{grid-row:1}.bottom{grid-row:3}
+.left{grid-column:1;grid-row:2}
+.right{grid-column:3;grid-row:2}
+.top .seat,.bottom .seat{width:47%;height:100%}
+.left .seat,.right .seat{width:100%;min-height:150px}
+.seat{border:2px dashed #a9c9ad;background:#194332;border-radius:12px;padding:5px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;cursor:pointer;overflow-wrap:anywhere}
+.seat .plus{font-size:27px}
+.seat .name{font-weight:700;font-size:13px}
+.seat .hint{font-size:10px}
+.seat.first{border-color:#efbf7b}
+.seat.filled{border-style:solid;background:#335c44}
+.seat.out{opacity:.4}
+.seat.mixer{background:#765536;border-color:#f4c583}
+.felt{grid-column:2;grid-row:2;height:100%;background:linear-gradient(140deg,#087349,#06452f);border:8px solid #a66e3e;border-radius:30px;box-shadow:inset 0 0 0 3px #d5a66c;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.felt strong{font:700 clamp(14px,3vw,26px) Georgia,serif;color:#f0c88e}
+.cards{font-size:35px;background:#fff8e8;color:#b23e36;border-radius:8px;padding:5px 10px;transform:rotate(-5deg);margin-bottom:12px}
+.winners{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin:14px 0}
+.winner{min-height:70px;border:2px solid #819d7f}
+.winner.selected{background:#a47748;border-color:#efc68d}
+.preview{background:#102d24;border:1px solid #63836b;border-radius:12px;padding:14px;margin:15px 0}
+.preview .row:last-child{border:0}
 @media(min-width:700px){
-  .tiles{grid-template-columns:repeat(4,1fr)}
-  .table-layout{
-    grid-template-columns:160px minmax(0,1fr) 160px;
-    grid-template-rows:95px 270px 95px;
-    gap:15px
-  }
-  .top-seats .drop,.bottom-seats .drop{max-width:230px}
-  .left-seat .drop,.right-seat .drop{min-height:175px}
-  .name-pool{grid-template-columns:repeat(6,1fr)}
+ .tiles{grid-template-columns:repeat(4,1fr)}
+ .name-pool{grid-template-columns:repeat(6,1fr)}
+ .layout{grid-template-columns:155px minmax(0,1fr) 155px;grid-template-rows:95px 270px 95px;gap:14px}
+ .top .seat,.bottom .seat{max-width:220px}
+ .left .seat,.right .seat{min-height:170px}
 }
-@media(max-width:550px){
-  nav button{font-size:11px;padding:10px 2px}
-  .card{padding:12px}
-  .setup{padding:8px}
-  .table-layout{
-    grid-template-columns:minmax(68px,1fr) minmax(0,2.5fr) minmax(68px,1fr);
-    gap:5px;grid-template-rows:74px 160px 74px
-  }
-  .drop .hint{font-size:9px}
-  .drop .person{font-size:11px}
-  .drop .plus{font-size:23px}
-  .top-seats,.bottom-seats{gap:5px}
-  .top-seats .drop,.bottom-seats .drop{width:47%}
-  .table-center{border-width:6px;border-radius:20px}
-  .cards-art{transform:scale(.7);margin:-12px}
+@media(max-width:500px){
+ nav button{font-size:11px;padding:10px 2px}
+ .card{padding:12px}
+ .setup{padding:6px}
+ .layout{grid-template-columns:minmax(65px,1fr) minmax(0,2.5fr) minmax(65px,1fr);grid-template-rows:73px 155px 73px;gap:5px}
+ .seat .name{font-size:11px}
+ .seat .hint{font-size:9px}
+ .felt{border-width:5px;border-radius:20px}
+ .cards{font-size:23px}
 }
 </style>
 </head>
 <body>
 <header>
 <h1>♠ Doppelkopf Club</h1>
-<p>Spielabend · Tacken · Clubkasse</p>
+<small>Spielabende · Tacken · Clubkasse</small>
 </header>
 <main>
 <nav id="nav"></nav>
-<section id="view"></section>
+<div id="app"></div>
 </main>
 <script>
 "use strict";
-
 const KEY="doko-bronze-v1";
 const STAMM=["Tom","Patrick","Manuel","Lukas E.","Lukas T.","Andre"];
-
 const fresh=()=>({
  players:STAMM.map((name,i)=>({id:"s"+i,name,guest:false})),
- evenings:[],
- cash:[],
+ evenings:[],cash:[],
  settings:{tack:.2,startFee:5,soloFee:5}
 });
-
 let db;
-try{
- db=JSON.parse(localStorage.getItem(KEY))||fresh();
-}catch{
- db=fresh();
-}
-if(!Array.isArray(db.players)||
-   !Array.isArray(db.evenings)||
-   !Array.isArray(db.cash))db=fresh();
-
+try{db=JSON.parse(localStorage.getItem(KEY))||fresh()}catch{db=fresh()}
+if(!Array.isArray(db.players)||!Array.isArray(db.evenings)||!Array.isArray(db.cash))db=fresh();
 db.settings={tack:.2,startFee:5,soloFee:5,...db.settings};
-
-let page="home";
-let eveningId=null;
-let pending=null;
-let selectedPlayer=null;
-let dragPlayer=null;
-let dragStart=null;
-
+db.evenings.forEach(e=>{
+ if(!Array.isArray(e.specials))e.specials=[];
+ if(!Array.isArray(e.soloPlayers))e.soloPlayers=[];
+ if(!Array.isArray(e.rounds))e.rounds=[];
+});
+let page="home",eveningId=null,pending=null,selected=null;
+let winners=[],dragId=null,dragStart=null;
 const $=id=>document.getElementById(id);
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({
- "&":"&amp;","<":"&lt;",">":"&gt;",
- '"':"&quot;","'":"&#39;"
-}[c]));
-const euro=n=>Number(n||0).toLocaleString("de-DE",{
- style:"currency",currency:"EUR"
-});
-const pname=id=>db.players.find(p=>p.id===id)?.name||"Unbekannt";
-const active=()=>db.evenings.find(e=>e.id===eveningId);
-
-function save(){
- try{localStorage.setItem(KEY,JSON.stringify(db))}
- catch(e){alert("Speichern fehlgeschlagen: "+e.message)}
-}
-function go(p){page=p;render()}
-function btn(text,action,cls=""){
- return `<button class="${cls}" onclick="${action}">${text}</button>`;
-}
+const esc=v=>String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const euro=n=>Number(n||0).toLocaleString("de-DE",{style:"currency",currency:"EUR"});
+const name=id=>db.players.find(p=>p.id===id)?.name||"Unbekannt";
+const current=()=>db.evenings.find(e=>e.id===eveningId);
+const button=(label,action,cls="")=>`<button class="${cls}" onclick="${action}">${label}</button>`;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){alert("Speichern fehlgeschlagen: "+e.message)}}
+function go(p){page=p;if(p==="round")winners=[];render()}
 function render(){
- const tabs=[
-  ["home","⌂ Start"],["evening","♠ Spiel"],
-  ["players","♣ Spieler"],["cash","€ Kasse"],
-  ["settings","⚙ Mehr"]
- ];
- $("nav").innerHTML=tabs.map(([p,t])=>
-  btn(t,`go('${p}')`,page===p?"active":"")
- ).join("");
- if(page==="seating"){
-  $("nav").innerHTML="";
-  $("view").innerHTML=seatingView();
-  return;
- }
- const views={home,evening,round,results,players,cash,settings};
- $("view").innerHTML=(views[page]||home)();
+ const tabs=[["home","⌂ Start"],["evening","♠ Spiel"],["players","♣ Spieler"],["cash","€ Kasse"],["settings","⚙ Mehr"]];
+ $("nav").innerHTML=page==="seating"?"":tabs.map(([p,t])=>button(t,`go('${p}')`,page===p?"active":"")).join("");
+ const views={home,evening,players,cash,settings,seating,round,hochzeit,results};
+ $("app").innerHTML=(views[page]||home)();
+ if(page==="round")previewRound();
 }
 
-/* Sitzordnung */
+/* Tisch und Mischer */
 
+function sequence(n){
+ if(n===4)return["right","bottom1","left","top1"];
+ if(n===5)return["right","bottom1","left","top1","top2"];
+ return["right","bottom2","bottom1","left","top1","top2"];
+}
 function positions(n){
- if(n===4)return ["top1","left","right","bottom1"];
- if(n===5)return ["top1","top2","left","right","bottom1"];
- return ["top1","top2","left","right","bottom1","bottom2"];
+ if(n===4)return["top1","left","right","bottom1"];
+ if(n===5)return["top1","top2","left","right","bottom1"];
+ return["top1","top2","left","right","bottom1","bottom2"];
 }
-
-function seatSequence(n){
- // Reihenfolge im Uhrzeigersinn,
- // beginnend am rechten Stirnplatz.
- if(n===4)return ["right","bottom1","left","top1"];
- if(n===5)return ["right","bottom1","left","top1","top2"];
- return ["right","bottom2","bottom1","left","top1","top2"];
-}
-
 function orderOf(e){
- if(Array.isArray(e.seats)&&
-    e.seats.length===e.present.length &&
-    new Set(e.seats).size===e.present.length)
-  return e.seats;
- if(Array.isArray(e.seatOrder)&&
-    e.seatOrder.length===e.present.length)
-  return e.seatOrder;
+ if(Array.isArray(e.seats)&&e.seats.length===e.present.length)return e.seats;
+ if(Array.isArray(e.seatOrder)&&e.seatOrder.length===e.present.length)return e.seatOrder;
  return e.present;
 }
-
 function rotation(e){
- const order=orderOf(e);
- const n=order.length;
- const first=order.indexOf(e.firstMixer);
- const start=first<0?0:first;
- const index=(start+e.rounds.length)%n;
- const mixer=order[index];
- let sitting=[];
- if(n===5)sitting=[mixer];
- if(n===6)sitting=[mixer,order[(index+3)%n]];
- return {
-  mixer,
-  playing:order.filter(id=>!sitting.includes(id)),
-  sitting,
-  number:e.rounds.length+1
- };
+ const order=orderOf(e),n=order.length;
+ const first=Math.max(0,order.indexOf(e.firstMixer));
+ const i=(first+e.rounds.length)%n;
+ const mixer=order[i],sitting=[];
+ if(n===5)sitting.push(mixer);
+ if(n===6)sitting.push(mixer,order[(i+3)%n]);
+ return{mixer,sitting,playing:order.filter(id=>!sitting.includes(id)),number:e.rounds.length+1};
 }
-
-function seatHTML(pos,player,first=false,mode="setup",rot=null){
- const filled=!!player;
- const out=rot&&rot.sitting.includes(player);
- const mixer=rot&&rot.mixer===player;
- const classes=[
-  "drop",first?"first":"",filled?"filled":"",
-  out?"out":"",mixer?"mixer":""
- ].join(" ");
- const content=filled
-  ?`<span class="person">${esc(pname(player))}</span>`
-  :`<span class="plus">＋</span>
-    <span class="hint">HIER ABLEGEN</span>`;
- const label=first&&mode==="setup"
-  ?`<span class="hint">★ 1. MISCHER</span>`:"";
- const state=mode==="game"
-  ?`<span class="hint">${mixer?"★ MISCHER":out?"SETZT AUS":filled?"SPIELT":""}</span>`:"";
- const action=mode==="setup"
-  ?`onclick="seatTap('${pos}')"`:"";
- return `<div class="${classes}" data-position="${pos}" ${action}>
- ${content}${label}${state}</div>`;
-}
-
-function tableHTML(n,assigned,mode="setup",rot=null){
- const ps=positions(n);
- const seat=(p)=>ps.includes(p)
-  ?seatHTML(p,assigned[p],p==="right",mode,rot):"";
- return `<div class="setup">
-  <div class="table-layout">
-   <div class="top-seats">
-    ${seat("top1")}${seat("top2")}
-   </div>
-   <div class="left-seat">${seat("left")}</div>
-   <div class="table-center">
-    <div class="cards-art">
-     <div class="play-card one">♣</div>
-     <div class="play-card two">♥</div>
-     <div class="play-card three">♠</div>
-     <div class="play-card four">♦</div>
-    </div>
-    <strong>Doppelkopf</strong>
-   </div>
-   <div class="right-seat">${seat("right")}</div>
-   <div class="bottom-seats">
-    ${seat("bottom1")}${seat("bottom2")}
-   </div>
-  </div>
+function seat(pos,id,mode,rot){
+ const out=rot?.sitting.includes(id),mix=rot?.mixer===id;
+ const classes=["seat",pos==="right"?"first":"",id?"filled":"",out?"out":"",mix?"mixer":""].join(" ");
+ const action=mode==="setup"?`onclick="seatTap('${pos}')"`:"";
+ return `<div class="${classes}" data-pos="${pos}" ${action}>
+ ${id?`<span class="name">${esc(name(id))}</span>`:`<span class="plus">＋</span><span class="hint">HIER ABLEGEN</span>`}
+ ${mode==="setup"&&pos==="right"?'<span class="hint">★ 1. MISCHER</span>':""}
+ ${mode==="game"&&id?`<span class="hint">${mix?"★ MISCHER":out?"SETZT AUS":"SPIELT"}</span>`:""}
  </div>`;
 }
+function table(n,assigned,mode="setup",rot=null){
+ const ps=positions(n),s=p=>ps.includes(p)?seat(p,assigned[p],mode,rot):"";
+ return `<div class="setup"><div class="layout">
+ <div class="top">${s("top1")}${s("top2")}</div>
+ <div class="left">${s("left")}</div>
+ <div class="felt"><div class="cards">♣ ♥ ♠ ♦</div><strong>Doppelkopf</strong></div>
+ <div class="right">${s("right")}</div>
+ <div class="bottom">${s("bottom1")}${s("bottom2")}</div>
+ </div></div>`;
+}
 
-function seatingView(){
- if(!pending)return `<div class="card">Kein neuer Spielabend.</div>`;
- const assigned=pending.assigned;
- const used=Object.values(assigned);
- const n=pending.present.length;
- const full=used.length===n;
+/* Start und Spieler */
+
+function home(){
+ return `<div class="tiles">
+ ${button("<b>♠</b>Spielabend","go('evening')","tile")}
+ ${button("<b>♣</b>Spieler","go('players')","tile")}
+ ${button("<b>🏆</b>Ergebnisse","showResults()","tile")}
+ ${button("<b>€</b>Clubkasse","go('cash')","tile")}
+ </div><div class="card"><h2>Willkommen im Kartenclub</h2>
+ <div class="row"><span>Stammspieler</span><b>${db.players.filter(p=>!p.guest).length}</b></div>
+ <div class="row"><span>Spielabende</span><b>${db.evenings.length}</b></div>
+ <div class="row"><span>Gespielte Runden</span><b>${db.evenings.reduce((a,e)=>a+e.rounds.length,0)}</b></div>
+ </div><div class="card"><h2>Letzte Spielabende</h2>
+ ${[...db.evenings].reverse().slice(0,8).map(e=>`<div class="row"><span>${esc(e.date)} · ${e.rounds.length} Runden</span>${button("Öffnen",`openEvening('${e.id}')`)}</div>`).join("")||"Noch kein Spielabend."}
+ </div>`;
+}
+function players(){
+ return `<div class="card"><h2>Spieler</h2>${db.players.map(p=>`<div class="row"><span>${esc(p.name)} ${p.guest?"(Gast)":""}</span>${p.guest?button("Entfernen",`removeGuest('${p.id}')`,"danger"):"<small>Stammspieler</small>"}</div>`).join("")}</div>
+ <div class="card"><h2>Gast hinzufügen</h2><form onsubmit="addGuest(event)">
+ <input id="guestName" placeholder="Name" maxlength="60" required>
+ <button class="primary">Hinzufügen</button></form></div>`;
+}
+function addGuest(ev){
+ ev.preventDefault();const n=$("guestName").value.trim();
+ if(!n)return;
+ if(db.players.some(p=>p.name.toLowerCase()===n.toLowerCase()))return alert("Name existiert bereits.");
+ db.players.push({id:uid(),name:n,guest:true});save();render();
+}
+function removeGuest(id){
+ if(db.evenings.some(e=>e.present.includes(id)))return alert("Dieser Gast wird bereits in einem Spielabend verwendet.");
+ if(confirm("Gast entfernen?")){db.players=db.players.filter(p=>p.id!==id);save();render()}
+}
+
+/* Spielabend erstellen */
+
+function evening(){
+ const e=current();
+ if(!e)return `<div class="card"><h2>Neuer Spielabend</h2>
+ <form onsubmit="createEvening(event)">
+ <label>Datum</label><input type="date" id="date" value="${new Date().toLocaleDateString("sv-SE")}" required>
+ <h3>Anwesende Spieler</h3>
+ ${db.players.map(p=>`<label class="check"><input type="checkbox" name="present" value="${p.id}" ${p.guest?"":"checked"}>${esc(p.name)}</label>`).join("")}
+ <button class="primary">Weiter zum Kartentisch</button></form></div>
+ <div class="card"><h2>Vergangene Abende</h2>
+ ${[...db.evenings].reverse().map(x=>`<div class="row"><span>${esc(x.date)}</span>${button("Öffnen",`openEvening('${x.id}')`)}</div>`).join("")||"Noch keine Spielabende."}</div>`;
+ const rot=rotation(e),order=orderOf(e),assigned={};
+ sequence(order.length).forEach((p,i)=>assigned[p]=order[i]);
+ const t=totals(e);
+ const events=[
+ ...e.rounds.map((r,i)=>({kind:"round",r,i})),
+ ...e.specials.map(s=>({kind:"special",s}))
+ ].sort((a,b)=>(b.kind==="special"?b.s.at||0:b.r.at||0)-(a.kind==="special"?a.s.at||0:a.r.at||0));
  return `<div class="card">
-  <h2>Sitzordnung festlegen</h2>
-  <p class="muted">Ziehe die Namen auf die freien Plätze um den Tisch.
-  Alternativ: Namen antippen, dann Sitzplatz antippen.</p>
-  <div class="name-pool">
-   ${pending.present.map(id=>`
-    <div class="chip ${used.includes(id)?"used":""}
-      ${selectedPlayer===id?"chosen":""}"
-      data-player="${id}"
-      onclick="choosePlayer('${id}')">
-      ⠿ ${esc(pname(id))}
-    </div>`).join("")}
-  </div>
-  ${tableHTML(n,assigned)}
-  <div class="status">
-   <span class="smalltag">${used.length} von ${n} Plätzen besetzt</span>
-   <span class="muted">Rechts = 1. Mischer</span>
-  </div>
-  <div class="actions">
-   ${btn("Zurück","pending=null;selectedPlayer=null;go('evening')")}
-   ${btn("Neu verteilen","resetSeats()")}
-   <button class="primary" ${full?"":"disabled"}
-     onclick="finishEvening()">Spielabend starten</button>
-  </div>
- </div>`;
+ <div class="row"><h2>Spielabend ${esc(e.date)}</h2>${button("Zurück","eveningId=null;render()")}</div>
+ <div class="row"><span class="pill">Runde ${rot.number}</span><b>★ ${esc(name(rot.mixer))} mischt</b></div>
+ ${table(e.present.length,assigned,"game",rot)}
+ <p class="muted">${rot.sitting.length?"Setzen aus: "+rot.sitting.map(id=>esc(name(id))).join(", "):"Alle vier spielen."}</p>
+ <div class="actions">
+ ${button("＋ Neue Runde","go('round')","primary")}
+ ${button("♛ Hochzeit","go('hochzeit')")}
+ ${button("Abrechnung","go('results')")}
+ </div></div>
+ <div class="card"><h2>Aktueller Stand</h2><div class="scroll"><table>
+ <tr><th>Spieler</th><th>Tacken</th><th>€</th></tr>
+ ${e.present.map(id=>`<tr><td>${esc(name(id))}</td><td>${t[id]>0?"+":""}${t[id]}</td><td class="${t[id]>=0?"good":"bad"}">${euro(t[id]*db.settings.tack)}</td></tr>`).join("")}
+ </table></div></div>
+ <div class="card"><h2>Spielverlauf</h2>
+ ${events.map(x=>x.kind==="special"
+ ?`<div class="row"><div><b>♛ Hochzeit – ${esc(name(x.s.player))}</b><div class="muted">+3 für ${esc(name(x.s.player))}, je −1 für die anderen · kein Mischerwechsel</div></div>${button("✕",`removeSpecial('${x.s.id}')`,"danger")}</div>`
+ :`<div class="row"><div><b>Runde ${x.i+1}</b><div class="muted">${x.r.bock?"Bock ×2 · ":""}${x.r.solo?"Solo · ":""}${Object.entries(x.r.points||{}).map(([id,n])=>esc(name(id))+": "+n).join(" · ")}</div></div>${button("✕",`removeRound('${x.r.id}')`,"danger")}</div>`
+ ).join("")||"Noch keine Einträge."}</div>`;
 }
-
-function choosePlayer(id){
- if(!pending)return;
- selectedPlayer=selectedPlayer===id?null:id;
- render();
+function createEvening(ev){
+ ev.preventDefault();
+ const present=[...document.querySelectorAll('input[name="present"]:checked')].map(x=>x.value);
+ if(present.length<4||present.length>6)return alert("Bitte 4 bis 6 Spieler wählen.");
+ pending={date:$("date").value,present,assigned:{}};selected=null;go("seating");
 }
+function seating(){
+ if(!pending)return `<div class="card">Kein neuer Spielabend.</div>`;
+ const used=Object.values(pending.assigned),n=pending.present.length;
+ return `<div class="card"><h2>Sitzordnung festlegen</h2>
+ <p class="muted">Namen auf die Plätze ziehen oder erst den Namen, dann den Platz antippen.</p>
+ <div class="name-pool">${pending.present.map(id=>`<div class="chip ${used.includes(id)?"used":""} ${selected===id?"chosen":""}" data-player="${id}" onclick="choose('${id}')">⠿ ${esc(name(id))}</div>`).join("")}</div>
+ ${table(n,pending.assigned)}
+ <div class="row"><span class="pill">${used.length} von ${n} Plätzen besetzt</span><span class="muted">Rechts: 1. Mischer</span></div>
+ <div class="actions">${button("Zurück","pending=null;go('evening')")}${button("Leeren","resetSeats()")}
+ <button class="primary" ${used.length===n?"":"disabled"} onclick="finishEvening()">Spielabend starten</button></div></div>`;
+}
+function choose(id){selected=selected===id?null:id;render()}
 function seatTap(pos){
  if(!pending)return;
- if(selectedPlayer){
-  placePlayer(selectedPlayer,pos);
+ if(selected){
+  const old=Object.keys(pending.assigned).find(p=>pending.assigned[p]===selected);
+  const displaced=pending.assigned[pos];
+  if(old)delete pending.assigned[old];
+  pending.assigned[pos]=selected;
+  if(old&&displaced&&displaced!==selected)pending.assigned[old]=displaced;
+  selected=null;render();
  }else if(pending.assigned[pos]){
-  selectedPlayer=pending.assigned[pos];
-  delete pending.assigned[pos];
-  render();
+  selected=pending.assigned[pos];delete pending.assigned[pos];render();
  }
 }
-function placePlayer(id,pos){
- if(!pending||!pending.present.includes(id))return;
- const assigned=pending.assigned;
- const old=Object.keys(assigned).find(p=>assigned[p]===id);
- const displaced=assigned[pos];
- if(old)delete assigned[old];
- assigned[pos]=id;
- if(displaced&&displaced!==id&&old){
-  assigned[old]=displaced;
- }
- selectedPlayer=null;
- render();
-}
-function resetSeats(){
- if(confirm("Alle Sitzplätze wieder leeren?")){
-  pending.assigned={};
-  selectedPlayer=null;
-  render();
- }
-}
-
-/* Finger- und Maussteuerung */
-
+function resetSeats(){if(confirm("Sitzplätze leeren?")){pending.assigned={};selected=null;render()}}
 document.addEventListener("pointerdown",ev=>{
  if(page!=="seating")return;
  const chip=ev.target.closest(".chip");
  if(!chip||chip.classList.contains("used"))return;
- dragPlayer=chip.dataset.player;
- dragStart={x:ev.clientX,y:ev.clientY};
+ dragId=chip.dataset.player;dragStart=[ev.clientX,ev.clientY];
 });
 document.addEventListener("pointerup",ev=>{
- if(page!=="seating"||!dragPlayer||!dragStart)return;
- const moved=Math.hypot(
-  ev.clientX-dragStart.x,
-  ev.clientY-dragStart.y
- )>12;
- if(moved){
-  const target=document.elementFromPoint(ev.clientX,ev.clientY);
-  const slot=target?.closest(".drop");
-  if(slot)placePlayer(dragPlayer,slot.dataset.position);
- }
- dragPlayer=null;
- dragStart=null;
+ if(!dragId||!dragStart)return;
+ const id=dragId,start=dragStart;dragId=null;dragStart=null;
+ if(page!=="seating"||Math.hypot(ev.clientX-start[0],ev.clientY-start[1])<12)return;
+ const slot=document.elementFromPoint(ev.clientX,ev.clientY)?.closest(".seat");
+ if(slot){selected=id;seatTap(slot.dataset.pos)}
 });
-document.addEventListener("pointercancel",()=>{
- dragPlayer=null;dragStart=null;
-});
-
-/* Startseite */
-
-function home(){
- return `<div class="tiles">
- ${btn("<span>♠</span>Spielabend","go('evening')","tile")}
- ${btn("<span>♣</span>Spieler","go('players')","tile")}
- ${btn("<span>🏆</span>Ergebnisse","showResults()","tile")}
- ${btn("<span>€</span>Clubkasse","go('cash')","tile")}
- </div>
- <div class="card">
-  <h2>Willkommen im Kartenclub</h2>
-  <p>Spielabende, Tacken und Clubkasse auf einem Gerät verwalten.</p>
-  <div class="row"><span>Stammspieler</span>
-   <b>${db.players.filter(p=>!p.guest).length}</b></div>
-  <div class="row"><span>Spielabende</span>
-   <b>${db.evenings.length}</b></div>
-  <div class="row"><span>Gespielte Runden</span>
-   <b>${db.evenings.reduce((s,e)=>s+e.rounds.length,0)}</b></div>
- </div>
- <div class="card"><h2>Letzte Spielabende</h2>
- ${[...db.evenings].reverse().slice(0,8).map(e=>`
-  <div class="row">
-   <span>${esc(e.date)} · ${e.rounds.length} Runden</span>
-   ${btn("Öffnen",`openEvening('${e.id}')`)}
-  </div>`).join("")||"Noch kein Spielabend vorhanden."}
- </div>`;
-}
-
-/* Spieler */
-
-function players(){
- return `<div class="card"><h2>Unsere Spieler</h2>
- ${db.players.map(p=>`<div class="row">
-  <span>${esc(p.name)} ${p.guest?"(Gast)":""}</span>
-  ${p.guest
-   ?btn("Entfernen",`removeGuest('${p.id}')`,"danger")
-   :"<span class='muted'>Stammspieler</span>"}
- </div>`).join("")}</div>
- <div class="card"><h2>Gast hinzufügen</h2>
-  <form onsubmit="addGuest(event)">
-   <label>Name</label>
-   <input id="guestName" maxlength="60" required>
-   <button class="primary">Gast hinzufügen</button>
-  </form>
- </div>`;
-}
-function addGuest(ev){
- ev.preventDefault();
- const name=$("guestName").value.trim();
- if(!name)return;
- if(db.players.some(p=>p.name.toLowerCase()===name.toLowerCase()))
-  return alert("Name bereits vorhanden.");
- db.players.push({id:uid(),name,guest:true});
- save();render();
-}
-function removeGuest(id){
- if(db.evenings.some(e=>e.present.includes(id)))
-  return alert("Dieser Gast ist bereits in einem Spielabend gespeichert.");
- if(confirm("Gast entfernen?")){
-  db.players=db.players.filter(p=>p.id!==id);
-  save();render();
- }
-}
-
-/* Spielabend */
-
-function evening(){
- const e=active();
- if(!e)return `<div class="card">
-  <h2>Neuen Spielabend beginnen</h2>
-  <form onsubmit="createEvening(event)">
-   <label>Datum</label>
-   <input id="date" type="date"
-    value="${new Date().toLocaleDateString("sv-SE")}" required>
-   <h3>Anwesende Spieler</h3>
-   ${db.players.map(p=>`
-    <label class="check">
-     <input type="checkbox" name="present" value="${p.id}"
-      ${p.guest?"":"checked"}>
-     ${esc(p.name)}
-    </label>`).join("")}
-   <button class="primary">Weiter zum Kartentisch</button>
-  </form>
- </div>
- <div class="card"><h2>Vergangene Abende</h2>
- ${[...db.evenings].reverse().map(x=>`
-  <div class="row"><span>${esc(x.date)}</span>
-  ${btn("Öffnen",`openEvening('${x.id}')`)}</div>
- `).join("")||"Noch keine Spielabende."}
- </div>`;
-
- const rot=rotation(e);
- const order=orderOf(e);
- const sequence=seatSequence(order.length);
- const assigned={};
- sequence.forEach((pos,i)=>assigned[pos]=order[i]);
- const t=totals(e);
-
- return `<div class="card">
-  <div class="row">
-   <h2>Spielabend ${esc(e.date)}</h2>
-   ${btn("Zurück","eveningId=null;render()")}
-  </div>
-  <div class="status">
-   <span class="smalltag">Runde ${rot.number}</span>
-   <strong>★ Mischer: ${esc(pname(rot.mixer))}</strong>
-  </div>
-  ${tableHTML(e.present.length,assigned,"game",rot)}
-  <p class="muted">
-   ${rot.sitting.length
-    ?"Setzen aus: "+rot.sitting.map(id=>esc(pname(id))).join(", ")
-    :"Alle vier Spieler spielen."}
-  </p>
-  <div class="actions">
-   ${btn("Neue Runde","go('round')","primary")}
-   ${btn("Abrechnung","go('results')")}
-  </div>
- </div>
- <div class="card"><h2>Aktueller Stand</h2>
- <div class="scroll"><table>
- <tr><th>Spieler</th><th>Tacken</th><th>Gewinn/Verlust</th></tr>
- ${e.present.map(id=>`<tr>
-  <td>${esc(pname(id))}</td>
-  <td>${t[id]}</td>
-  <td class="${t[id]>=0?"good":"bad"}">
-   ${euro(t[id]*db.settings.tack)}
-  </td>
- </tr>`).join("")}
- </table></div></div>
- <div class="card"><h2>Spielverlauf</h2>
- ${[...e.rounds].reverse().map((r,i)=>`
- <div class="row">
-  <div><b>Runde ${e.rounds.length-i}</b>
-   <div class="muted">
-    ${r.bock?"Bock ×2 · ":""}
-    ${r.solo?"Solo · ":""}
-    ${Object.entries(r.points).map(([id,n])=>
-     esc(pname(id))+": "+n).join(" · ")}
-   </div>
-  </div>
-  ${btn("✕",`removeRound('${r.id}')`,"danger")}
- </div>`).join("")||"Noch keine Runden."}
- </div>`;
-}
-
-function createEvening(ev){
- ev.preventDefault();
- const present=[...document.querySelectorAll(
-  'input[name="present"]:checked'
- )].map(el=>el.value);
- if(present.length<4||present.length>6)
-  return alert("Bitte vier bis sechs Spieler auswählen.");
- pending={
-  date:$("date").value,
-  present,
-  assigned:{}
- };
- selectedPlayer=null;
- go("seating");
-}
+document.addEventListener("pointercancel",()=>{dragId=null;dragStart=null});
 function finishEvening(){
  if(!pending)return;
- const sequence=seatSequence(pending.present.length);
- if(sequence.some(pos=>!pending.assigned[pos]))
-  return alert("Bitte alle Sitzplätze besetzen.");
- const seats=sequence.map(pos=>pending.assigned[pos]);
- const e={
-  id:uid(),date:pending.date,
-  present:[...pending.present],
-  seats,
-  firstMixer:pending.assigned.right,
-  rounds:[],payments:{},soloPlayers:[]
- };
- db.evenings.push(e);
- eveningId=e.id;
- pending=null;
- save();go("evening");
+ const seats=sequence(pending.present.length).map(p=>pending.assigned[p]);
+ if(seats.some(x=>!x))return alert("Alle Plätze besetzen.");
+ const e={id:uid(),date:pending.date,present:[...pending.present],seats,firstMixer:pending.assigned.right,rounds:[],specials:[],soloPlayers:[],payments:{}};
+ db.evenings.push(e);eveningId=e.id;pending=null;save();go("evening");
 }
-function openEvening(id){
- eveningId=id;go("evening");
-}
+function openEvening(id){eveningId=id;go("evening")}
+
+/* Punkte inklusive Sonderbuchungen */
+
 function totals(e){
- const t={};
- e.present.forEach(id=>t[id]=0);
- e.rounds.forEach(r=>{
-  Object.entries(r.points).forEach(([id,n])=>{
-   t[id]=(t[id]||0)+n;
-  });
- });
+ const t={};e.present.forEach(id=>t[id]=0);
+ e.rounds.forEach(r=>Object.entries(r.points||{}).forEach(([id,n])=>t[id]=(t[id]||0)+Number(n||0)));
+ (e.specials||[]).forEach(s=>Object.entries(s.points||{}).forEach(([id,n])=>t[id]=(t[id]||0)+Number(n||0)));
  return t;
 }
 
-/* Runden */
+/* Normale Runde */
 
 function round(){
- const e=active();
- if(!e)return `<div class="card">Kein Spielabend geöffnet.</div>`;
+ const e=current();if(!e)return "Kein Spielabend geöffnet.";
  const rot=rotation(e);
- return `<div class="card">
-  <h2>Runde ${rot.number}</h2>
-  <p>Aktueller Mischer:
-   <strong>${esc(pname(rot.mixer))}</strong></p>
-  <p class="muted">Die aktiven Spieler wurden automatisch ausgewählt.</p>
-  <form onsubmit="addRound(event)">
-  ${rot.playing.map((id,i)=>`
-   <label>${esc(pname(id))} – Tacken</label>
-   <input id="rv${i}" type="number" step="1" value="0" required>
-  `).join("")}
-  <label class="check">
-   <input id="bock" type="checkbox"> Bockrunde ×2
-  </label>
-  <label class="check">
-   <input id="solo" type="checkbox"> Solo gespielt
-  </label>
-  <label>Solospieler</label>
-  <select id="soloPlayer">
-   <option value="">Keiner</option>
-   ${rot.playing.map(id=>`
-    <option value="${id}">${esc(pname(id))}</option>
-   `).join("")}
-  </select>
-  <button class="primary">Runde speichern</button>
-  </form>
-  <div class="actions">${btn("Abbrechen","go('evening')")}</div>
+ return `<div class="card"><h2>Runde ${rot.number} erfassen</h2>
+ <p>Mischer: <b>${esc(name(rot.mixer))}</b></p>
+ <h3>Die zwei Gewinner auswählen</h3>
+ <div class="winners">${rot.playing.map(id=>`<button class="winner" id="win_${id}" onclick="toggleWinner('${id}')">${esc(name(id))}</button>`).join("")}</div>
+ <label>Gewonnene Tacken je Gewinner</label>
+ <input id="points" type="number" min="0" step="1" value="1" oninput="previewRound()">
+ <label class="check"><input id="bock" type="checkbox" onchange="previewRound()">Bockrunde ×2</label>
+ <label class="check"><input id="solo" type="checkbox" onchange="toggleSolo()">Solo gespielt</label>
+ <div id="soloFields" style="display:none">
+ <label>Solospieler</label><select id="soloPlayer"><option value="">Bitte wählen</option>${rot.playing.map(id=>`<option value="${id}">${esc(name(id))}</option>`).join("")}</select>
+ <p class="muted">Vorläufig werden bei Solo weiterhin vier Einzelwerte eingetragen.</p>
+ ${rot.playing.map((id,i)=>`<label>${esc(name(id))}: Solo-Tacken</label><input type="number" step="1" id="sv${i}" value="0" oninput="previewRound()">`).join("")}
+ </div>
+ <div class="preview" id="preview"></div>
+ <div class="actions">${button("Abbrechen","go('evening')")}${button("Runde speichern","saveRound()","primary")}</div>
  </div>`;
 }
-function addRound(ev){
- ev.preventDefault();
- const e=active();
- const rot=rotation(e);
- const ids=rot.playing;
- const vals=ids.map((_,i)=>Number($("rv"+i).value));
- if(vals.some(v=>!Number.isInteger(v))||
-    vals.reduce((a,b)=>a+b,0)!==0)
-  return alert("Die Tacken müssen ganze Zahlen sein und zusammen null ergeben.");
- const bock=$("bock").checked;
- const solo=$("solo").checked;
- const sp=$("soloPlayer").value;
- if(solo&&!sp)return alert("Bitte Solospieler auswählen.");
- const points={};
- ids.forEach((id,i)=>points[id]=vals[i]*(bock?2:1));
- e.rounds.push({
-  id:uid(),points,bock,solo,
-  soloPlayer:solo?sp:null,
-  mixer:rot.mixer,
-  playing:[...rot.playing],
-  sitting:[...rot.sitting]
+function toggleWinner(id){
+ if(winners.includes(id))winners=winners.filter(x=>x!==id);
+ else{if(winners.length===2)winners.shift();winners.push(id)}
+ previewRound();
+}
+function toggleSolo(){
+ $("soloFields").style.display=$("solo").checked?"block":"none";
+ previewRound();
+}
+function calcRound(){
+ const e=current(),ids=rotation(e).playing,points={};
+ const bock=$("bock").checked,solo=$("solo").checked;
+ let soloPlayer=null;
+ if(solo){
+  soloPlayer=$("soloPlayer").value;
+  if(!ids.includes(soloPlayer))throw Error("Solospieler auswählen.");
+  const values=ids.map((_,i)=>Number($("sv"+i).value));
+  if(values.some(n=>!Number.isInteger(n))||values.reduce((a,b)=>a+b,0)!==0)throw Error("Solo-Werte müssen ganze Zahlen sein und zusammen 0 ergeben.");
+  ids.forEach((id,i)=>points[id]=values[i]*(bock?2:1));
+ }else{
+  if(winners.length!==2)throw Error("Genau zwei Gewinner auswählen.");
+  const n=Number($("points").value);
+  if(!Number.isInteger(n)||n<0)throw Error("Gültige Tackenzahl eingeben.");
+  ids.forEach(id=>points[id]=(winners.includes(id)?n:-n)*(bock?2:1));
+ }
+ return{points,bock,solo,soloPlayer};
+}
+function previewRound(){
+ const e=current();if(!e||!$("preview"))return;
+ rotation(e).playing.forEach(id=>{
+  const el=$("win_"+id);
+  if(el){el.classList.toggle("selected",winners.includes(id));el.textContent=(winners.includes(id)?"✓ ":"")+name(id)}
  });
- if(solo&&!e.soloPlayers.includes(sp))e.soloPlayers.push(sp);
+ try{
+  const r=calcRound();
+  $("preview").innerHTML="<h3>Automatische Verteilung</h3>"+Object.entries(r.points).map(([id,n])=>`<div class="row"><span>${esc(name(id))}</span><b class="${n>=0?"good":"bad"}">${n>0?"+":""}${n} Tacken</b></div>`).join("");
+ }catch(err){$("preview").innerHTML=`<p class="muted">${esc(err.message)}</p>`}
+}
+function saveRound(){
+ const e=current();if(!e)return;
+ let r;try{r=calcRound()}catch(err){return alert(err.message)}
+ const rot=rotation(e);
+ e.rounds.push({id:uid(),at:Date.now(),...r,mixer:rot.mixer,playing:[...rot.playing],sitting:[...rot.sitting]});
+ e.soloPlayers=[...new Set(e.rounds.filter(x=>x.solo&&x.soloPlayer).map(x=>x.soloPlayer))];
  save();go("evening");
 }
 function removeRound(id){
- const e=active();
- if(!confirm("Diese Runde löschen?"))return;
+ const e=current();if(!e||!confirm("Runde löschen?"))return;
  e.rounds=e.rounds.filter(r=>r.id!==id);
- e.soloPlayers=[...new Set(e.rounds
-  .filter(r=>r.solo&&r.soloPlayer)
-  .map(r=>r.soloPlayer))];
+ e.soloPlayers=[...new Set(e.rounds.filter(x=>x.solo&&x.soloPlayer).map(x=>x.soloPlayer))];
  save();render();
 }
 
-/* Abrechnung */
+/* Hochzeit: eigenständige Sonderbuchung */
+
+function hochzeit(){
+ const e=current();if(!e)return "Kein Spielabend geöffnet.";
+ const rot=rotation(e);
+ return `<div class="card">
+ <h2>♛ Hochzeit erfassen</h2>
+ <p class="muted">Eine eigenständige Sonderbuchung vor der nächsten normalen Runde. Der Mischer bleibt gleich.</p>
+ <h3>Wer hat die beiden Re-Damen?</h3>
+ <div class="winners">
+ ${rot.playing.map(id=>`<button class="winner" id="h_${id}" onclick="chooseHochzeit('${id}')">${esc(name(id))}</button>`).join("")}
+ </div>
+ <div class="preview" id="hPreview"><p class="muted">Bitte Hochzeiter auswählen.</p></div>
+ <div class="actions">
+ ${button("Abbrechen","go('evening')")}
+ <button class="primary" id="hSave" disabled onclick="saveHochzeit()">Hochzeit buchen</button>
+ </div></div>`;
+}
+let hochzeiter=null;
+function chooseHochzeit(id){
+ const e=current(),rot=rotation(e);
+ if(!rot.playing.includes(id))return;
+ hochzeiter=id;
+ rot.playing.forEach(p=>{
+  const el=$("h_"+p);
+  el.classList.toggle("selected",p===id);
+  el.textContent=(p===id?"✓ ":"")+name(p);
+ });
+ $("hPreview").innerHTML="<h3>Sondertacken</h3>"+
+ rot.playing.map(p=>{
+  const n=p===id?3:-1;
+  return `<div class="row"><span>${esc(name(p))}</span><b class="${n>0?"good":"bad"}">${n>0?"+":""}${n} Tacken</b></div>`;
+ }).join("")+
+ `<p class="muted">Die nächste Runde bleibt Runde ${rot.number}. Mischer: ${esc(name(rot.mixer))}.</p>`;
+ $("hSave").disabled=false;
+}
+function saveHochzeit(){
+ const e=current();if(!e||!hochzeiter)return;
+ const rot=rotation(e);
+ if(!rot.playing.includes(hochzeiter))return alert("Hochzeiter ist nicht aktiv.");
+ const points={};
+ rot.playing.forEach(id=>points[id]=id===hochzeiter?3:-1);
+ e.specials.push({
+  id:uid(),type:"hochzeit",at:Date.now(),
+  player:hochzeiter,points,
+  playing:[...rot.playing],
+  mixer:rot.mixer,
+  beforeRound:rot.number
+ });
+ hochzeiter=null;
+ save();go("evening");
+}
+function removeSpecial(id){
+ const e=current();if(!e||!confirm("Hochzeit-Sonderbuchung löschen?"))return;
+ e.specials=e.specials.filter(s=>s.id!==id);
+ save();render();
+}
+
+/* Abrechnung und Kasse */
 
 function results(){
- const e=active();
- if(!e)return `<div class="card">Kein Spielabend geöffnet.</div>`;
+ const e=current();if(!e)return "<div class='card'>Kein Spielabend geöffnet.</div>";
  const t=totals(e);
- return `<div class="card">
- <h2>Abrechnung ${esc(e.date)}</h2>
- <p class="muted">
-  Startgebühr ${euro(db.settings.startFee)}.
-  Solo-Strafe ${euro(db.settings.soloFee)}.
-  Negative Spieler zahlen zusätzlich ihren Verlust.
- </p>
- <div class="scroll"><table>
- <tr><th>Spieler</th><th>Tacken</th><th>Zu zahlen</th></tr>
+ return `<div class="card"><h2>Abrechnung ${esc(e.date)}</h2>
+ <p class="muted">Vorläufige Berechnung: Startgebühr, Solo-Strafe und negative Tacken. Hochzeit-Sondertacken sind enthalten.</p>
+ <div class="scroll"><table><tr><th>Spieler</th><th>Tacken</th><th>Zu zahlen</th></tr>
  ${e.present.map(id=>{
-  const fee=db.settings.startFee+
-   (e.soloPlayers.includes(id)?0:db.settings.soloFee)+
-   Math.max(0,-t[id]*db.settings.tack);
-  return `<tr><td>${esc(pname(id))}</td>
-   <td>${t[id]}</td><td>${euro(fee)}</td></tr>`;
- }).join("")}
- </table></div>
- <p class="muted">
-  Vorläufige Abrechnung. Die Abwesenheitsregel
-  und weitere Sonderzahlungen folgen.
- </p>
- ${btn("Zurück","go('evening')")}
- </div>`;
+ const fee=db.settings.startFee+(e.soloPlayers.includes(id)?0:db.settings.soloFee)+Math.max(0,-t[id]*db.settings.tack);
+ return `<tr><td>${esc(name(id))}</td><td>${t[id]}</td><td>${euro(fee)}</td></tr>`;
+ }).join("")}</table></div>
+ <p class="muted">Abwesenheitsregel und Teilzahlungen sind noch nicht umgesetzt.</p>
+ ${button("Zurück","go('evening')")}</div>`;
 }
 function showResults(){
- if(db.evenings.length){
-  eveningId=db.evenings[db.evenings.length-1].id;
-  go("results");
- }else go("evening");
+ if(db.evenings.length){eveningId=db.evenings[db.evenings.length-1].id;go("results")}
+ else go("evening");
 }
-
-/* Clubkasse */
-
 function cash(){
- const sum=db.cash.reduce((n,c)=>n+c.amount,0);
- return `<div class="card">
-  <h2>Clubkasse</h2>
-  <div class="big">${euro(sum)}</div>
-  <p class="muted">Erfasste Einnahmen und Ausgaben</p>
- </div>
- <div class="card">
-  <h2>Buchung hinzufügen</h2>
-  <form onsubmit="addCash(event)">
-   <label>Beschreibung</label>
-   <input id="ct" maxlength="150" required>
-   <label>Betrag in € (Ausgaben negativ)</label>
-   <input id="ca" type="number" step=".01" required>
-   <button class="primary">Buchen</button>
-  </form>
- </div>
- <div class="card"><h2>Kassenbuch</h2>
- ${[...db.cash].reverse().map(c=>`
-  <div class="row"><span>${esc(c.text)}</span>
-  <b>${euro(c.amount)}</b></div>
- `).join("")||"Noch keine Buchungen."}
- </div>`;
+ const sum=db.cash.reduce((s,c)=>s+Number(c.amount||0),0);
+ return `<div class="card"><h2>Clubkasse</h2><div class="big">${euro(sum)}</div></div>
+ <div class="card"><h2>Buchung hinzufügen</h2><form onsubmit="addCash(event)">
+ <label>Beschreibung</label><input id="ct" maxlength="150" required>
+ <label>Betrag in € (Ausgaben negativ)</label><input id="ca" type="number" step=".01" required>
+ <button class="primary">Buchen</button></form></div>
+ <div class="card"><h2>Kassenbuch</h2>${[...db.cash].reverse().map(c=>`<div class="row"><span>${esc(c.text)}</span><b>${euro(c.amount)}</b></div>`).join("")||"Noch keine Buchungen."}</div>`;
 }
 function addCash(ev){
  ev.preventDefault();
- const text=$("ct").value.trim();
- const amount=Number($("ca").value);
+ const text=$("ct").value.trim(),amount=Number($("ca").value);
  if(!text||!Number.isFinite(amount))return;
- db.cash.push({id:uid(),text,amount});
- save();render();
+ db.cash.push({id:uid(),text,amount});save();render();
 }
 
 /* Einstellungen und Backup */
 
 function settings(){
- return `<div class="card">
- <h2>Club-Einstellungen</h2>
- <label>Euro pro Tacken</label>
- <input id="tack" type="number" min="0" step=".01"
-  value="${db.settings.tack}">
- <label>Startgebühr €</label>
- <input id="startFee" type="number" min="0" step=".01"
-  value="${db.settings.startFee}">
- <label>Solo-Strafe €</label>
- <input id="soloFee" type="number" min="0" step=".01"
-  value="${db.settings.soloFee}">
- ${btn("Einstellungen speichern","saveSettings()","primary")}
- </div>
- <div class="card">
-  <h2>Datensicherung</h2>
-  <p>Die Daten werden lokal auf diesem Gerät gespeichert.</p>
-  ${btn("Backup herunterladen","backup()","primary")}
-  <label>Backup importieren</label>
-  <input type="file" accept=".json" onchange="restore(event)">
+ return `<div class="card"><h2>Einstellungen</h2>
+ <label>€ pro Tacken</label><input id="tack" type="number" min="0" step=".01" value="${db.settings.tack}">
+ <label>Startgebühr €</label><input id="startFee" type="number" min="0" step=".01" value="${db.settings.startFee}">
+ <label>Solo-Strafe €</label><input id="soloFee" type="number" min="0" step=".01" value="${db.settings.soloFee}">
+ ${button("Einstellungen speichern","saveSettings()","primary")}</div>
+ <div class="card"><h2>Datensicherung</h2>
+ <p>Die Daten liegen lokal auf diesem Gerät. Sichere sie regelmäßig.</p>
+ ${button("Backup herunterladen","backup()","primary")}
+ <label>Backup importieren</label><input type="file" accept=".json" onchange="restore(event)">
  </div>`;
 }
 function saveSettings(){
- const values={};
  for(const key of ["tack","startFee","soloFee"]){
   const n=Number($(key).value);
-  if(!Number.isFinite(n)||n<0)
-   return alert("Ungültiger Betrag.");
-  values[key]=n;
+  if(!Number.isFinite(n)||n<0)return alert("Ungültiger Betrag.");
+  db.settings[key]=n;
  }
- Object.assign(db.settings,values);
  save();render();
 }
 function backup(){
- const blob=new Blob([JSON.stringify(db,null,2)],{
-  type:"application/json"
- });
- const url=URL.createObjectURL(blob);
- const a=document.createElement("a");
- a.href=url;
- a.download="doppelkopf-backup.json";
- a.click();
+ const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download="doppelkopf-backup.json";a.click();
  setTimeout(()=>URL.revokeObjectURL(url),2000);
 }
 async function restore(ev){
  try{
-  const file=ev.target.files[0];
-  if(!file)return;
+  const file=ev.target.files[0];if(!file)return;
   const d=JSON.parse(await file.text());
-  if(!Array.isArray(d.players)||
-     !Array.isArray(d.evenings)||
-     !Array.isArray(d.cash))
-   throw Error("Ungültiges Backup");
-  if(confirm("Alle bisherigen Daten durch das Backup ersetzen?")){
-   db=d;
-   db.settings={tack:.2,startFee:5,soloFee:5,...db.settings};
-   eveningId=null;
-   pending=null;
-   save();go("home");
-  }
- }catch(e){
-  alert("Import fehlgeschlagen: "+e.message);
- }
+  if(!Array.isArray(d.players)||!Array.isArray(d.evenings)||!Array.isArray(d.cash))throw Error("Ungültiges Backup.");
+  if(!confirm("Vorhandene Daten durch Backup ersetzen?"))return;
+  db=d;db.settings={tack:.2,startFee:5,soloFee:5,...db.settings};
+  db.evenings.forEach(e=>{
+   if(!Array.isArray(e.specials))e.specials=[];
+   if(!Array.isArray(e.soloPlayers))e.soloPlayers=[];
+  });
+  eveningId=null;pending=null;save();go("home");
+ }catch(err){alert("Import fehlgeschlagen: "+err.message)}
 }
-
 render();
 </script>
 </body>

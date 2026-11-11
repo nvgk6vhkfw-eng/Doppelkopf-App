@@ -136,7 +136,7 @@ function go(p){page=p;if(p==="round")winners=[];render()}
 function render(){
  const tabs=[["home","⌂ Start"],["evening","♠ Spiel"],["players","♣ Spieler"],["cash","€ Kasse"],["settings","⚙ Mehr"]];
  $("nav").innerHTML=page==="seating"?"":tabs.map(([p,t])=>button(t,`go('${p}')`,page===p?"active":"")).join("");
- const views={home,evening,players,cash,settings,seating,round,hochzeit,results,solo,debt,statistics};
+ const views={home,evening,players,cash,settings,seating,round,hochzeit,results,solo,debt,statistics,resultsOverview};
  $("app").innerHTML=(views[page]||home)();
  if(page==="round")previewRound();if(page==="solo")previewSolo();
 }
@@ -556,8 +556,8 @@ async function restore(ev){
  }catch(err){alert("Import fehlgeschlagen: "+err.message)}
 }
 /* Version 3: Original-Tischansicht beibehalten, Spielregeln erweitert */
-const APP_VERSION='1.4.0';
-const VERSION_NOTES=['1.4.0 · Jahresstatistik für Spielabende, Tacken und Soli','1.3.1 · Gastgeber-Hinweis innerhalb der App; nur noch letzte Runde korrigieren','1.3.0 · Nur letzte Runde korrigieren oder rückgängig machen','1.2.6 · Spielabend ohne Browser-Bestätigung direkt beenden','1.2.5 · Spielabend direkt aus Abrechnung beenden; Abwesende automatisch als offen führen','1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
+const APP_VERSION='1.4.1';
+const VERSION_NOTES=['1.4.1 · Ergebnisse als Jahresliste mit Statistik-Umschalter','1.4.0 · Jahresstatistik für Spielabende, Tacken und Soli','1.3.1 · Gastgeber-Hinweis innerhalb der App; nur noch letzte Runde korrigieren','1.3.0 · Nur letzte Runde korrigieren oder rückgängig machen','1.2.6 · Spielabend ohne Browser-Bestätigung direkt beenden','1.2.5 · Spielabend direkt aus Abrechnung beenden; Abwesende automatisch als offen führen','1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
 const oldRender=render;
 function stamp(ms){return ms?new Date(ms).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'}):'–'}
 function isClosed(e){return !!e.endedAt}
@@ -738,8 +738,8 @@ function addCash(ev){
 }
 
 function payDialog(id){const e=current();if(!e)return;const row=dueRows(e).find(x=>x.id===id);if(!row)return;const rest=Math.max(0,row.fee-paidAmount(e,id));if(rest<=0)return;const raw=prompt(`Zahlung von ${name(id)} in € (noch ${euro(rest)} offen):`,rest.toFixed(2).replace('.',','));if(raw===null)return;const amount=Number(raw.replace(',','.'));if(!Number.isFinite(amount)||amount<=0||amount>rest+.001)return alert('Bitte einen Betrag zwischen 0 und dem offenen Betrag eingeben.');e.payments=e.payments||{};e.payments[id]=e.payments[id]||[];e.payments[id].push({id:uid(),at:Date.now(),amount:Math.round(amount*100)/100});save();render()}
-function showResults(){if(db.evenings.length){eveningId=db.evenings[db.evenings.length-1].id;go('results')}else go('evening')}
-function home(){const debts=outstandingByPlayer();return `<div class="tiles">${button('<b>♠</b>Spielabend',"go('evening')",'tile')}${button('<b>♣</b>Spieler',"go('players')",'tile')}${button('<b>🏆</b>Ergebnisse','showResults()','tile')}${button('<b>€</b>Kasse',"go('cash')",'tile')}${button('<b>▥</b>Statistik',"go('statistics')",'tile')}</div>
+function showResults(){go('resultsOverview')}
+function home(){const debts=outstandingByPlayer();return `<div class="tiles">${button('<b>♠</b>Spielabend',"go('evening')",'tile')}${button('<b>♣</b>Spieler',"go('players')",'tile')}${button('<b>🏆</b>Ergebnisse','showResults()','tile')}${button('<b>€</b>Kasse',"go('cash')",'tile')}</div>
 ${debts.length?`<div class="card"><h2>Offene Zahlungen</h2><p class="muted">Gesamtschuld aus allen Spielabenden · Namen antippen, um die Zahlung zu erfassen.</p>${debts.map(d=>`<div class="row"><b>${esc(name(d.id))}</b><div class="actions"><b class="bad">${euro(d.amount)}</b>${button('Bezahlen',`showDebt('${d.id}')`,'primary')}</div></div>`).join('')}</div>`:''}
 <div class="card"><h2>Willkommen im Kartenclub</h2><div class="row"><span>Stammspieler</span><b>${db.players.filter(p=>!p.guest).length}</b></div><div class="row"><span>Spielabende</span><b>${db.evenings.length}</b></div><div class="row"><span>Gespielte Runden</span><b>${db.evenings.reduce((a,e)=>a+e.rounds.length,0)}</b></div></div>
 <div class="card"><h2>Letzte Spielabende</h2>${[...db.evenings].reverse().slice(0,8).map(e=>`<div class="row"><span>${esc(e.date)} · ${esc(name(e.host))} · ${e.endedAt?'Abgeschlossen':'Offen'}</span>${button('Öffnen',`openEvening('${e.id}')`)}</div>`).join('')||'Noch kein Spielabend.'}</div>`}
@@ -761,13 +761,35 @@ function statistics(){
   }
   return {p,nights,rounds,solos,tacken};
  }).filter(x=>x.nights>0).sort((a,b)=>b.tacken-a.tacken);
- return `<div class="card"><h2>Jahresstatistik</h2><p class="muted">Auswertung der tatsächlich gespielten Abende. Gewinne und Verluste sind Spielergebnisse, keine Kassenbewegungen.</p>
+ return `<div class="card"><div class="actions">${button("← Ergebnisse", "go('resultsOverview')")}</div><h2>Jahresstatistik</h2><p class="muted">Auswertung der tatsächlich gespielten Abende. Gewinne und Verluste sind Spielergebnisse, keine Kassenbewegungen.</p>
  <label>Jahr auswählen</label><select onchange="statisticsYear=this.value;render()"><option value="all" ${selected==='all'?'selected':''}>Alle Jahre</option>${years.map(y=>`<option value="${y}" ${selected===y?'selected':''}>${y}</option>`).join('')}</select>
  <div class="row"><span>Spielabende</span><b>${evenings.length}</b></div><div class="row"><span>Gespielte Runden</span><b>${evenings.reduce((n,e)=>n+e.rounds.length,0)}</b></div></div>
  <div class="card"><h2>Spielerübersicht</h2><div class="scroll"><table><tr><th>Spieler</th><th>Abende</th><th>Runden</th><th>Soli</th><th>Tacken +/−</th><th>Spiel € +/−</th></tr>
  ${data.map(x=>`<tr><td>${esc(x.p.name)}</td><td>${x.nights}</td><td>${x.rounds}</td><td>${x.solos}</td><td class="${x.tacken>=0?'good':'bad'}">${x.tacken>0?'+':''}${x.tacken}</td><td class="${x.tacken>=0?'good':'bad'}">${euro(x.tacken*db.settings.tack)}</td></tr>`).join('')||'<tr><td colspan="6">Für diesen Zeitraum sind noch keine Ergebnisse vorhanden.</td></tr>'}</table></div></div>`;
 }
 
+
+
+let resultsYear=String(new Date().getFullYear());
+function resultsOverview(){
+ const years=[...new Set(db.evenings.map(e=>String(e.date||'').slice(0,4)).filter(y=>/^\d{4}$/.test(y)))].sort().reverse();
+ if(!years.includes(resultsYear))resultsYear=years[0]||String(new Date().getFullYear());
+ const chosen=[...db.evenings].filter(e=>String(e.date||'').startsWith(resultsYear+'-')).sort((a,b)=>String(b.date).localeCompare(String(a.date))||Number(b.startedAt||0)-Number(a.startedAt||0));
+ const heads='<tr><th>Datum</th><th>Gastgeber</th><th>Spieler</th><th>Runden</th><th>Spiel +/−</th><th>Start</th><th>Solo</th><th>Gesamt</th><th>Bezahlt</th><th>Offen</th><th>Abrechnung</th></tr>';
+ const lines=chosen.map(e=>{
+  const t=totals(e);
+  const rows=dueRows(e);
+  return rows.map((r,i)=>{
+   const game=r.present?(t[r.id]||0)*db.settings.tack:null;
+   const start=r.present?db.settings.startFee:null;
+   const solo=r.present?(soloCount(e,r.id)?0:db.settings.soloFee):null;
+   const paid=paidAmount(e,r.id),open=Math.max(0,Math.round((r.fee-paid)*100)/100);
+   return `<tr>${i===0?`<td rowspan="${rows.length}"><b>${esc(e.date)}</b><div class="mini">${isClosed(e)?'Abgeschlossen':'Offen'}</div></td><td rowspan="${rows.length}">${esc(name(e.host))}</td>`:''}<td>${esc(name(r.id))}${r.present?'':' <small>(abwesend)</small>'}</td><td>${r.present?e.rounds.filter(q=>q.playing?.includes(r.id)||Object.hasOwn(q.points||{},r.id)).length:'–'}</td><td class="${game===null?'':game>=0?'good':'bad'}">${game===null?'–':(game>0?'+':'')+euro(game)}</td><td>${start===null?'–':euro(start)}</td><td>${solo===null?'–':euro(solo)}</td><td><b>${euro(r.fee)}</b></td><td>${euro(paid)}</td><td class="${open>0?'bad':''}">${euro(open)}</td>${i===0?`<td rowspan="${rows.length}">${button('Öffnen',`openResultsEvening('${e.id}')`)}</td>`:''}</tr>`;
+  }).join('');
+ }).join('');
+ return `<div class="card"><h2>Ergebnisse</h2><p class="muted">Alle Spielabende des ausgewählten Jahres, mit den gewohnten Abrechnungsbeträgen.</p><div class="actions" style="align-items:end"><div style="flex:1;min-width:150px"><label>Jahr auswählen</label><select onchange="resultsYear=this.value;render()">${years.length?years.map(y=>`<option value="${y}" ${resultsYear===y?'selected':''}>${y}</option>`).join(''):`<option>${resultsYear}</option>`}</select></div>${button('▥ Jahresstatistik',`statisticsYear=resultsYear;go('statistics')`)}</div><div class="row"><span>Spielabende im Jahr</span><b>${chosen.length}</b></div></div><div class="card"><h3>Spielabende ${esc(resultsYear)}</h3>${chosen.length?`<div class="scroll"><table>${heads}${lines}</table></div>`:'Für dieses Jahr sind noch keine Spielabende vorhanden.'}</div>`;
+}
+function openResultsEvening(id){eveningId=id;go('results')}
 
 render();
 </script>

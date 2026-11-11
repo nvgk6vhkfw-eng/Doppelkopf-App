@@ -556,8 +556,8 @@ async function restore(ev){
  }catch(err){alert("Import fehlgeschlagen: "+err.message)}
 }
 /* Version 3: Original-Tischansicht beibehalten, Spielregeln erweitert */
-const APP_VERSION='1.2.0';
-const VERSION_NOTES=['1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
+const APP_VERSION='1.2.1';
+const VERSION_NOTES=['1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
 const oldRender=render;
 function stamp(ms){return ms?new Date(ms).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'}):'–'}
 function isClosed(e){return !!e.endedAt}
@@ -570,7 +570,7 @@ function allEvents(e){return [...e.rounds.map((r,i)=>({kind:'round',r,i,at:r.at|
 function dueRows(e){
  const t=totals(e),fees=e.present.map(id=>({id,fee:db.settings.startFee+(soloCount(e,id)?0:db.settings.soloFee)+Math.max(0,-t[id]*db.settings.tack),present:true}));
  const max=fees.length?Math.max(...fees.map(x=>x.fee)):0;
- for(const p of db.players.filter(p=>!p.guest&&!e.present.includes(p.id)))fees.push({id:p.id,fee:max+2*db.settings.startFee,present:false});
+ for(const p of db.players.filter(p=>!p.guest&&!e.present.includes(p.id)))fees.push({id:p.id,fee:max,present:false});
  return fees;
 }
 function paidAmount(e,id){return (e.payments?.[id]||[]).reduce((a,x)=>a+Number(x.amount||0),0)}
@@ -631,8 +631,8 @@ function results(){
  return `<div class="card"><h2>Abrechnung ${esc(e.date)}</h2>
  <p class="mini">Gastgeber: ${esc(name(e.host))} · ${isClosed(e)?'Abgeschlossen':'Noch offen'} · Start ${stamp(e.startedAt)} · Ende ${stamp(e.endedAt)}</p>
  <div class="scroll"><table><tr><th>Spieler</th><th>Spiel +/−</th><th>Start</th><th>Solo</th><th>Gesamt</th><th>Bezahlt</th><th>Offen</th></tr>${body}</table></div>
- <p class="muted">Spiel +/− zeigt den erspielten Euro-Gewinn oder -Verlust. Nur Verluste erhöhen die Zahlung an die Kasse. Bei Abwesenden gilt die vereinbarte Pauschalregel.</p>
- <div class="preview"><h3>💶 Ohne Moos nix los!</h3>
+ <p class="muted">Spiel +/− zeigt den erspielten Euro-Gewinn oder -Verlust. Nur Verluste erhöhen die Zahlung an die Kasse. Abwesende Stammspieler zahlen den höchsten Gesamtbetrag eines anwesenden Spielers (Spielverlust, Startgebühr und Solo-Strafe zusammen).</p>
+ <div class="preview"><h3>Clubkasse</h3>
  <div class="row"><span>Gesamt für die Clubkasse (Soll)</span><b>${euro(sum)}</b></div>
  <div class="row"><span>Bereits bezahlt</span><b class="good">${euro(received)}</b></div>
  <div class="row"><span>Noch offen</span><b class="bad">${euro(Math.max(0,sum-received))}</b></div></div>
@@ -651,7 +651,7 @@ function cash(){
  const balance=tx.reduce((a,t)=>a+t.amount,0);
  const dues=db.evenings.filter(e=>selected==='all'||String((e.date||'').slice(0,4))===selected).reduce((a,e)=>a+dueRows(e).reduce((b,r)=>b+Math.max(0,r.fee-paidAmount(e,r.id)),0),0);
  const e=current();
- return `<div class="card"><h2>💶 Ohne Moos nix los!</h2><p class="muted">Tatsächlicher Kassenbestand aus erfassten Ein- und Auszahlungen</p><div class="big">${euro(balance)}</div></div>
+ return `<div class="card"><h2>Clubkasse</h2><p class="muted">Tatsächlicher Kassenbestand aus erfassten Ein- und Auszahlungen</p><div class="big">${euro(balance)}</div></div>
  <div class="card"><h3>Jahresübersicht</h3><label>Zeitraum</label><select onchange="window.cashYear=this.value;render()"><option value="all" ${selected==='all'?'selected':''}>Alle Jahre</option>${years.map(y=>`<option value="${y}" ${selected===String(y)?'selected':''}>${y}</option>`).join('')}</select>
  <div class="row"><span>Einnahmen</span><b class="good">${euro(income)}</b></div><div class="row"><span>Ausgaben</span><b class="bad">${euro(expenses)}</b></div><div class="row"><span>Saldo im gewählten Zeitraum</span><b>${euro(income-expenses)}</b></div><div class="row"><span>Noch offene Spielabend-Beiträge</span><b>${euro(dues)}</b></div></div>
  ${e?`<div class="card"><h3>Zahlungen – ${esc(e.date)}</h3>${dueRows(e).map(x=>{const paid=paidAmount(e,x.id),rest=Math.max(0,x.fee-paid);return `<div class="row"><div><b>${esc(name(x.id))}</b><div class="mini">Soll ${euro(x.fee)} · Bezahlt ${euro(paid)} · Offen ${euro(rest)}</div></div>${rest>0?button('Zahlung',`payDialog('${x.id}')`,'primary'):'✓ Bezahlt'}</div>`}).join('')}</div>`:`<div class="card"><p>Öffne einen Spielabend, um die einzelnen Zahlungen zu erfassen.</p></div>`}

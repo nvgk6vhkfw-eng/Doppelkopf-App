@@ -504,7 +504,7 @@ function settings(){
  <p>Die Daten liegen lokal auf diesem Gerät. Sichere sie regelmäßig.</p>
  ${button("Backup herunterladen","backup()","primary")}
  <label>Backup importieren</label><input type="file" accept=".json" onchange="restore(event)">
- </div>`;
+ </div><div class="card"><p class="muted" style="font-size:11px;margin:0">Version ${APP_VERSION}</p><details><summary class="muted" style="cursor:pointer;font-size:12px">Versionsverlauf</summary>${VERSION_NOTES.map(n=>`<p class="muted">${esc(n)}</p>`).join('')}</details></div>`;
 }
 function saveSettings(){
  for(const key of ["tack","startFee","soloFee"]){
@@ -535,8 +535,8 @@ async function restore(ev){
  }catch(err){alert("Import fehlgeschlagen: "+err.message)}
 }
 /* Version 3: Original-Tischansicht beibehalten, Spielregeln erweitert */
-const APP_VERSION='1.1.0';
-const VERSION_NOTES=['1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
+const APP_VERSION='1.1.1';
+const VERSION_NOTES=['1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
 const oldRender=render;
 function stamp(ms){return ms?new Date(ms).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'}):'–'}
 function isClosed(e){return !!e.endedAt}
@@ -558,13 +558,12 @@ function evening(){
  if(!e)return `<div class="card"><h2>Neuer Spielabend</h2><form onsubmit="createEvening(event)">
  <label>Datum</label><input type="date" id="date" value="${new Date().toLocaleDateString('sv-SE')}" required>
  <label>Gastgeber (manuell auswählen)</label><select id="host" required><option value="">Bitte wählen</option>${db.players.filter(p=>!p.guest).map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')}</select>
- <label>Sonderregel für den Abend</label><select id="specialRule"><option value="fehl">Erster fremder Fehlstich</option><option value="kontra">Kontrastich</option></select>
  <h3>Anwesende Spieler</h3>${db.players.map(p=>`<label class="check"><input type="checkbox" name="present" value="${p.id}" ${p.guest?'':'checked'}>${esc(p.name)}</label>`).join('')}
  <button class="primary">Weiter zum Kartentisch</button></form></div>
  <div class="card"><h2>Vergangene Abende</h2>${[...db.evenings].reverse().map(x=>`<div class="row"><span>${esc(x.date)} · ${x.endedAt?'Abgeschlossen':'Offen'} · ${esc(name(x.host))}</span>${button('Öffnen',`openEvening('${x.id}')`)}</div>`).join('')||'Noch keine Spielabende.'}</div>`;
  const rot=rotation(e),order=orderOf(e),assigned={};sequence(order.length).forEach((p,i)=>assigned[p]=order[i]);const t=totals(e),closed=isClosed(e);
  return `<div class="card ${closed?'locked':''}"><div class="row"><h2>Spielabend ${esc(e.date)}</h2>${button('Zurück',"eveningId=null;go('evening')")}</div>
- <p class="mini">🏠 Gastgeber: <b>${esc(name(e.host))}</b> · Start: ${stamp(e.startedAt)} · Ende: ${stamp(e.endedAt)}<br>Regel: ${e.specialRule==='kontra'?'Kontrastich':'Erster fremder Fehlstich'}</p>
+ <p class="mini">🏠 Gastgeber: <b>${esc(name(e.host))}</b> · Start: ${stamp(e.startedAt)} · Ende: ${stamp(e.endedAt)}</p>
  ${closed?`<div class="bockbar off">✓ Spielabend abgeschlossen · ${e.expiredBock||0} Bockspiele verfallen</div>`:`<div class="row"><span class="pill">Runde ${rot.number}</span><b>★ ${esc(name(rot.mixer))} mischt</b></div>${bockBanner(e)}`}
  ${table(e.present.length,assigned,'game',closed?null:rot)}
  ${!closed?`<p class="muted">${rot.sitting.length?'Setzen aus: '+rot.sitting.map(id=>esc(name(id))).join(', '):'Alle vier spielen.'}</p><div class="actions">
@@ -575,8 +574,8 @@ function evening(){
  `<div class="row"><div><b>Runde ${x.i+1}${x.r.solo?' · '+esc(x.r.soloType||'Solo'):''}</b><div class="mini">${stamp(x.r.at)} · ${x.r.bock?'Bock ×2 · ':''}${x.r.triggers?.length?'Bockauslöser: '+x.r.triggers.map(esc).join(', ')+' · ':''}${Object.entries(x.r.points||{}).map(([id,n])=>esc(name(id))+': '+(n>0?'+':'')+n).join(' · ')}</div></div>${closed?'':button('✕',`removeRound('${x.r.id}')`,'danger')}</div>`).join('')||'Noch keine Einträge.'}</div>
  ${!closed?`<div class="card"><h3>Spielabend beenden</h3><p class="muted">Nach dem Abschluss sind keine Änderungen mehr möglich. Offene Bockspiele verfallen.</p>${button('Spielabend abschließen','closeEvening()','danger')}</div>`:''}`;
 }
-function createEvening(ev){ev.preventDefault();const present=[...document.querySelectorAll('input[name="present"]:checked')].map(x=>x.value);if(present.length<4||present.length>6)return alert('Bitte 4 bis 6 Spieler wählen.');const host=$('host').value;if(!host)return alert('Gastgeber wählen.');pending={date:$('date').value,host,specialRule:$('specialRule').value,present,assigned:{}};selected=null;go('seating')}
-function finishEvening(){if(!pending)return;const seats=sequence(pending.present.length).map(p=>pending.assigned[p]);if(seats.some(x=>!x))return alert('Alle Plätze besetzen.');const e={id:uid(),date:pending.date,host:pending.host,specialRule:pending.specialRule,startedAt:Date.now(),endedAt:null,present:[...pending.present],seats,firstMixer:pending.assigned.right,rounds:[],specials:[],soloPlayers:[],payments:{}};db.evenings.push(e);eveningId=e.id;pending=null;save();go('evening')}
+function createEvening(ev){ev.preventDefault();const present=[...document.querySelectorAll('input[name="present"]:checked')].map(x=>x.value);if(present.length<4||present.length>6)return alert('Bitte 4 bis 6 Spieler wählen.');const host=$('host').value;if(!host)return alert('Gastgeber wählen.');pending={date:$('date').value,host,present,assigned:{}};selected=null;go('seating')}
+function finishEvening(){if(!pending)return;const seats=sequence(pending.present.length).map(p=>pending.assigned[p]);if(seats.some(x=>!x))return alert('Alle Plätze besetzen.');const e={id:uid(),date:pending.date,host:pending.host,startedAt:Date.now(),endedAt:null,present:[...pending.present],seats,firstMixer:pending.assigned.right,rounds:[],specials:[],soloPlayers:[],payments:{}};db.evenings.push(e);eveningId=e.id;pending=null;save();go('evening')}
 function closeEvening(){const e=current();if(!assertOpen(e))return;const rem=bockRemaining(e);if(!confirm(`Spielabend endgültig beenden? ${rem} offene Bockspiele verfallen. Danach sind keine Änderungen mehr möglich.`))return;e.expiredBock=rem;e.endedAt=Date.now();save();go('evening')}
 function triggersHtml(){return `<h3>Bockauslöser (optional)</h3><div class="triggers">${['120:120','Null Tacken','Herz-Doppelkopf'].map((t,i)=>`<label><input type="checkbox" class="trigger" value="${t}" onchange="${page==='solo'?'previewSolo()':'previewRound()'}">${t}</label>`).join('')}</div><p class="mini">Mehrere Auslöser in einer Runde starten zusammen nur eine neue Bockfolge.</p>`}
 function selectedTriggers(){return [...document.querySelectorAll('.trigger:checked')].map(x=>x.value)}
@@ -624,7 +623,7 @@ function showResults(){if(db.evenings.length){eveningId=db.evenings[db.evenings.
 function home(){return `<div class="tiles">${button('<b>♠</b>Spielabend',"go('evening')",'tile')}${button('<b>♣</b>Spieler',"go('players')",'tile')}${button('<b>🏆</b>Ergebnisse','showResults()','tile')}${button('<b>€</b>Clubkasse',"go('cash')",'tile')}</div>
 <div class="card"><h2>Willkommen im Kartenclub</h2><div class="row"><span>Stammspieler</span><b>${db.players.filter(p=>!p.guest).length}</b></div><div class="row"><span>Spielabende</span><b>${db.evenings.length}</b></div><div class="row"><span>Gespielte Runden</span><b>${db.evenings.reduce((a,e)=>a+e.rounds.length,0)}</b></div></div>
 <div class="card"><h2>Letzte Spielabende</h2>${[...db.evenings].reverse().slice(0,8).map(e=>`<div class="row"><span>${esc(e.date)} · ${esc(name(e.host))} · ${e.endedAt?'Abgeschlossen':'Offen'}</span>${button('Öffnen',`openEvening('${e.id}')`)}</div>`).join('')||'Noch kein Spielabend.'}</div>
-<div class="card"><div class="row"><b>App-Version ${APP_VERSION}</b><span class="muted">Doppelkopf Club</span></div><details><summary style="cursor:pointer;padding:9px 0;color:#e9bd82">Versionsverlauf anzeigen</summary>${VERSION_NOTES.map(n=>`<p class="muted">${esc(n)}</p>`).join('')}</details></div>`}
+`}
 
 render();
 </script>

@@ -1,257 +1,260 @@
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#173c32">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#17382e">
 <title>Doppelkopf Club</title>
 <style>
-:root{font-family:system-ui,-apple-system,sans-serif;color:#20332d;background:#f3f6f2}
+:root{font-family:system-ui,-apple-system,sans-serif;background:#102c25;color:#f2e8d8}
 *{box-sizing:border-box}
 body{margin:0}
-header{background:#173c32;color:white;padding:22px 18px}
-h1{font-size:1.45rem;margin:0}
-header p{margin:5px 0 0;color:#d1e4d8}
-main{max-width:1000px;margin:auto;padding:14px 14px 90px}
-.tabs{display:flex;gap:8px;overflow:auto;padding:8px 0 16px}
-.tabs button{white-space:nowrap}
-.tabs button.active{background:#173c32;color:white}
-button,input,select,textarea{font:inherit}
-button{border:0;border-radius:12px;padding:12px 16px;background:#dce8df;color:#173c32;font-weight:650;cursor:pointer}
-button.primary{background:#287854;color:white}
-button.danger{background:#f9dedb;color:#9c2525}
-input,select,textarea{width:100%;padding:12px;border:1px solid #bdcbc2;border-radius:10px;background:white;color:#1e3128}
-label{display:block;margin:12px 0 5px;font-weight:600}
-.card{background:white;border-radius:17px;padding:17px;margin:0 0 14px;box-shadow:0 2px 10px #143c2610}
-.card h2{font-size:1.16rem;margin:0 0 12px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
-.metric{font-size:1.7rem;font-weight:750;color:#216846}
-.muted{color:#65756b;font-size:.9rem}
-.row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.item{padding:11px 0;border-bottom:1px solid #e4ece6}
-.item:last-child{border:0}
-.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-small{color:#687a70}
-.notice{padding:12px;background:#fff6dc;border-radius:10px;margin-bottom:14px}
-.amount-plus{color:#18724b}
-.amount-minus{color:#b63c37}
-.checkline{display:flex;align-items:center;gap:9px;padding:6px 0}
-.checkline input{width:auto}
-footer{text-align:center;color:#64786b;padding:18px}
+header{background:#17382e;border-bottom:2px solid #ae8155;padding:23px}
+h1{color:#dfb47b;margin:0;font-size:26px}
+header p{color:#c6b6a0;margin:6px 0}
+main{max-width:1100px;margin:auto;padding:16px}
+nav{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:18px}
+button{cursor:pointer;border:1px solid #8e704f;border-radius:11px;background:#28483b;color:#f4e8d6;padding:12px 9px;font:inherit}
+button:hover,.active,.primary{background:#a8774d;color:#fff}
+.card{background:#1d4033;border:1px solid #6e6249;border-radius:16px;padding:19px;margin-bottom:14px}
+h2{color:#e3b782;font-size:20px;margin:0 0 14px}
+input,select{width:100%;padding:12px;border:1px solid #97764e;border-radius:9px;background:#102e26;color:white;font:inherit;margin:6px 0 13px}
+label{display:block;margin-top:8px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #526a56}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
+.tile{min-height:115px;text-align:center;background:#244b3b}
+.tile span{display:block;font-size:30px;margin-bottom:8px;color:#d7aa72}
+.big{font-size:28px;font-weight:bold;color:#e3b782}
+.muted{color:#c7b9a5;font-size:13px}
+.good{color:#b4d8ae}
+.bad{color:#efac9b}
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px 5px;text-align:left;border-bottom:1px solid #526a56}
+.danger{background:#633a35}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.actions button{flex:1}
+.check{display:flex;align-items:center;gap:10px;padding:9px 0}
+.check input{width:auto;margin:0}
+@media(min-width:700px){.tiles{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:550px){nav button{font-size:11px;padding:10px 2px}}
 </style>
 </head>
 <body>
 <header>
-<h1>♣ Doppelkopf Club</h1>
-<p>Spielabende · Ergebnisse · Clubkasse</p>
+<h1>♠ Doppelkopf Club</h1>
+<p>Spielabend · Tacken · Clubkasse</p>
 </header>
 <main>
-<nav class="tabs" id="tabs"></nav>
-<div id="content"></div>
+<nav id="nav"></nav>
+<section id="view"></section>
 </main>
-<footer>Daten lokal gespeichert</footer>
 <script>
-(()=>{
-'use strict';
-const KEY='doko-club-v1';
-const pages=[
-['start','Übersicht'],
-['players','Spieler'],
-['nights','Spielabende'],
-['cash','Kasse'],
-['settings','Sicherung']
-];
-let page='start';
-let db=load();
-function load(){
-try{
-const v=JSON.parse(localStorage.getItem(KEY));
-if(v&&Array.isArray(v.players)&&Array.isArray(v.nights)&&Array.isArray(v.cash))return v;
-}catch(e){}
-return{players:[],nights:[],cash:[],club:'Unser Doppelkopfclub'};
-}
-function save(){
-try{localStorage.setItem(KEY,JSON.stringify(db))}
-catch(e){alert('Speichern fehlgeschlagen.')}
-}
-const el=id=>document.getElementById(id);
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const euro=n=>Number(n||0).toLocaleString('de-DE',{style:'currency',currency:'EUR'});
-const date=d=>new Date(d+'T12:00:00').toLocaleDateString('de-DE');
-const today=()=>new Date().toLocaleDateString('en-CA');
-const uid=()=>String(Date.now())+Math.random().toString(36).slice(2,7);
-const player=id=>db.players.find(p=>p.id===id)?.name||'Gelöschter Spieler';
-const total=()=>db.cash.reduce((s,x)=>s+x.amount,0);
-const sorted=a=>[...a].sort((x,y)=>String(y.date).localeCompare(String(x.date)));
-const field=(name,label,type='text',value='')=>`<label for="${name}">${label}</label><input id="${name}" type="${type}" value="${esc(value)}" required>`;
-const btn=(text,action,cls='')=>`<button class="${cls}" data-action="${action}">${text}</button>`;
+"use strict";
+const KEY="doko-bronze-v1";
+const STAMM=["Tom","Patrick","Manuel","Lukas E.","Lukas T.","Andre"];
+const fresh=()=>({
+players:STAMM.map((n,i)=>({id:"s"+i,name:n,guest:false})),
+evenings:[],
+cash:[],
+settings:{tack:0.20,startFee:5,soloFee:5}
+});
+let db;
+try{db=JSON.parse(localStorage.getItem(KEY))||fresh()}catch{db=fresh()}
+if(!db.players||!db.evenings||!db.cash)db=fresh();
+db.settings={tack:.20,startFee:5,soloFee:5,...db.settings};
+let page="home",eveningId=null;
+const $=id=>document.getElementById(id);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const euro=n=>Number(n||0).toLocaleString("de-DE",{style:"currency",currency:"EUR"});
+const pname=id=>db.players.find(p=>p.id===id)?.name||"Unbekannt";
+const active=()=>db.evenings.find(e=>e.id===eveningId);
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){alert("Speichern fehlgeschlagen: "+e.message)}}
+function go(p){page=p;render()}
+function btn(t,fn,cls=""){return `<button class="${cls}" onclick="${fn}">${t}</button>`}
 function render(){
-el('tabs').innerHTML=pages.map(([id,t])=>`<button data-page="${id}" class="${page===id?'active':''}">${t}</button>`).join('');
-el('content').innerHTML=({start:home,players:playersView,nights:nightsView,cash:cashView,settings:settingsView})[page]();
+const tabs=[["home","⌂ Start"],["evening","♠ Spiel"],["players","♣ Spieler"],["cash","€ Kasse"],["settings","⚙ Mehr"]];
+$("nav").innerHTML=tabs.map(([p,t])=>btn(t,`go('${p}')`,page===p?"active":"")).join("");
+$("view").innerHTML=({home,evening,players,cash,settings})[page]();
+}
+function totals(e){
+const t={};
+e.present.forEach(id=>t[id]=0);
+e.rounds.forEach(r=>Object.entries(r.points).forEach(([id,n])=>t[id]=(t[id]||0)+n));
+return t;
 }
 function home(){
-const games=db.nights.reduce((s,n)=>s+n.games.length,0);
-return `<div class="card"><h2>${esc(db.club)}</h2><p class="muted">Willkommen in eurer Clubverwaltung.</p></div>
-<div class="grid">
-<div class="card"><div class="muted">Mitglieder</div><div class="metric">${db.players.length}</div></div>
-<div class="card"><div class="muted">Spielabende</div><div class="metric">${db.nights.length}</div></div>
-<div class="card"><div class="muted">Erfasste Spiele</div><div class="metric">${games}</div></div>
-<div class="card"><div class="muted">Kassenstand</div><div class="metric">${euro(total())}</div></div>
+return `<div class="tiles">
+${btn("<span>♠</span>Spielabend","go('evening')","tile")}
+${btn("<span>♣</span>Spieler","go('players')","tile")}
+${btn("<span>🏆</span>Ergebnisse","showResults()","tile")}
+${btn("<span>€</span>Clubkasse","go('cash')","tile")}
+</div>
+<div class="card"><h2>Willkommen im Kartenclub</h2>
+<p>Alle Spielabende, Tacken und Zahlungen auf einem Gerät verwalten.</p>
+<div class="row"><span>Stammspieler</span><b>${db.players.filter(p=>!p.guest).length}</b></div>
+<div class="row"><span>Spielabende</span><b>${db.evenings.length}</b></div>
+<div class="row"><span>Gespielte Runden</span><b>${db.evenings.reduce((n,e)=>n+e.rounds.length,0)}</b></div>
 </div>
 <div class="card"><h2>Letzte Spielabende</h2>
-${sorted(db.nights).slice(0,5).map(n=>`<div class="item row"><span>${date(n.date)} · ${esc(n.name)}<br><small>${n.games.length} Spiele</small></span>${btn('Öffnen','night:'+n.id)}</div>`).join('')||'<p>Noch keine Spielabende vorhanden.</p>'}
+${db.evenings.length?[...db.evenings].reverse().slice(0,8).map(e=>`<div class="row"><span>${esc(e.date)} · ${e.rounds.length} Runden</span>${btn("Öffnen",`openEvening('${e.id}')`)}</div>`).join(""):"<p>Noch kein Spielabend vorhanden.</p>"}
+</div>`;
+}
+function players(){
+return `<div class="card"><h2>Unsere Spieler</h2>
+${db.players.map(p=>`<div class="row"><span>${esc(p.name)} ${p.guest?"(Gast)":""}</span>${p.guest?btn("Entfernen",`removeGuest('${p.id}')`,"danger"):"<span class='muted'>Stammspieler</span>"}</div>`).join("")}
 </div>
-<div class="notice">Die Daten sind nur auf diesem Gerät gespeichert. Regelmäßig unter Sicherung exportieren!</div>`;
+<div class="card"><h2>Gastspieler hinzufügen</h2>
+<form onsubmit="addGuest(event)">
+<label>Name</label><input id="guestName" maxlength="60" required>
+<button class="primary">Gast hinzufügen</button>
+</form></div>`;
 }
-function playersView(){
-return `<div class="card"><h2>Spieler hinzufügen</h2>
-<form id="playerForm">${field('playerName','Name')}
-<div class="actions"><button class="primary">Spieler speichern</button></div></form></div>
-<div class="card"><h2>Mitglieder (${db.players.length})</h2>
-${db.players.map(p=>`<div class="item row"><strong>${esc(p.name)}</strong>${btn('Entfernen','removePlayer:'+p.id,'danger')}</div>`).join('')||'<p>Lege zuerst eure Clubmitglieder an.</p>'}</div>`;
-}
-function nightsView(){
-return `<div class="card"><h2>Neuer Spielabend</h2>
-<form id="nightForm">
-${field('nightDate','Datum','date',today())}
-${field('nightName','Bezeichnung','text','Clubabend')}
-<div class="actions"><button class="primary">Spielabend anlegen</button></div>
-</form></div>
-<div class="card"><h2>Spielabende</h2>
-${sorted(db.nights).map(n=>`<div class="item row"><div><strong>${date(n.date)} – ${esc(n.name)}</strong><br><small>${n.games.length} Spiele</small></div><div class="actions">${btn('Öffnen','night:'+n.id)}${btn('Löschen','removeNight:'+n.id,'danger')}</div></div>`).join('')||'<p>Keine Spielabende angelegt.</p>'}</div>`;
-}
-function nightView(id){
-const n=db.nights.find(x=>x.id===id);
-if(!n){page='nights';render();return}
-const totals={};
-n.games.forEach(g=>g.scores.forEach(s=>totals[s.player]=(totals[s.player]||0)+s.points));
-el('content').innerHTML=`
-<div class="actions">${btn('← Spielabende','backNights')}</div>
-<div class="card"><h2>${esc(n.name)} · ${date(n.date)}</h2>
-<p class="muted">Für jedes Spiel Punkte pro Teilnehmer eintragen.</p>
-${db.players.length?`<form id="gameForm">
-<label>Spiel / Bemerkung</label>
-<input id="gameNote" placeholder="Normalspiel, Hochzeit, Solo">
-<div class="grid">
-${db.players.map(p=>`<div><label class="checkline"><input type="checkbox" class="playing" data-id="${p.id}"> ${esc(p.name)}</label><input type="number" step="1" class="score" data-id="${p.id}" placeholder="Punkte"></div>`).join('')}
-</div><div class="actions"><button class="primary">Spiel speichern</button></div></form>`:'<p>Bitte zuerst Spieler anlegen.</p>'}</div>
-<div class="card"><h2>Gesamtwertung</h2>
-${Object.entries(totals).sort((a,b)=>b[1]-a[1]).map(([id,points])=>`<div class="item row"><strong>${esc(player(id))}</strong><strong class="${points>=0?'amount-plus':'amount-minus'}">${points>0?'+':''}${points}</strong></div>`).join('')||'<p>Noch keine Punkte erfasst.</p>'}</div>
-<div class="card"><h2>Spiele (${n.games.length})</h2>
-${n.games.map((g,i)=>`<div class="item"><div class="row"><strong>Spiel ${i+1}: ${esc(g.note||'Ohne Bezeichnung')}</strong>${btn('Löschen','removeGame:'+n.id+':'+g.id,'danger')}</div><p>${g.scores.map(s=>`${esc(player(s.player))}: ${s.points>0?'+':''}${s.points}`).join(' · ')}</p></div>`).join('')||'<p>Noch keine Spiele.</p>'}</div>`;
-page='night:'+id;
-el('tabs').innerHTML=pages.map(([pid,t])=>`<button data-page="${pid}">${t}</button>`).join('');
-}
-function cashView(){
-return `<div class="grid">
-<div class="card"><h2>Kassenstand</h2><div class="metric">${euro(total())}</div></div>
-<div class="card"><h2>Einzahlungen</h2><div class="metric">${euro(db.cash.filter(x=>x.amount>0).reduce((s,x)=>s+x.amount,0))}</div></div>
-<div class="card"><h2>Ausgaben</h2><div class="metric">${euro(-db.cash.filter(x=>x.amount<0).reduce((s,x)=>s+x.amount,0))}</div></div></div>
-<div class="card"><h2>Buchung hinzufügen</h2>
-<form id="cashForm">
-${field('cashDate','Datum','date',today())}
-<label>Art</label>
-<select id="cashType"><option value="in">Einnahme</option><option value="out">Ausgabe</option></select>
-${field('cashAmount','Betrag in Euro','number')}
-${field('cashNote','Beschreibung')}
-<label>Spieler (optional)</label>
-<select id="cashPlayer"><option value="">Allgemein</option>${db.players.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')}</select>
-<div class="actions"><button class="primary">Buchung speichern</button></div></form></div>
-<div class="card"><h2>Kassenbuch</h2>
-${sorted(db.cash).map(x=>`<div class="item row"><div><strong>${esc(x.note)}</strong><br><small>${date(x.date)} · ${x.player?esc(player(x.player)):'Allgemein'}</small></div><div><strong class="${x.amount>=0?'amount-plus':'amount-minus'}">${x.amount>0?'+':''}${euro(x.amount)}</strong> ${btn('×','removeCash:'+x.id,'danger')}</div></div>`).join('')||'<p>Noch keine Buchungen.</p>'}</div>`;
-}
-function settingsView(){
-return `<div class="card"><h2>Clubname</h2>
-<form id="clubForm">${field('clubName','Name des Clubs','text',db.club)}
-<div class="actions"><button class="primary">Speichern</button></div></form></div>
-<div class="card"><h2>Datensicherung</h2>
-<p>Exportiere regelmäßig alle Daten als JSON-Datei.</p>
-<div class="actions">${btn('Sicherung herunterladen','export','primary')}</div>
-<label>Sicherung wiederherstellen</label>
-<input type="file" id="importFile" accept=".json,application/json">
-<p class="muted">Import ersetzt alle bisherigen Daten.</p></div>
-<div class="card"><h2>Hinweise</h2>
-<p>Speicherung im Browser. Keine automatische Synchronisierung. Automatische Doppelkopf-Regeln können später ergänzt werden.</p>
-${btn('Alle Daten löschen','reset','danger')}</div>`;
-}
-function act(action){
-const [a,id,sub]=action.split(':');
-if(a==='night'){nightView(id);return}
-if(a==='backNights'){page='nights';render();return}
-if(a==='removePlayer'){
-if(db.nights.some(n=>n.games.some(g=>g.scores.some(s=>s.player===id)))||db.cash.some(x=>x.player===id)){alert('Spieler hat bereits Einträge.');return}
-if(confirm('Spieler entfernen?'))db.players=db.players.filter(p=>p.id!==id);
-}
-if(a==='removeNight'&&confirm('Spielabend samt Spielen löschen?'))db.nights=db.nights.filter(n=>n.id!==id);
-if(a==='removeGame'&&confirm('Spiel löschen?')){
-const n=db.nights.find(n=>n.id===id);
-if(n)n.games=n.games.filter(g=>g.id!==sub);
-save();nightView(id);return;
-}
-if(a==='removeCash'&&confirm('Buchung löschen?'))db.cash=db.cash.filter(x=>x.id!==id);
-if(a==='reset'){
-if(prompt('Zum Löschen LÖSCHEN eingeben')!=='LÖSCHEN')return;
-db={players:[],nights:[],cash:[],club:'Unser Doppelkopfclub'};
-}
-if(a==='export'){
-const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
-const url=URL.createObjectURL(blob);
-const link=document.createElement('a');
-link.href=url;
-link.download='doppelkopf-sicherung-'+today()+'.json';
-link.click();
-setTimeout(()=>URL.revokeObjectURL(url),1000);
-return;
-}
-save();render();
-}
-document.addEventListener('click',e=>{
-const p=e.target.closest('[data-page]');
-if(p){page=p.dataset.page;render();return}
-const b=e.target.closest('[data-action]');
-if(b)act(b.dataset.action);
-});
-document.addEventListener('submit',e=>{
+function addGuest(e){
 e.preventDefault();
-const id=e.target.id;
-if(id==='playerForm'){
-const name=el('playerName').value.trim();
-if(!name)return;
-if(db.players.some(p=>p.name.toLowerCase()===name.toLowerCase()))return alert('Spieler bereits vorhanden');
-db.players.push({id:uid(),name});
-}else if(id==='nightForm'){
-db.nights.push({id:uid(),date:el('nightDate').value,name:el('nightName').value.trim(),games:[]});
-}else if(id==='cashForm'){
-const amount=Number(el('cashAmount').value);
-if(!Number.isFinite(amount)||amount<=0)return alert('Betrag prüfen');
-db.cash.push({id:uid(),date:el('cashDate').value,amount:el('cashType').value==='out'?-amount:amount,note:el('cashNote').value.trim(),player:el('cashPlayer').value});
-}else if(id==='clubForm'){
-db.club=el('clubName').value.trim()||db.club;
-}else if(id==='gameForm'){
-const n=db.nights.find(n=>page==='night:'+n.id);
+const n=$("guestName").value.trim();
 if(!n)return;
-const scores=[...document.querySelectorAll('.playing:checked')].map(c=>({player:c.dataset.id,points:Number(document.querySelector(`.score[data-id="${c.dataset.id}"]`).value)}));
-if(!scores.length)return alert('Teilnehmer auswählen');
-n.games.push({id:uid(),note:el('gameNote').value.trim(),scores});
-save();nightView(n.id);return;
+if(db.players.some(p=>p.name.toLowerCase()===n.toLowerCase()))return alert("Name bereits vorhanden.");
+db.players.push({id:uid(),name:n,guest:true});save();render();
+}
+function removeGuest(id){
+if(db.evenings.some(e=>e.present.includes(id)||e.rounds.some(r=>id in r.points)))return alert("Gast ist bereits in einem Spielabend gespeichert.");
+if(confirm("Gast entfernen?")){db.players=db.players.filter(p=>p.id!==id);save();render()}
+}
+function evening(){
+const e=active();
+if(!e)return `<div class="card"><h2>Neuen Spielabend beginnen</h2>
+<form onsubmit="createEvening(event)">
+<label>Datum</label><input id="date" type="date" value="${new Date().toLocaleDateString('sv-SE')}" required>
+<h2>Anwesende Spieler</h2>
+${db.players.map(p=>`<label class="check"><input type="checkbox" name="present" value="${p.id}" ${!p.guest?"checked":""}>${esc(p.name)}</label>`).join("")}
+<button class="primary">Spielabend starten</button>
+</form></div>
+<div class="card"><h2>Vergangene Abende</h2>
+${db.evenings.map(x=>`<div class="row">${esc(x.date)} ${btn("Öffnen",`openEvening('${x.id}')`)}</div>`).join("")}</div>`;
+const t=totals(e);
+return `<div class="card"><div class="row"><h2>Spielabend ${esc(e.date)}</h2>${btn("Zurück","eveningId=null;render()")}</div>
+<p class="muted">${e.rounds.length} Runden · ${e.present.length} Anwesende</p>
+<div class="actions">${btn("Neue Runde","go('round')","primary")}${btn("Abrechnung","go('results')")}</div>
+</div>
+<div class="card"><h2>Aktueller Stand</h2>
+<table><tr><th>Spieler</th><th>Tacken</th><th>Gewinn/Verlust</th></tr>
+${e.present.map(id=>`<tr><td>${esc(pname(id))}</td><td>${t[id]}</td><td class="${t[id]>=0?"good":"bad"}">${euro(t[id]*db.settings.tack)}</td></tr>`).join("")}</table></div>
+<div class="card"><h2>Spielverlauf</h2>
+${[...e.rounds].reverse().map((r,i)=>`<div class="row"><div><b>Runde ${e.rounds.length-i}</b><div class="muted">${r.bock?"Bock ×2 · ":""}${r.solo?"Solo · ":""}${Object.entries(r.points).map(([id,n])=>esc(pname(id))+": "+n).join(" · ")}</div></div>${btn("✕",`removeRound('${r.id}')`,"danger")}</div>`).join("")||"Noch keine Runden."}
+</div>`;
+}
+function createEvening(ev){
+ev.preventDefault();
+const present=[...document.querySelectorAll('input[name=present]:checked')].map(x=>x.value);
+if(present.length<4)return alert("Mindestens vier Spieler auswählen.");
+const e={id:uid(),date:$("date").value,present,rounds:[],payments:{},soloPlayers:[]};
+db.evenings.push(e);eveningId=e.id;save();render();
+}
+function openEvening(id){eveningId=id;page="evening";render()}
+function round(){
+const e=active();if(!e)return go("evening");
+const options=e.present.map(id=>`<option value="${id}">${esc(pname(id))}</option>`).join("");
+return `<div class="card"><h2>Neue Spielrunde</h2>
+<p class="muted">Vier Spieler auswählen. Gewinner erhalten positive Tacken, Verlierer negative. Bock verdoppelt die Wertung.</p>
+<form onsubmit="addRound(event)">
+${[0,1,2,3].map(i=>`<label>Spieler ${i+1}</label><select id="rp${i}" required><option value="">Auswählen</option>${options}</select><label>Tacken</label><input id="rv${i}" type="number" step="1" value="0" required>`).join("")}
+<label class="check"><input id="bock" type="checkbox">Bockrunde ×2</label>
+<label class="check"><input id="solo" type="checkbox">Solo gespielt</label>
+<label>Solospieler (optional)</label><select id="soloPlayer"><option value="">Keiner</option>${options}</select>
+<button class="primary">Runde speichern</button>
+</form></div>
+<div class="card">${btn("Abbrechen","go('evening')")}</div>`;
+}
+function addRound(ev){
+ev.preventDefault();
+const e=active();
+const ids=[0,1,2,3].map(i=>$("rp"+i).value);
+const vals=[0,1,2,3].map(i=>Number($("rv"+i).value));
+if(ids.some(x=>!x)||new Set(ids).size!==4)return alert("Vier unterschiedliche Spieler auswählen.");
+if(vals.some(x=>!Number.isInteger(x))||vals.reduce((a,b)=>a+b,0)!==0)return alert("Tacken müssen ganze Zahlen sein und zusammen null ergeben.");
+const bock=$("bock").checked,solo=$("solo").checked,sp=$("soloPlayer").value;
+if(solo&&!sp)return alert("Bitte Solospieler auswählen.");
+const points={};ids.forEach((id,i)=>points[id]=vals[i]*(bock?2:1));
+e.rounds.push({id:uid(),points,bock,solo,soloPlayer:solo?sp:null});
+if(solo&&!e.soloPlayers.includes(sp))e.soloPlayers.push(sp);
+save();page="evening";render();
+}
+function removeRound(id){
+const e=active();if(!confirm("Runde löschen?"))return;
+e.rounds=e.rounds.filter(r=>r.id!==id);
+e.soloPlayers=[...new Set(e.rounds.filter(r=>r.solo&&r.soloPlayer).map(r=>r.soloPlayer))];
+save();render();
+}
+function results(){
+const e=active();if(!e)return evening();
+const t=totals(e);
+return `<div class="card"><h2>Abrechnung ${esc(e.date)}</h2>
+<p class="muted">Startgebühr ${euro(db.settings.startFee)} pro Anwesendem. Solo-Strafe ${euro(db.settings.soloFee)} bei keinem Solo. Negative Spieler zahlen ihren Verlust.</p>
+<table><tr><th>Spieler</th><th>Tacken</th><th>Zu zahlen</th></tr>
+${e.present.map(id=>{
+const fee=db.settings.startFee+(e.soloPlayers.includes(id)?0:db.settings.soloFee)+Math.max(0,-t[id]*db.settings.tack);
+return `<tr><td>${esc(pname(id))}</td><td>${t[id]}</td><td>${euro(fee)}</td></tr>`;
+}).join("")}</table>
+<p class="muted">Vorläufige Berechnung ohne Abwesenheitsregel und Sonderzahlungen.</p>
+${btn("Zurück","go('evening')")}</div>`;
+}
+function showResults(){if(db.evenings.length){openEvening(db.evenings[db.evenings.length-1].id);page="results";render()}else go("evening")}
+function cash(){
+const sum=db.cash.reduce((n,c)=>n+c.amount,0);
+return `<div class="card"><h2>Clubkasse</h2><div class="big">${euro(sum)}</div><p class="muted">Tatsächlich erfasste Einnahmen und Ausgaben</p></div>
+<div class="card"><h2>Buchung hinzufügen</h2><form onsubmit="addCash(event)">
+<label>Beschreibung</label><input id="ct" required maxlength="150">
+<label>Betrag in € (Ausgaben negativ)</label><input id="ca" type="number" step=".01" required>
+<button class="primary">Buchen</button></form></div>
+<div class="card"><h2>Kassenbuch</h2>${[...db.cash].reverse().map(c=>`<div class="row"><span>${esc(c.text)}</span><b>${euro(c.amount)}</b></div>`).join("")||"Noch keine Buchungen."}</div>`;
+}
+function addCash(ev){
+ev.preventDefault();
+const text=$("ct").value.trim(),amount=Number($("ca").value);
+if(!text||!Number.isFinite(amount))return;
+db.cash.push({id:uid(),text,amount});save();render();
+}
+function settings(){
+return `<div class="card"><h2>Club-Einstellungen</h2>
+<label>Euro pro Tacken</label><input id="tack" type="number" min="0" step=".01" value="${db.settings.tack}">
+<label>Startgebühr €</label><input id="startFee" type="number" min="0" step=".01" value="${db.settings.startFee}">
+<label>Solo-Strafe €</label><input id="soloFee" type="number" min="0" step=".01" value="${db.settings.soloFee}">
+${btn("Einstellungen speichern","saveSettings()","primary")}</div>
+<div class="card"><h2>Datensicherung</h2><p>Alle Daten werden lokal in diesem Browser gespeichert.</p>
+${btn("Backup herunterladen","backup()","primary")}
+<label>Backup importieren</label><input type="file" accept=".json" onchange="restore(event)">
+</div>`;
+}
+function saveSettings(){
+for(const k of ["tack","startFee","soloFee"]){
+const n=Number($(k).value);
+if(!Number.isFinite(n)||n<0)return alert("Ungültiger Betrag.");
+db.settings[k]=n;
 }
 save();render();
-});
-document.addEventListener('change',async e=>{
-if(e.target.id!=='importFile')return;
-const file=e.target.files[0];
-if(!file)return;
+}
+function backup(){
+const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
+const url=URL.createObjectURL(blob),a=document.createElement("a");
+a.href=url;a.download="doppelkopf-backup.json";a.click();
+setTimeout(()=>URL.revokeObjectURL(url),2000);
+}
+async function restore(ev){
 try{
-const data=JSON.parse(await file.text());
-if(!data||!Array.isArray(data.players)||!Array.isArray(data.nights)||!Array.isArray(data.cash))throw Error('Ungültiges Format');
-if(!confirm('Bisherige Daten ersetzen?'))return;
-db=data;save();render();alert('Sicherung importiert');
-}catch(err){alert('Import fehlgeschlagen: '+err.message)}
-});
+const d=JSON.parse(await ev.target.files[0].text());
+if(!Array.isArray(d.players)||!Array.isArray(d.evenings)||!Array.isArray(d.cash))throw Error("Ungültiges Backup");
+if(confirm("Alle Daten ersetzen?")){db=d;db.settings={tack:.2,startFee:5,soloFee:5,...db.settings};eveningId=null;save();go("home")}
+}catch(e){alert("Import fehlgeschlagen: "+e.message)}
+}
+const originalRender=render;
+render=function(){
+if(page==="round"){$("nav").innerHTML="";$("view").innerHTML=round();return}
+if(page==="results"){$("nav").innerHTML="";$("view").innerHTML=results();return}
+originalRender();
+};
 render();
-})();
 </script>
 </body>
 </html>

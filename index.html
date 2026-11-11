@@ -17,8 +17,10 @@ main{max-width:1100px;margin:auto;padding:16px}
 nav{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:18px}
 button{cursor:pointer;border:1px solid #8e704f;border-radius:11px;background:#28483b;color:#f4e8d6;padding:12px 9px;font:inherit}
 button:hover,.active,.primary{background:#a8774d;color:#fff}
+button:disabled{opacity:.4;cursor:not-allowed}
 .card{background:#1d4033;border:1px solid #6e6249;border-radius:16px;padding:19px;margin-bottom:14px}
 h2{color:#e3b782;font-size:20px;margin:0 0 14px}
+h3{color:#e3b782}
 input,select{width:100%;padding:12px;border:1px solid #97764e;border-radius:9px;background:#102e26;color:white;font:inherit;margin:6px 0 13px}
 label{display:block;margin-top:8px}
 .row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #526a56}
@@ -36,6 +38,11 @@ th,td{padding:10px 5px;text-align:left;border-bottom:1px solid #526a56}
 .actions button{flex:1}
 .check{display:flex;align-items:center;gap:10px;padding:9px 0}
 .check input{width:auto;margin:0}
+.seat{background:#284b3c;border:1px solid #8e704f;border-radius:12px;padding:12px;margin:7px 0}
+.seat strong{color:#e3b782}
+.playing{background:#315942}
+.sitting{background:#513c35}
+.tag{display:inline-block;padding:5px 10px;border-radius:20px;background:#a8774d;color:white;font-size:12px}
 @media(min-width:700px){.tiles{grid-template-columns:repeat(4,1fr)}}
 @media(max-width:550px){nav button{font-size:11px;padding:10px 2px}}
 </style>
@@ -57,11 +64,11 @@ const fresh=()=>({
 players:STAMM.map((n,i)=>({id:"s"+i,name:n,guest:false})),
 evenings:[],
 cash:[],
-settings:{tack:0.20,startFee:5,soloFee:5}
+settings:{tack:.20,startFee:5,soloFee:5}
 });
 let db;
 try{db=JSON.parse(localStorage.getItem(KEY))||fresh()}catch{db=fresh()}
-if(!db.players||!db.evenings||!db.cash)db=fresh();
+if(!Array.isArray(db.players)||!Array.isArray(db.evenings)||!Array.isArray(db.cash))db=fresh();
 db.settings={tack:.20,startFee:5,soloFee:5,...db.settings};
 let page="home",eveningId=null;
 const $=id=>document.getElementById(id);
@@ -76,13 +83,28 @@ function btn(t,fn,cls=""){return `<button class="${cls}" onclick="${fn}">${t}</b
 function render(){
 const tabs=[["home","⌂ Start"],["evening","♠ Spiel"],["players","♣ Spieler"],["cash","€ Kasse"],["settings","⚙ Mehr"]];
 $("nav").innerHTML=tabs.map(([p,t])=>btn(t,`go('${p}')`,page===p?"active":"")).join("");
+if(page==="round"){$("view").innerHTML=round();return}
+if(page==="results"){$("view").innerHTML=results();return}
 $("view").innerHTML=({home,evening,players,cash,settings})[page]();
 }
 function totals(e){
-const t={};
-e.present.forEach(id=>t[id]=0);
+const t={};e.present.forEach(id=>t[id]=0);
 e.rounds.forEach(r=>Object.entries(r.points).forEach(([id,n])=>t[id]=(t[id]||0)+n));
 return t;
+}
+function seatOrder(e){
+return Array.isArray(e.seats)&&e.seats.length===e.present.length?e.seats:e.present;
+}
+function currentRotation(e){
+const seats=seatOrder(e),n=seats.length;
+const first=Math.max(0,seats.indexOf(e.firstMixer||seats[0]));
+const mixerIndex=(first+e.rounds.length)%n;
+const mixer=seats[mixerIndex];
+let sitting=[];
+if(n===5)sitting=[mixer];
+if(n===6)sitting=[mixer,seats[(mixerIndex+3)%n]];
+const playing=seats.filter(id=>!sitting.includes(id));
+return {mixer,playing,sitting,round:e.rounds.length+1};
 }
 function home(){
 return `<div class="tiles">
@@ -129,13 +151,20 @@ if(!e)return `<div class="card"><h2>Neuen Spielabend beginnen</h2>
 <label>Datum</label><input id="date" type="date" value="${new Date().toLocaleDateString('sv-SE')}" required>
 <h2>Anwesende Spieler</h2>
 ${db.players.map(p=>`<label class="check"><input type="checkbox" name="present" value="${p.id}" ${!p.guest?"checked":""}>${esc(p.name)}</label>`).join("")}
-<button class="primary">Spielabend starten</button>
+<button class="primary">Weiter zur Sitzordnung</button>
 </form></div>
 <div class="card"><h2>Vergangene Abende</h2>
 ${db.evenings.map(x=>`<div class="row">${esc(x.date)} ${btn("Öffnen",`openEvening('${x.id}')`)}</div>`).join("")}</div>`;
-const t=totals(e);
-return `<div class="card"><div class="row"><h2>Spielabend ${esc(e.date)}</h2>${btn("Zurück","eveningId=null;render()")}</div>
-<p class="muted">${e.rounds.length} Runden · ${e.present.length} Anwesende</p>
+const t=totals(e),rot=currentRotation(e);
+return `<div class="card">
+<div class="row"><h2>Spielabend ${esc(e.date)}</h2>${btn("Zurück","eveningId=null;render()")}</div>
+<p class="muted">${e.rounds.length} gespeicherte Runden · ${e.present.length} Anwesende</p>
+<div class="seat playing"><span class="tag">Runde ${rot.round}</span>
+<h2>Aktueller Mischer: ${esc(pname(rot.mixer))}</h2>
+</div>
+<h3>Aktive Spieler</h3>
+${rot.playing.map(id=>`<div class="seat playing">♣ ${esc(pname(id))}</div>`).join("")}
+${rot.sitting.length?`<h3>Setzen aus</h3>${rot.sitting.map(id=>`<div class="seat sitting">⏸ ${esc(pname(id))}</div>`).join("")}`:""}
 <div class="actions">${btn("Neue Runde","go('round')","primary")}${btn("Abrechnung","go('results')")}</div>
 </div>
 <div class="card"><h2>Aktueller Stand</h2>
@@ -145,41 +174,72 @@ ${e.present.map(id=>`<tr><td>${esc(pname(id))}</td><td>${t[id]}</td><td class="$
 ${[...e.rounds].reverse().map((r,i)=>`<div class="row"><div><b>Runde ${e.rounds.length-i}</b><div class="muted">${r.bock?"Bock ×2 · ":""}${r.solo?"Solo · ":""}${Object.entries(r.points).map(([id,n])=>esc(pname(id))+": "+n).join(" · ")}</div></div>${btn("✕",`removeRound('${r.id}')`,"danger")}</div>`).join("")||"Noch keine Runden."}
 </div>`;
 }
+let pending=null;
 function createEvening(ev){
 ev.preventDefault();
 const present=[...document.querySelectorAll('input[name=present]:checked')].map(x=>x.value);
-if(present.length<4)return alert("Mindestens vier Spieler auswählen.");
-const e={id:uid(),date:$("date").value,present,rounds:[],payments:{},soloPlayers:[]};
-db.evenings.push(e);eveningId=e.id;save();render();
+if(present.length<4||present.length>6)return alert("Bitte vier bis sechs Spieler auswählen.");
+pending={date:$("date").value,present,seats:[...present]};
+page="seating";showSeating();
+}
+function showSeating(){
+const p=pending;
+$("nav").innerHTML="";
+$("view").innerHTML=`<div class="card"><h2>Sitzordnung festlegen</h2>
+<p class="muted">Die Reihenfolge bleibt während des Abends fest. Mit den Pfeilen kannst du Spieler verschieben.</p>
+${p.seats.map((id,i)=>`<div class="row"><b>Platz ${i+1}: ${esc(pname(id))}</b>
+<div class="actions">
+${btn("↑",`moveSeat(${i},-1)`,i===0?"":"primary")}
+${btn("↓",`moveSeat(${i},1)`,i===p.seats.length-1?"":"primary")}
+</div></div>`).join("")}
+<label>Erster Mischer</label>
+<select id="firstMixer">${p.seats.map(id=>`<option value="${id}">${esc(pname(id))}</option>`).join("")}</select>
+<div class="actions">${btn("Spielabend starten","finishEvening()","primary")}${btn("Abbrechen","pending=null;go('evening')")}</div>
+</div>`;
+}
+function moveSeat(i,d){
+const j=i+d;
+if(j<0||j>=pending.seats.length)return;
+const selected=$("firstMixer").value;
+[pending.seats[i],pending.seats[j]]=[pending.seats[j],pending.seats[i]];
+showSeating();
+$("firstMixer").value=selected;
+}
+function finishEvening(){
+const e={id:uid(),date:pending.date,present:pending.present,seats:[...pending.seats],firstMixer:$("firstMixer").value,rounds:[],payments:{},soloPlayers:[]};
+db.evenings.push(e);eveningId=e.id;pending=null;save();go("evening");
 }
 function openEvening(id){eveningId=id;page="evening";render()}
 function round(){
-const e=active();if(!e)return go("evening");
-const options=e.present.map(id=>`<option value="${id}">${esc(pname(id))}</option>`).join("");
-return `<div class="card"><h2>Neue Spielrunde</h2>
-<p class="muted">Vier Spieler auswählen. Gewinner erhalten positive Tacken, Verlierer negative. Bock verdoppelt die Wertung.</p>
+const e=active();if(!e)return "";
+const rot=currentRotation(e);
+return `<div class="card"><h2>Runde ${rot.round}</h2>
+<p>Aktueller Mischer: <strong>${esc(pname(rot.mixer))}</strong></p>
+<p class="muted">Die vier aktiven Spieler sind automatisch ausgewählt.</p>
 <form onsubmit="addRound(event)">
-${[0,1,2,3].map(i=>`<label>Spieler ${i+1}</label><select id="rp${i}" required><option value="">Auswählen</option>${options}</select><label>Tacken</label><input id="rv${i}" type="number" step="1" value="0" required>`).join("")}
+${rot.playing.map((id,i)=>`<div class="seat playing"><strong>${esc(pname(id))}</strong>
+<input type="hidden" id="rp${i}" value="${id}">
+<label>Tacken</label><input id="rv${i}" type="number" step="1" value="0" required></div>`).join("")}
 <label class="check"><input id="bock" type="checkbox">Bockrunde ×2</label>
 <label class="check"><input id="solo" type="checkbox">Solo gespielt</label>
-<label>Solospieler (optional)</label><select id="soloPlayer"><option value="">Keiner</option>${options}</select>
-<button class="primary">Runde speichern</button>
+<label>Solospieler</label>
+<select id="soloPlayer"><option value="">Keiner</option>${rot.playing.map(id=>`<option value="${id}">${esc(pname(id))}</option>`).join("")}</select>
+<button class="primary">Runde speichern und Mischer wechseln</button>
 </form></div>
 <div class="card">${btn("Abbrechen","go('evening')")}</div>`;
 }
 function addRound(ev){
 ev.preventDefault();
-const e=active();
-const ids=[0,1,2,3].map(i=>$("rp"+i).value);
+const e=active(),rot=currentRotation(e);
+const ids=rot.playing;
 const vals=[0,1,2,3].map(i=>Number($("rv"+i).value));
-if(ids.some(x=>!x)||new Set(ids).size!==4)return alert("Vier unterschiedliche Spieler auswählen.");
 if(vals.some(x=>!Number.isInteger(x))||vals.reduce((a,b)=>a+b,0)!==0)return alert("Tacken müssen ganze Zahlen sein und zusammen null ergeben.");
 const bock=$("bock").checked,solo=$("solo").checked,sp=$("soloPlayer").value;
 if(solo&&!sp)return alert("Bitte Solospieler auswählen.");
 const points={};ids.forEach((id,i)=>points[id]=vals[i]*(bock?2:1));
-e.rounds.push({id:uid(),points,bock,solo,soloPlayer:solo?sp:null});
+e.rounds.push({id:uid(),points,bock,solo,soloPlayer:solo?sp:null,mixer:rot.mixer,playing:[...rot.playing],sitting:[...rot.sitting]});
 if(solo&&!e.soloPlayers.includes(sp))e.soloPlayers.push(sp);
-save();page="evening";render();
+save();go("evening");
 }
 function removeRound(id){
 const e=active();if(!confirm("Runde löschen?"))return;
@@ -188,7 +248,7 @@ e.soloPlayers=[...new Set(e.rounds.filter(r=>r.solo&&r.soloPlayer).map(r=>r.solo
 save();render();
 }
 function results(){
-const e=active();if(!e)return evening();
+const e=active();if(!e)return "";
 const t=totals(e);
 return `<div class="card"><h2>Abrechnung ${esc(e.date)}</h2>
 <p class="muted">Startgebühr ${euro(db.settings.startFee)} pro Anwesendem. Solo-Strafe ${euro(db.settings.soloFee)} bei keinem Solo. Negative Spieler zahlen ihren Verlust.</p>
@@ -200,7 +260,10 @@ return `<tr><td>${esc(pname(id))}</td><td>${t[id]}</td><td>${euro(fee)}</td></tr
 <p class="muted">Vorläufige Berechnung ohne Abwesenheitsregel und Sonderzahlungen.</p>
 ${btn("Zurück","go('evening')")}</div>`;
 }
-function showResults(){if(db.evenings.length){openEvening(db.evenings[db.evenings.length-1].id);page="results";render()}else go("evening")}
+function showResults(){
+if(db.evenings.length){openEvening(db.evenings[db.evenings.length-1].id);go("results")}
+else go("evening");
+}
 function cash(){
 const sum=db.cash.reduce((n,c)=>n+c.amount,0);
 return `<div class="card"><h2>Clubkasse</h2><div class="big">${euro(sum)}</div><p class="muted">Tatsächlich erfasste Einnahmen und Ausgaben</p></div>
@@ -245,14 +308,16 @@ async function restore(ev){
 try{
 const d=JSON.parse(await ev.target.files[0].text());
 if(!Array.isArray(d.players)||!Array.isArray(d.evenings)||!Array.isArray(d.cash))throw Error("Ungültiges Backup");
-if(confirm("Alle Daten ersetzen?")){db=d;db.settings={tack:.2,startFee:5,soloFee:5,...db.settings};eveningId=null;save();go("home")}
+if(confirm("Alle Daten ersetzen?")){
+db=d;db.settings={tack:.2,startFee:5,soloFee:5,...db.settings};
+eveningId=null;save();go("home");
+}
 }catch(e){alert("Import fehlgeschlagen: "+e.message)}
 }
-const originalRender=render;
+const baseRender=render;
 render=function(){
-if(page==="round"){$("nav").innerHTML="";$("view").innerHTML=round();return}
-if(page==="results"){$("nav").innerHTML="";$("view").innerHTML=results();return}
-originalRender();
+if(page==="seating"){showSeating();return}
+baseRender();
 };
 render();
 </script>

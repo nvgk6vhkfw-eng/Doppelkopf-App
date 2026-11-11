@@ -500,11 +500,32 @@ function settings(){
  <label>Startgebühr €</label><input id="startFee" type="number" min="0" step=".01" value="${db.settings.startFee}">
  <label>Solo-Strafe €</label><input id="soloFee" type="number" min="0" step=".01" value="${db.settings.soloFee}">
  ${button("Einstellungen speichern","saveSettings()","primary")}</div>
+ <div class="card"><h2>Stammspieler verwalten</h2>
+ <p class="muted">Namen ändern oder einen weiteren Stammspieler hinzufügen. Die Spielstände bleiben den Spielern zugeordnet.</p>
+ ${db.players.filter(p=>!p.guest).map(p=>`<label for="member_${p.id}">Stammspieler</label><div class="actions" style="margin-top:3px"><input style="flex:3;min-width:120px;margin:0" id="member_${p.id}" maxlength="60" value="${esc(p.name)}"><button style="flex:1" onclick="renameMember('${p.id}')">Speichern</button></div>`).join('')}
+ <form onsubmit="addMember(event)"><label>Neuen Stammspieler hinzufügen</label><input id="newMemberName" maxlength="60" placeholder="Name" required><button class="primary">Hinzufügen</button></form>
+ </div>
  <div class="card"><h2>Datensicherung</h2>
  <p>Die Daten liegen lokal auf diesem Gerät. Sichere sie regelmäßig.</p>
  ${button("Backup herunterladen","backup()","primary")}
  <label>Backup importieren</label><input type="file" accept=".json" onchange="restore(event)">
  </div><div class="card"><p class="muted" style="font-size:11px;margin:0">Version ${APP_VERSION}</p><details><summary class="muted" style="cursor:pointer;font-size:12px">Versionsverlauf</summary>${VERSION_NOTES.map(n=>`<p class="muted">${esc(n)}</p>`).join('')}</details></div>`;
+}
+function renameMember(id){
+ const p=db.players.find(x=>x.id===id&&!x.guest);
+ if(!p)return;
+ const n=$("member_"+id).value.trim();
+ if(!n)return alert("Bitte einen Namen eingeben.");
+ if(db.players.some(x=>x.id!==id&&x.name.toLocaleLowerCase("de")===n.toLocaleLowerCase("de")))return alert("Dieser Name ist bereits vergeben.");
+ p.name=n;save();render();
+}
+function addMember(ev){
+ ev.preventDefault();
+ const n=$("newMemberName").value.trim();
+ if(!n)return;
+ if(db.players.some(x=>x.name.toLocaleLowerCase("de")===n.toLocaleLowerCase("de")))return alert("Dieser Name ist bereits vergeben.");
+ db.players.push({id:uid(),name:n,guest:false});
+ save();render();
 }
 function saveSettings(){
  for(const key of ["tack","startFee","soloFee"]){
@@ -535,8 +556,8 @@ async function restore(ev){
  }catch(err){alert("Import fehlgeschlagen: "+err.message)}
 }
 /* Version 3: Original-Tischansicht beibehalten, Spielregeln erweitert */
-const APP_VERSION='1.1.1';
-const VERSION_NOTES=['1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
+const APP_VERSION='1.1.2';
+const VERSION_NOTES=['1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
 const oldRender=render;
 function stamp(ms){return ms?new Date(ms).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'}):'–'}
 function isClosed(e){return !!e.endedAt}

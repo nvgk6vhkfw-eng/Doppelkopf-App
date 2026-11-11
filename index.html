@@ -67,6 +67,7 @@ th,td{text-align:left;padding:10px 5px;border-bottom:1px solid #526b58}
 .seat.filled{border-style:solid;background:#335c44}
 .seat.out{opacity:.4}
 .seat.mixer{background:#765536;border-color:#f4c583}
+.seat.pickable{cursor:pointer;touch-action:manipulation}.seat.pickable.selected{background:#8a603d;border:3px solid #ffe0a1;box-shadow:0 0 0 2px #b68d58}.seat.pickable .hint{color:#f9dfaf}.quick-tacken{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin:12px 0}.quick-tacken button{padding:14px 0;font-size:20px;font-weight:750;background:#335c44;color:#f5d6a4;border:1px solid #b48c58;border-radius:10px}.quick-tacken button:active{background:#a47748}.round-guide{font-size:13px;color:#e8c89a}
 .felt{grid-column:2;grid-row:2;height:100%;background:linear-gradient(140deg,#087349,#06452f);border:8px solid #a66e3e;border-radius:30px;box-shadow:inset 0 0 0 3px #d5a66c;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .felt strong{font:700 clamp(14px,3vw,26px) Georgia,serif;color:#f0c88e}
 .cards{font-size:35px;background:#fff8e8;color:#b23e36;border-radius:8px;padding:5px 10px;transform:rotate(-5deg);margin-bottom:12px}
@@ -174,12 +175,12 @@ function rotation(e){
 }
 function seat(pos,id,mode,rot){
  const out=rot?.sitting.includes(id),mix=rot?.mixer===id;
- const classes=["seat",pos==="right"?"first":"",id?"filled":"",out?"out":"",mix?"mixer":""].join(" ");
- const action=mode==="setup"?`onclick="seatTap('${pos}')"`:"";
+ const classes=["seat",pos==="right"?"first":"",id?"filled":"",out?"out":"",mix?"mixer":"",mode==="round"&&!out?"pickable":"",mode==="round"&&winners.includes(id)?"selected":""].join(" ");
+ const action=mode==="setup"?`onclick="seatTap('${pos}')"`:mode==="round"&&id&&!out?`onclick="toggleWinner('${id}')"`:"";
  return `<div class="${classes}" data-pos="${pos}" ${action}>
  ${id?`<span class="name">${esc(name(id))}</span>`:`<span class="plus">＋</span><span class="hint">HIER ABLEGEN</span>`}
  ${mode==="setup"&&pos==="right"?'<span class="hint">★ 1. MISCHER</span>':""}
- ${mode==="game"&&id?`<span class="hint">${mix?"★ MISCHER":out?"SETZT AUS":"SPIELT"}</span>`:""}
+ ${(mode==="game"||mode==="round")&&id?`<span class="hint">${mix?"★ MISCHER":out?"SETZT AUS":"SPIELT"}</span>`:""}
  </div>`;
 }
 function table(n,assigned,mode="setup",rot=null){
@@ -567,8 +568,8 @@ async function restore(ev){
  }catch(err){alert("Import fehlgeschlagen: "+err.message)}
 }
 /* Version 3: Original-Tischansicht beibehalten, Spielregeln erweitert */
-const APP_VERSION='1.4.6';
-const VERSION_NOTES=['1.4.6 · Start und Mehr fest in Kopfzeile, Spiel-Navigation entfernt; Clubname einstellbar; Entwicklerhinweis','1.4.5 · Laufenden Spielabend mit Gastgeber, Runden und Bockstand auf der Startseite anzeigen','1.4.4 · Doppelte Navigationseinträge Spieler und Kasse oben entfernt','1.4.3 · Spielabend nachtragen unter Mehr statt auf der Startseite','1.4.2 · Vergangene Spielabende Runde für Runde nachtragen; historisch bezahlt ohne Kassenbuchung','1.4.1 · Ergebnisse als Jahresliste mit Statistik-Umschalter','1.4.0 · Jahresstatistik für Spielabende, Tacken und Soli','1.3.1 · Gastgeber-Hinweis innerhalb der App; nur noch letzte Runde korrigieren','1.3.0 · Nur letzte Runde korrigieren oder rückgängig machen','1.2.6 · Spielabend ohne Browser-Bestätigung direkt beenden','1.2.5 · Spielabend direkt aus Abrechnung beenden; Abwesende automatisch als offen führen','1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
+const APP_VERSION='1.5.0';
+const VERSION_NOTES=['1.5.0 · Gewinner am Kartentisch, Tacken 1–7 sofort buchen, freie Eingabe und Mischerwechsel','1.4.9 · Jahresstatistik mit Spitzenreitern, Soloquote und Teilnahme-Rangliste','1.4.8 · Kasse mit offenen Spielerbeträgen, Zahlungsverlauf, Einnahmen/Ausgaben und Jahresfilter','1.4.7 · Nur vollständige Zahlungen mit Datum; Gewinner-Hinweis direkt in der App','1.4.6 · Start und Mehr fest in Kopfzeile, Spiel-Navigation entfernt; Clubname einstellbar; Entwicklerhinweis','1.4.5 · Laufenden Spielabend mit Gastgeber, Runden und Bockstand auf der Startseite anzeigen','1.4.4 · Doppelte Navigationseinträge Spieler und Kasse oben entfernt','1.4.3 · Spielabend nachtragen unter Mehr statt auf der Startseite','1.4.2 · Vergangene Spielabende Runde für Runde nachtragen; historisch bezahlt ohne Kassenbuchung','1.4.1 · Ergebnisse als Jahresliste mit Statistik-Umschalter','1.4.0 · Jahresstatistik für Spielabende, Tacken und Soli','1.3.1 · Gastgeber-Hinweis innerhalb der App; nur noch letzte Runde korrigieren','1.3.0 · Nur letzte Runde korrigieren oder rückgängig machen','1.2.6 · Spielabend ohne Browser-Bestätigung direkt beenden','1.2.5 · Spielabend direkt aus Abrechnung beenden; Abwesende automatisch als offen führen','1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
 const oldRender=render;
 function stamp(ms){return ms?new Date(ms).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'}):'–'}
 function isClosed(e){return !!e.endedAt}
@@ -634,15 +635,19 @@ function editingBock(e){return bockBefore(editingBase(e))}
 function saveCorrectedRound(r){const e=current();if(!assertOpen(e))return false;const old=lastRound(e);if(!old||old.id!==editingLastRoundId)return false;e.rounds[e.rounds.length-1]={...old,...r};e.soloPlayers=[...new Set(e.rounds.filter(x=>x.solo).map(x=>x.soloPlayer))];editingLastRoundId=null;save();go('evening');return true}
 function triggersHtml(){return `<h3>Bockauslöser (optional)</h3><div class="triggers">${['120:120','Null Tacken','Herz-Doppelkopf'].map((t,i)=>`<label><input type="checkbox" class="trigger" value="${t}" onchange="${page==='solo'?'previewSolo()':'previewRound()'}">${t}</label>`).join('')}</div><p class="mini">Mehrere Auslöser in einer Runde starten zusammen nur eine neue Bockfolge.</p>`}
 function selectedTriggers(){return [...document.querySelectorAll('.trigger:checked')].map(x=>x.value)}
-function round(){const e=current();if(!assertOpen(e))return '<div class="card">Abend abgeschlossen.</div>';const rot=rotation(editingBase(e));return `<div class="card"><h2>Runde ${rot.number} erfassen</h2><p>Mischer: <b>${esc(name(rot.mixer))}</b></p>${bockBanner(e)}<h3>Zwei Gewinner auswählen</h3><div class="winners">${rot.playing.map(id=>`<button class="winner" id="win_${id}" onclick="toggleWinner('${id}')">${esc(name(id))}</button>`).join('')}</div><label>Tacken je Gewinner</label><input id="points" type="number" min="0" step="1" value="1" oninput="previewRound()">${triggersHtml()}<div class="preview" id="preview"></div><div class="actions">${button('Abbrechen',"editingLastRoundId=null;go('evening')")}${button('Runde speichern','saveRound()','primary')}</div></div>`}
-function calcRound(){const e=current(),ids=rotation(editingBase(e)).playing,points={},n=Number($('points').value),bock=editingBock(e);if(winners.length!==2)throw Error('Genau zwei Gewinner auswählen.');if(!Number.isInteger(n)||n<0)throw Error('Gültige Tackenzahl eingeben.');ids.forEach(id=>points[id]=(winners.includes(id)?n:-n)*(bock?2:1));return {points,bock,solo:false,soloPlayer:null,triggers:selectedTriggers()}}
-function saveRound(){const e=current();if(!assertOpen(e))return;let r;try{r=calcRound()}catch(err){return alert(err.message)}if(editingLastRoundId){saveCorrectedRound(r);return}const rot=rotation(e);e.rounds.push({id:uid(),at:Date.now(),...r,mixer:rot.mixer,playing:[...rot.playing],sitting:[...rot.sitting]});save();go('evening')}
-function solo(){const e=current();if(!assertOpen(e))return '<div class="card">Abend abgeschlossen.</div>';const rot=rotation(editingBase(e));return `<div class="card"><h2>♠ Solo – Runde ${rot.number}</h2><p>Mischer: <b>${esc(name(rot.mixer))}</b></p>${bockBanner(e)}<h3>Solospieler</h3><div class="winners">${rot.playing.map(id=>`<button class="winner" id="solo_${id}" onclick="chooseSolo('${id}')">${esc(name(id))}</button>`).join('')}</div><label>Soloart</label><select id="soloType" onchange="previewSolo()"><option>Damen-Solo</option><option>Buben-Solo</option></select><label>Ergebnis</label><select id="soloWon" onchange="previewSolo()"><option value="yes">Solo gewonnen</option><option value="no">Solo verloren</option></select><label>Grundtacken (vor Bock)</label><input id="soloPoints" type="number" min="0" step="1" value="3" oninput="previewSolo()">${triggersHtml()}<div class="preview" id="soloPreview"></div><div class="actions">${button('Abbrechen',"editingLastRoundId=null;go('evening')")}${button('Solo speichern','saveSolo()','primary')}</div></div>`}
+function round(){const e=current();if(!assertOpen(e))return '<div class="card">Abend abgeschlossen.</div>';const rot=rotation(editingBase(e)),order=orderOf(e),assigned={};sequence(order.length).forEach((p,i)=>assigned[p]=order[i]);return `<div class="card"><h2>Runde ${rot.number} auszählen</h2><p>★ Mischer: <b>${esc(name(rot.mixer))}</b></p>${bockBanner(editingBase(e))}<p class="round-guide">1. Zwei Gewinner direkt am Kartentisch antippen. 2. Tacken auswählen – die Runde wird sofort gebucht.</p>${table(e.present.length,assigned,'round',rot)}<p class="mini">${rot.sitting.length?'Setzen aus: '+rot.sitting.map(id=>esc(name(id))).join(', '):'Alle vier spielen.'}</p><p id="winnerStatus" class="round-guide">Noch keine Gewinner ausgewählt.</p>${triggersHtml()}<h3>Tacken je Gewinner</h3><div class="quick-tacken">${[1,2,3,4,5,6,7].map(n=>`<button type="button" onclick="quickSaveRound(${n})" aria-label="${n} Tacken und Runde beenden">${n}</button>`).join('')}</div><label for="points">Anderer Wert (auch 0 oder über 7)</label><div class="actions"><input id="points" type="number" min="0" step="1" inputmode="numeric" placeholder="Tacken" style="max-width:160px" oninput="previewRound()">${button('Wert buchen','saveRound()','primary')}</div><div id="roundError" class="preview" role="alert" style="display:none;color:#ffcfaa"></div><div class="preview" id="preview"></div><div class="actions">${button('Abbrechen',"editingLastRoundId=null;go('evening')")}</div></div>`}
+function quickSaveRound(n){if(winners.length!==2)return roundError('Bitte zuerst genau zwei Gewinner am Kartentisch antippen.');$('points').value=n;saveRound()}
+function previewRound(){const e=current();if(!e||!$('preview'))return;const status=$('winnerStatus');if(status)status.textContent=winners.length===2?'✓ Gewinner: '+winners.map(name).join(' & '):winners.length===1?'Noch einen Gewinner auswählen.':'Noch keine Gewinner ausgewählt.';document.querySelectorAll('.seat.pickable').forEach(el=>{const id=el.getAttribute('onclick')?.match(/toggleWinner\('([^']+)'\)/)?.[1];el.classList.toggle('selected',winners.includes(id))});const err=$('roundError');if(err&&winners.length===2)err.style.display='none';if(winners.length!==2){$('preview').innerHTML='<p class="muted">Zwei Gewinner auswählen.</p>';return}const raw=$('points').value;if(raw===''){$('preview').innerHTML='<p class="muted">Jetzt 1–7 Tacken antippen oder anderen Wert eingeben.</p>';return}try{const r=calcRound();$('preview').innerHTML='<h3>Automatische Verteilung</h3>'+Object.entries(r.points).map(([id,n])=>`<div class="row"><span>${esc(name(id))}</span><b class="${n>=0?'good':'bad'}">${n>0?'+':''}${n} Tacken</b></div>`).join('')}catch(err){$('preview').innerHTML=`<p class="muted">${esc(err.message)}</p>`}}
+
+function calcRound(){const e=current(),ids=rotation(editingBase(e)).playing,points={},n=Number($('points').value),bock=editingBock(e);if(winners.length!==2)throw Error('Genau zwei Gewinner auswählen.');if($('points').value===''||!Number.isInteger(n)||n<0)throw Error('Gültige Tackenzahl eingeben.');ids.forEach(id=>points[id]=(winners.includes(id)?n:-n)*(bock?2:1));return {points,bock,solo:false,soloPlayer:null,triggers:selectedTriggers()}}
+function roundError(message){const el=$('roundError');if(el){el.textContent=message;el.style.display='block';el.scrollIntoView({block:'nearest'});}else alert(message)}
+function saveRound(){const e=current();if(!assertOpen(e))return;let r;try{r=calcRound()}catch(err){return roundError(err.message)}if(editingLastRoundId){saveCorrectedRound(r);return}const rot=rotation(e);e.rounds.push({id:uid(),at:Date.now(),...r,mixer:rot.mixer,playing:[...rot.playing],sitting:[...rot.sitting]});save();go('evening')}
+function solo(){const e=current();if(!assertOpen(e))return '<div class="card">Abend abgeschlossen.</div>';const rot=rotation(editingBase(e));return `<div class="card"><h2>♠ Solo – Runde ${rot.number}</h2><p>Mischer: <b>${esc(name(rot.mixer))}</b></p>${bockBanner(e)}<h3>Solospieler</h3><div class="winners">${rot.playing.map(id=>`<button class="winner" id="solo_${id}" onclick="chooseSolo('${id}')">${esc(name(id))}</button>`).join('')}</div><label>Soloart</label><select id="soloType" onchange="previewSolo()"><option>Damen-Solo</option><option>Buben-Solo</option></select><label>Ergebnis</label><select id="soloWon" onchange="previewSolo()"><option value="yes">Solo gewonnen</option><option value="no">Solo verloren</option></select><label>Grundtacken (vor Bock)</label><input id="soloPoints" type="number" min="0" step="1" value="3" oninput="previewSolo()">${triggersHtml()}<div id="roundError" class="preview" role="alert" style="display:none;color:#ffcfaa"></div><div class="preview" id="soloPreview"></div><div class="actions">${button('Abbrechen',"editingLastRoundId=null;go('evening')")}${button('Solo speichern','saveSolo()','primary')}</div></div>`}
 let chosenSolo=null;
 function chooseSolo(id){chosenSolo=id;previewSolo()}
 function calcSolo(){const e=current(),ids=rotation(editingBase(e)).playing;if(!ids.includes(chosenSolo))throw Error('Solospieler auswählen.');const n=Number($('soloPoints').value);if(!Number.isInteger(n)||n<0)throw Error('Gültige Tackenzahl eingeben.');const bock=editingBock(e),won=$('soloWon').value==='yes',points={};ids.forEach(id=>points[id]=(id===chosenSolo?(won?3:-3):(won?-1:1))*n*(bock?2:1));return {points,bock,solo:true,soloPlayer:chosenSolo,soloType:$('soloType').value,soloWon:won,triggers:selectedTriggers()}}
 function previewSolo(){const e=current();if(!e||!$('soloPreview'))return;rotation(editingBase(e)).playing.forEach(id=>{const el=$('solo_'+id);if(el)el.classList.toggle('selected',chosenSolo===id)});try{const r=calcSolo();$('soloPreview').innerHTML='<h3>Automatische Verteilung</h3>'+Object.entries(r.points).map(([id,n])=>`<div class="row"><span>${esc(name(id))}</span><b class="${n>=0?'good':'bad'}">${n>0?'+':''}${n} Tacken</b></div>`).join('')}catch(err){$('soloPreview').innerHTML=`<p class="muted">${esc(err.message)}</p>`}}
-function saveSolo(){const e=current();if(!assertOpen(e))return;let r;try{r=calcSolo()}catch(err){return alert(err.message)}if(editingLastRoundId){saveCorrectedRound(r);return}const rot=rotation(e);e.rounds.push({id:uid(),at:Date.now(),...r,mixer:rot.mixer,playing:[...rot.playing],sitting:[...rot.sitting]});e.soloPlayers=[...new Set(e.rounds.filter(x=>x.solo).map(x=>x.soloPlayer))];chosenSolo=null;save();go('evening')}
+function saveSolo(){const e=current();if(!assertOpen(e))return;let r;try{r=calcSolo()}catch(err){return roundError(err.message)}if(editingLastRoundId){saveCorrectedRound(r);return}const rot=rotation(e);e.rounds.push({id:uid(),at:Date.now(),...r,mixer:rot.mixer,playing:[...rot.playing],sitting:[...rot.sitting]});e.soloPlayers=[...new Set(e.rounds.filter(x=>x.solo).map(x=>x.soloPlayer))];chosenSolo=null;save();go('evening')}
 function hochzeit(){const e=current();if(!assertOpen(e))return '<div class="card">Abend abgeschlossen.</div>';const rot=rotation(e);return `<div class="card"><h2>♛ Hochzeit erfassen</h2><p class="muted">Sonderbuchung vor der nächsten Runde. Kein Mischerwechsel. Ein Tipp auf den Namen bucht sofort.</p><h3>Wer hat die beiden Re-Damen?</h3><div class="winners">${rot.playing.map(id=>`<button class="winner" onclick="chooseHochzeit('${id}')">${esc(name(id))}</button>`).join('')}</div>${button('Abbrechen',"editingLastRoundId=null;go('evening')")}</div>`}
 function chooseHochzeit(id){const e=current();if(!assertOpen(e))return;const rot=rotation(e);if(!rot.playing.includes(id))return;const points={};rot.playing.forEach(p=>points[p]=p===id?3:-1);e.specials.push({id:uid(),type:'hochzeit',at:Date.now(),player:id,points,playing:[...rot.playing],mixer:rot.mixer,beforeRound:rot.number});save();go('evening')}
 function removeSpecial(id){const e=current();if(!assertOpen(e)||!confirm('Hochzeit-Sonderbuchung löschen?'))return;e.specials=e.specials.filter(s=>s.id!==id);save();render()}
@@ -662,27 +667,9 @@ function payEveningFull(id){
  if(rest<=0)return;
  recordPayment(e,id,rest);save();render();
 }
-function payEveningPartial(id){
- const e=current();if(!e)return;const r=dueRows(e).find(x=>x.id===id);if(!r)return;
- const rest=Math.max(0,Math.round((r.fee-paidAmount(e,id))*100)/100);
- const input=$('partial_'+id);if(!input)return;
- const amount=Math.round(Number(input.value.replace(',','.'))*100)/100;
- if(!Number.isFinite(amount)||amount<=0||amount>rest)return alert('Bitte einen gültigen Teilbetrag bis '+euro(rest)+' eingeben.');
- recordPayment(e,id,amount);save();render();
-}
 function payAllPlayer(id){
  const owed=outstandingByPlayer().find(x=>x.id===id);if(!owed)return;
  db.evenings.forEach(e=>{const r=dueRows(e).find(x=>x.id===id);if(!r)return;const rest=Math.max(0,Math.round((r.fee-paidAmount(e,id))*100)/100);if(rest>0)recordPayment(e,id,rest)});
- save();render();
-}
-function payPartialPlayer(id){
- const owed=outstandingByPlayer().find(x=>x.id===id);if(!owed)return;
- const input=$('totalPartial_'+id);if(!input)return;
- let remaining=Math.round(Number(input.value.replace(',','.'))*100)/100;
- if(!Number.isFinite(remaining)||remaining<=0||remaining>owed.amount)return alert('Bitte einen gültigen Betrag bis '+euro(owed.amount)+' eingeben.');
- // Älteste offene Spielabende zuerst begleichen.
- const ordered=[...db.evenings].sort((a,b)=>String(a.date).localeCompare(String(b.date)));
- for(const e of ordered){const r=dueRows(e).find(x=>x.id===id);if(!r)continue;const rest=Math.max(0,Math.round((r.fee-paidAmount(e,id))*100)/100);const part=Math.min(rest,remaining);if(part>0){recordPayment(e,id,part);remaining=Math.round((remaining-part)*100)/100}if(remaining<=0)break}
  save();render();
 }
 function showDebt(id){window.debtPlayer=id;go('debt')}
@@ -690,9 +677,7 @@ function debt(){
  const id=window.debtPlayer,owed=outstandingByPlayer().find(x=>x.id===id);
  if(!owed)return `<div class="card"><h2>Keine offenen Zahlungen</h2>${button('Zurück',"go('home')")}</div>`;
  return `<div class="card"><h2>Offene Zahlung · ${esc(name(id))}</h2><div class="big bad">${euro(owed.amount)}</div><p class="muted">Gesamtschuld aus allen Spielabenden. Ein Häkchen begleicht den vollständigen Betrag.</p>
- <label class="check"><input type="checkbox" onchange="if(this.checked)payAllPlayer('${id}')"> Bezahlt – gesamte Schuld</label>
- <label>Teil bezahlt (€)</label><div class="actions"><input id="totalPartial_${id}" type="number" step="0.01" min="0.01" max="${owed.amount.toFixed(2)}" placeholder="Betrag eingeben" style="flex:2;min-width:120px"><button class="primary" onclick="payPartialPlayer('${id}')">Teilzahlung buchen</button></div>
- <p class="mini">Teilzahlungen werden den ältesten offenen Spielabenden zuerst zugeordnet.</p>${button('Zurück',"go('home')")}</div>`;
+ <label class="check"><input type="checkbox" onchange="if(this.checked)payAllPlayer('${id}')"> Bezahlt – gesamte Schuld</label>${button('Zurück',"go('home')")}</div>`;
 }
 function results(){
  const e=current();if(!e)return '<div class="card">Kein Spielabend geöffnet.</div>';
@@ -709,11 +694,11 @@ function results(){
    <td>${start===null?'–':euro(start)}</td><td>${solo===null?'–':euro(solo)}</td>
    <td><b>${euro(x.fee)}</b></td><td>${euro(paid)}</td><td>${euro(rest)}</td>
    <td>${e.historical?'✓ Historisch bezahlt':!x.present?(rest>0?'Automatisch offen':'✓ Bezahlt'):rest>0?`<label class="check"><input type="checkbox" onchange="if(this.checked)payEveningFull('${x.id}')"> Bezahlt</label>`:'✓ Bezahlt'}</td>
-   <td>${e.historical?'–':!x.present?'–':rest>0?`<div class="actions" style="flex-wrap:nowrap"><input id="partial_${x.id}" type="number" min="0.01" max="${rest.toFixed(2)}" step="0.01" placeholder="€" style="min-width:80px;width:90px"><button onclick="payEveningPartial('${x.id}')">Buchen</button></div>`:'–'}</td></tr>`;
+   </tr>`;
  }).join('');
  return `<div class="card"><h2>Abrechnung ${esc(e.date)}</h2>
  <p class="mini">${e.historical?'Historischer Nachtrag · bereits bezahlt · ':''}Gastgeber: ${esc(name(e.host))} · ${isClosed(e)?'Abgeschlossen':'Noch offen'} · Start ${stamp(e.startedAt)} · Ende ${stamp(e.endedAt)}</p>
- <div class="scroll"><table><tr><th>Spieler</th><th>Spiel +/−</th><th>Start</th><th>Solo</th><th>Gesamt</th><th>Bezahlt €</th><th>Offen</th><th>Bezahlt ✓</th><th>Teil bezahlt €</th></tr>${body}</table></div>
+ <div class="scroll"><table><tr><th>Spieler</th><th>Spiel +/−</th><th>Start</th><th>Solo</th><th>Gesamt</th><th>Bezahlt €</th><th>Offen</th><th>Bezahlt ✓</th></tr>${body}</table></div>
  <p class="muted">Nur Spielverluste erhöhen die Zahlung an die Kasse. Abwesende zahlen den höchsten Gesamtbetrag eines anwesenden Spielers.</p>
  <div class="preview"><h3>Kasse</h3>
  <div class="row"><span>Gesamt (Soll)</span><b>${euro(sum)}</b></div>
@@ -727,19 +712,23 @@ function cashTransactions(){
  return tx.sort((a,b)=>b.at-a.at);
 }
 function cash(){
- const tx=cashTransactions(),years=[...new Set([...tx.map(t=>new Date(t.at||Date.now()).getFullYear()),...db.evenings.map(e=>Number((e.date||'').slice(0,4)))].filter(Number.isFinite))].sort((a,b)=>b-a);
+ const tx=cashTransactions(),years=[...new Set([new Date().getFullYear(),...tx.filter(t=>t.at).map(t=>new Date(t.at).getFullYear()),...db.evenings.map(e=>Number((e.date||'').slice(0,4)))].filter(Number.isFinite))].sort((a,b)=>b-a);
  const selected=window.cashYear||'all';
  const filtered=tx.filter(t=>selected==='all'||String(new Date(t.at||Date.now()).getFullYear())===selected);
  const income=filtered.filter(t=>t.amount>0).reduce((a,t)=>a+t.amount,0),expenses=-filtered.filter(t=>t.amount<0).reduce((a,t)=>a+t.amount,0);
  const balance=tx.reduce((a,t)=>a+t.amount,0);
  const dues=db.evenings.filter(e=>selected==='all'||String((e.date||'').slice(0,4))===selected).reduce((a,e)=>a+dueRows(e).reduce((b,r)=>b+Math.max(0,r.fee-paidAmount(e,r.id)),0),0);
+ const debtors=outstandingByPlayer();
+ const payments=filtered.filter(t=>t.kind==='payment');
  const e=current();
  return `<div class="card"><h2>Kasse</h2><p class="muted">Tatsächlicher Kassenbestand aus erfassten Ein- und Auszahlungen</p><div class="big">${euro(balance)}</div></div>
  <div class="card"><h3>Jahresübersicht</h3><label>Zeitraum</label><select onchange="window.cashYear=this.value;render()"><option value="all" ${selected==='all'?'selected':''}>Alle Jahre</option>${years.map(y=>`<option value="${y}" ${selected===String(y)?'selected':''}>${y}</option>`).join('')}</select>
  <div class="row"><span>Einnahmen</span><b class="good">${euro(income)}</b></div><div class="row"><span>Ausgaben</span><b class="bad">${euro(expenses)}</b></div><div class="row"><span>Saldo im gewählten Zeitraum</span><b>${euro(income-expenses)}</b></div><div class="row"><span>Noch offene Spielabend-Beiträge</span><b>${euro(dues)}</b></div></div>
- ${e?`<div class="card"><h3>Zahlungen – ${esc(e.date)}</h3>${dueRows(e).map(x=>{const paid=paidAmount(e,x.id),rest=Math.max(0,x.fee-paid);return `<div class="row"><div><b>${esc(name(x.id))}</b><div class="mini">Soll ${euro(x.fee)} · Bezahlt ${euro(paid)} · Offen ${euro(rest)}</div></div>${rest>0?button('Zahlung',`payDialog('${x.id}')`,'primary'):'✓ Bezahlt'}</div>`}).join('')}</div>`:`<div class="card"><p>Öffne einen Spielabend, um die einzelnen Zahlungen zu erfassen.</p></div>`}
- <div class="card"><h3>Ein- oder Ausgabe buchen</h3><form onsubmit="addCash(event)"><label>Beschreibung</label><input id="ct" maxlength="150" placeholder="z. B. Getränke oder Spende" required><label>Betrag in €</label><input id="ca" type="number" step=".01" min="0.01" required><label>Art</label><select id="cashType"><option value="income">Einnahme (+)</option><option value="expense">Ausgabe (−)</option></select><button class="primary">Buchen</button></form></div>
- <div class="card"><h3>Kassenbuch · Zahlungsverlauf</h3>${filtered.length?filtered.map(t=>`<div class="row"><div><b>${esc(t.text)}</b><div class="mini">${stamp(t.at)} · ${t.kind==='payment'?'Spielerzahlung':'Freie Buchung'}</div></div><b class="${t.amount>=0?'good':'bad'}">${t.amount>0?'+':''}${euro(t.amount)}</b></div>`).join(''):'Noch keine Buchungen in diesem Zeitraum.'}</div>`;
+ <div class="card"><h3>Offene Spielerzahlungen</h3><p class="muted">Gesamtschulden aus allen Spielabenden · nur vollständig bezahlen.</p>${debtors.length?debtors.map(d=>`<div class="row"><div><b>${esc(name(d.id))}</b><div class="mini">Noch offen</div></div><div class="actions"><b class="bad">${euro(d.amount)}</b>${button('Bezahlen',`showDebt('${d.id}')`,'primary')}</div></div>`).join(''):'Alle Spielerzahlungen sind beglichen.'}</div>
+ ${e?`<div class="card"><h3>Zahlungen – ${esc(e.date)}</h3>${dueRows(e).map(x=>{const paid=paidAmount(e,x.id),rest=Math.max(0,x.fee-paid);return `<div class="row"><div><b>${esc(name(x.id))}</b><div class="mini">Soll ${euro(x.fee)} · Bezahlt ${euro(paid)} · Offen ${euro(rest)}</div></div>${rest>0?button('Bezahlen',`payEveningFull('${x.id}')`,'primary'):'✓ Bezahlt'}</div>`}).join('')}</div>`:''}
+ <div class="card"><h3>Ein- oder Ausgabe buchen</h3><form onsubmit="addCash(event)"><label>Beschreibung</label><input id="ct" maxlength="150" placeholder="z. B. Getränke oder Spende" required><label>Betrag in €</label><input id="ca" type="number" step=".01" min="0.01" required><label>Art</label><select id="cashType"><option value="income">Einnahme (+)</option><option value="expense">Ausgabe (−)</option></select><button class="primary">Buchen</button></form><p class="muted">Spielerzahlungen bitte oben über „Bezahlen“ erfassen, damit keine doppelte Buchung entsteht.</p></div>
+ <div class="card"><h3>Zahlungsverlauf der Spieler</h3>${payments.length?payments.map(t=>`<div class="row"><div><b>${esc(name(t.player))}</b><div class="mini">${stamp(t.at)} · Spielabend ${esc(db.evenings.find(e=>e.id===t.evening)?.date||'')}</div></div><b class="good">+${euro(t.amount)}</b></div>`).join(''):'Keine Spielerzahlungen im gewählten Zeitraum.'}</div>
+ <div class="card"><h3>Kassenbuch · alle Buchungen</h3>${filtered.length?filtered.map(t=>`<div class="row"><div><b>${esc(t.text)}</b><div class="mini">${stamp(t.at)} · ${t.kind==='payment'?'Spielerzahlung':'Freie Buchung'}</div></div><b class="${t.amount>=0?'good':'bad'}">${t.amount>0?'+':''}${euro(t.amount)}</b></div>`).join(''):'Noch keine Buchungen in diesem Zeitraum.'}</div>`;
 }
 function addCash(ev){
  ev.preventDefault();const label=$('ct').value.trim(),value=Number($('ca').value),type=$('cashType').value;
@@ -748,7 +737,6 @@ function addCash(ev){
  save();render();
 }
 
-function payDialog(id){const e=current();if(!e)return;const row=dueRows(e).find(x=>x.id===id);if(!row)return;const rest=Math.max(0,row.fee-paidAmount(e,id));if(rest<=0)return;const raw=prompt(`Zahlung von ${name(id)} in € (noch ${euro(rest)} offen):`,rest.toFixed(2).replace('.',','));if(raw===null)return;const amount=Number(raw.replace(',','.'));if(!Number.isFinite(amount)||amount<=0||amount>rest+.001)return alert('Bitte einen Betrag zwischen 0 und dem offenen Betrag eingeben.');e.payments=e.payments||{};e.payments[id]=e.payments[id]||[];e.payments[id].push({id:uid(),at:Date.now(),amount:Math.round(amount*100)/100});save();render()}
 function showResults(){go('resultsOverview')}
 function startHistorical(){eveningId=null;historicalSetup=true;go('evening')}
 function home(){const debts=outstandingByPlayer();const active=[...db.evenings].reverse().find(e=>!isClosed(e));const activeCard=active?`<div class="card"><div class="row"><h2 style="margin:0">♠ Laufender Spielabend</h2><span class="pill">${esc(active.date)}</span></div><div class="row"><span>Gastgeber</span><b>${esc(name(active.host))}</b></div><div class="row"><span>Gespielte Runden</span><b>${active.rounds.length}</b></div><div class="row"><span>Bockstand</span><b>${bockRemaining(active)>0?'×2 · noch '+bockRemaining(active)+' Spiele':'Kein Bock aktiv'}</b></div><div class="actions">${button('Spielabend fortsetzen',`openEvening('${active.id}')`,'primary')}</div></div>`:'';return `<div class="tiles">${button('<b>♠</b>Spielabend',"go('evening')",'tile')}${button('<b>♣</b>Spieler',"go('players')",'tile')}${button('<b>🏆</b>Ergebnisse','showResults()','tile')}${button('<b>€</b>Kasse',"go('cash')",'tile')}</div>
@@ -764,23 +752,30 @@ function statistics(){
  const selected=statisticsYear;
  const evenings=db.evenings.filter(e=>selected==='all'||String(e.date||'').startsWith(selected+'-'));
  const data=db.players.map(p=>{
-  let nights=0,rounds=0,solos=0,tacken=0;
+  let nights=0,rounds=0,solos=0,tacken=0,soloNights=0;
   for(const e of evenings){
    if(!e.present.includes(p.id))continue;
    nights++;
    rounds+=e.rounds.filter(r=>r.playing?.includes(p.id)||Object.hasOwn(r.points||{},p.id)).length;
-   solos+=e.rounds.filter(r=>r.solo&&r.soloPlayer===p.id).length;
+   const count=e.rounds.filter(r=>r.solo&&r.soloPlayer===p.id).length;
+   solos+=count;if(count>0)soloNights++;
    tacken+=totals(e)[p.id]||0;
   }
-  return {p,nights,rounds,solos,tacken};
+  return {p,nights,rounds,solos,tacken,soloNights};
  }).filter(x=>x.nights>0).sort((a,b)=>b.tacken-a.tacken);
- return `<div class="card"><div class="actions">${button("← Ergebnisse", "go('resultsOverview')")}</div><h2>Jahresstatistik</h2><p class="muted">Auswertung der tatsächlich gespielten Abende. Gewinne und Verluste sind Spielergebnisse, keine Kassenbewegungen.</p>
+ const bySolo=[...data].sort((a,b)=>b.solos-a.solos||b.nights-a.nights);
+ const byNights=[...data].sort((a,b)=>b.nights-a.nights||b.rounds-a.rounds);
+ const leader=(arr,field)=>arr.length&&arr[0][field]>0?esc(arr.filter(x=>x[field]===arr[0][field]).map(x=>x.p.name).join(', ')):'–';
+ const totalRounds=evenings.reduce((n,e)=>n+e.rounds.length,0);
+ const totalSolos=evenings.reduce((n,e)=>n+e.rounds.filter(r=>r.solo).length,0);
+ return `<div class="card"><div class="actions">${button('← Ergebnisse',"go('resultsOverview')")}</div><h2>Jahresstatistik</h2><p class="muted">Spielergebnisse aus gespielten Runden, unabhängig von Einzahlungen in die Kasse.</p>
  <label>Jahr auswählen</label><select onchange="statisticsYear=this.value;render()"><option value="all" ${selected==='all'?'selected':''}>Alle Jahre</option>${years.map(y=>`<option value="${y}" ${selected===y?'selected':''}>${y}</option>`).join('')}</select>
- <div class="row"><span>Spielabende</span><b>${evenings.length}</b></div><div class="row"><span>Gespielte Runden</span><b>${evenings.reduce((n,e)=>n+e.rounds.length,0)}</b></div></div>
- <div class="card"><h2>Spielerübersicht</h2><div class="scroll"><table><tr><th>Spieler</th><th>Abende</th><th>Runden</th><th>Soli</th><th>Tacken +/−</th><th>Spiel € +/−</th></tr>
- ${data.map(x=>`<tr><td>${esc(x.p.name)}</td><td>${x.nights}</td><td>${x.rounds}</td><td>${x.solos}</td><td class="${x.tacken>=0?'good':'bad'}">${x.tacken>0?'+':''}${x.tacken}</td><td class="${x.tacken>=0?'good':'bad'}">${euro(x.tacken*db.settings.tack)}</td></tr>`).join('')||'<tr><td colspan="6">Für diesen Zeitraum sind noch keine Ergebnisse vorhanden.</td></tr>'}</table></div></div>`;
+ <div class="row"><span>Spielabende</span><b>${evenings.length}</b></div><div class="row"><span>Gespielte Runden</span><b>${totalRounds}</b></div><div class="row"><span>Gespielte Soli</span><b>${totalSolos}</b></div></div>
+ <div class="card"><h3>🏆 Spitzenreiter</h3><div class="row"><span>Meiste Tacken</span><b>${leader(data,'tacken')}</b></div><div class="row"><span>Meiste Soli</span><b>${leader(bySolo,'solos')}</b></div><div class="row"><span>Meiste Spielabende</span><b>${leader(byNights,'nights')}</b></div></div>
+ <div class="card"><h2>Spielerübersicht</h2><p class="muted">Nach gewonnenen Tacken sortiert. Die Soloquote zeigt, an wie vielen besuchten Abenden mindestens ein Solo gespielt wurde.</p><div class="scroll"><table><tr><th>Platz</th><th>Spieler</th><th>Abende</th><th>Runden</th><th>Soli</th><th>Solo-Abende</th><th>Tacken +/−</th><th>Spiel € +/−</th></tr>
+ ${data.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.p.name)}</td><td>${x.nights}</td><td>${x.rounds}</td><td>${x.solos}</td><td>${x.soloNights}/${x.nights}</td><td class="${x.tacken>=0?'good':'bad'}">${x.tacken>0?'+':''}${x.tacken}</td><td class="${x.tacken>=0?'good':'bad'}">${euro(x.tacken*db.settings.tack)}</td></tr>`).join('')||'<tr><td colspan="8">Für diesen Zeitraum sind noch keine Ergebnisse vorhanden.</td></tr>'}</table></div></div>
+ <div class="card"><h3>Teilnahme-Rangliste</h3>${byNights.map((x,i)=>`<div class="row"><span>${i+1}. ${esc(x.p.name)}</span><b>${x.nights} ${x.nights===1?'Abend':'Abende'}</b></div>`).join('')||'Noch keine Teilnahmen erfasst.'}</div>`;
 }
-
 
 
 let resultsYear=String(new Date().getFullYear());

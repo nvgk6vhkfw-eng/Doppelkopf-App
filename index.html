@@ -831,6 +831,7 @@ function resultsOverview(){
  return `<div class="card"><h2>Ergebnisse</h2><p class="muted">Alle Spielabende des ausgewählten Jahres, mit den gewohnten Abrechnungsbeträgen.</p><div class="actions" style="align-items:end"><div style="flex:1;min-width:150px"><label>Jahr auswählen</label><select onchange="resultsYear=this.value;render()">${years.length?years.map(y=>`<option value="${y}" ${resultsYear===y?'selected':''}>${y}</option>`).join(''):`<option>${resultsYear}</option>`}</select></div>${button('▥ Jahresstatistik',`statisticsYear=resultsYear;go('statistics')`)}</div><div class="row"><span>Spielabende im Jahr</span><b>${chosen.length}</b></div></div><div class="card"><h3>Spielabende ${esc(resultsYear)}</h3>${chosen.length?`<div class="scroll"><table>${heads}${lines}</table></div>`:'Für dieses Jahr sind noch keine Spielabende vorhanden.'}</div>`;
 }
 function openResultsEvening(id){eveningId=id;go('results')}
+ 
 
 render();
 </script>

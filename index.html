@@ -556,8 +556,8 @@ async function restore(ev){
  }catch(err){alert("Import fehlgeschlagen: "+err.message)}
 }
 /* Version 3: Original-Tischansicht beibehalten, Spielregeln erweitert */
-const APP_VERSION='1.1.2';
-const VERSION_NOTES=['1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
+const APP_VERSION='1.2.0';
+const VERSION_NOTES=['1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
 const oldRender=render;
 function stamp(ms){return ms?new Date(ms).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'}):'–'}
 function isClosed(e){return !!e.endedAt}
@@ -638,7 +638,33 @@ function results(){
  <div class="row"><span>Noch offen</span><b class="bad">${euro(Math.max(0,sum-received))}</b></div></div>
  ${button('Zurück',"go('evening')")}</div>`;
 }
-function cash(){const e=current(),sum=db.cash.reduce((s,c)=>s+Number(c.amount||0),0)+db.evenings.reduce((s,x)=>s+Object.values(x.payments||{}).flat().reduce((a,p)=>a+Number(p.amount||0),0),0);return `<div class="card"><h2>Clubkasse</h2><div class="big">${euro(sum)}</div><p class="mini">Erfasste Zahlungen und freie Kassenbuchungen</p></div>${e?`<div class="card"><h3>Zahlungen – ${esc(e.date)}</h3>${dueRows(e).map(x=>{const paid=paidAmount(e,x.id),rest=Math.max(0,x.fee-paid);return `<div class="row"><div><b>${esc(name(x.id))}</b><div class="mini">Soll ${euro(x.fee)} · Bezahlt ${euro(paid)} · Offen ${euro(rest)}</div></div>${rest>0?button('Zahlung',`payDialog('${x.id}')`,'primary'):'✓ Bezahlt'}</div>`}).join('')}</div>`:`<div class="card"><p>Öffne einen Spielabend, um Zahlungen zu erfassen.</p></div>`}<div class="card"><h2>Freie Kassenbuchung</h2><form onsubmit="addCash(event)"><label>Beschreibung</label><input id="ct" maxlength="150" required><label>Betrag in € (Ausgaben negativ)</label><input id="ca" type="number" step=".01" required><button class="primary">Buchen</button></form></div><div class="card"><h2>Kassenbuch</h2>${[...db.cash].reverse().map(c=>`<div class="row"><span>${esc(c.text)}</span><b>${euro(c.amount)}</b></div>`).join('')||'Noch keine freien Buchungen.'}</div>`}
+function cashTransactions(){
+ const tx=db.cash.map(c=>({id:c.id,at:c.at||0,amount:Number(c.amount||0),text:c.text||'Freie Buchung',kind:'free'}));
+ db.evenings.forEach(e=>Object.entries(e.payments||{}).forEach(([id,arr])=>arr.forEach(p=>tx.push({id:p.id,at:p.at||0,amount:Number(p.amount||0),text:name(id)+' · Spielabend '+e.date,kind:'payment',player:id,evening:e.id}))));
+ return tx.sort((a,b)=>b.at-a.at);
+}
+function cash(){
+ const tx=cashTransactions(),years=[...new Set([...tx.map(t=>new Date(t.at||Date.now()).getFullYear()),...db.evenings.map(e=>Number((e.date||'').slice(0,4)))].filter(Number.isFinite))].sort((a,b)=>b-a);
+ const selected=window.cashYear||'all';
+ const filtered=tx.filter(t=>selected==='all'||String(new Date(t.at||Date.now()).getFullYear())===selected);
+ const income=filtered.filter(t=>t.amount>0).reduce((a,t)=>a+t.amount,0),expenses=-filtered.filter(t=>t.amount<0).reduce((a,t)=>a+t.amount,0);
+ const balance=tx.reduce((a,t)=>a+t.amount,0);
+ const dues=db.evenings.filter(e=>selected==='all'||String((e.date||'').slice(0,4))===selected).reduce((a,e)=>a+dueRows(e).reduce((b,r)=>b+Math.max(0,r.fee-paidAmount(e,r.id)),0),0);
+ const e=current();
+ return `<div class="card"><h2>💶 Ohne Moos nix los!</h2><p class="muted">Tatsächlicher Kassenbestand aus erfassten Ein- und Auszahlungen</p><div class="big">${euro(balance)}</div></div>
+ <div class="card"><h3>Jahresübersicht</h3><label>Zeitraum</label><select onchange="window.cashYear=this.value;render()"><option value="all" ${selected==='all'?'selected':''}>Alle Jahre</option>${years.map(y=>`<option value="${y}" ${selected===String(y)?'selected':''}>${y}</option>`).join('')}</select>
+ <div class="row"><span>Einnahmen</span><b class="good">${euro(income)}</b></div><div class="row"><span>Ausgaben</span><b class="bad">${euro(expenses)}</b></div><div class="row"><span>Saldo im gewählten Zeitraum</span><b>${euro(income-expenses)}</b></div><div class="row"><span>Noch offene Spielabend-Beiträge</span><b>${euro(dues)}</b></div></div>
+ ${e?`<div class="card"><h3>Zahlungen – ${esc(e.date)}</h3>${dueRows(e).map(x=>{const paid=paidAmount(e,x.id),rest=Math.max(0,x.fee-paid);return `<div class="row"><div><b>${esc(name(x.id))}</b><div class="mini">Soll ${euro(x.fee)} · Bezahlt ${euro(paid)} · Offen ${euro(rest)}</div></div>${rest>0?button('Zahlung',`payDialog('${x.id}')`,'primary'):'✓ Bezahlt'}</div>`}).join('')}</div>`:`<div class="card"><p>Öffne einen Spielabend, um die einzelnen Zahlungen zu erfassen.</p></div>`}
+ <div class="card"><h3>Ein- oder Ausgabe buchen</h3><form onsubmit="addCash(event)"><label>Beschreibung</label><input id="ct" maxlength="150" placeholder="z. B. Getränke oder Spende" required><label>Betrag in €</label><input id="ca" type="number" step=".01" min="0.01" required><label>Art</label><select id="cashType"><option value="income">Einnahme (+)</option><option value="expense">Ausgabe (−)</option></select><button class="primary">Buchen</button></form></div>
+ <div class="card"><h3>Kassenbuch · Zahlungsverlauf</h3>${filtered.length?filtered.map(t=>`<div class="row"><div><b>${esc(t.text)}</b><div class="mini">${stamp(t.at)} · ${t.kind==='payment'?'Spielerzahlung':'Freie Buchung'}</div></div><b class="${t.amount>=0?'good':'bad'}">${t.amount>0?'+':''}${euro(t.amount)}</b></div>`).join(''):'Noch keine Buchungen in diesem Zeitraum.'}</div>`;
+}
+function addCash(ev){
+ ev.preventDefault();const label=$('ct').value.trim(),value=Number($('ca').value),type=$('cashType').value;
+ if(!label||!Number.isFinite(value)||value<=0)return alert('Bitte einen gültigen positiven Betrag eingeben.');
+ db.cash.push({id:uid(),at:Date.now(),text:label,amount:Math.round(value*100)/100*(type==='expense'?-1:1)});
+ save();render();
+}
+
 function payDialog(id){const e=current();if(!e)return;const row=dueRows(e).find(x=>x.id===id);if(!row)return;const rest=Math.max(0,row.fee-paidAmount(e,id));if(rest<=0)return;const raw=prompt(`Zahlung von ${name(id)} in € (noch ${euro(rest)} offen):`,rest.toFixed(2).replace('.',','));if(raw===null)return;const amount=Number(raw.replace(',','.'));if(!Number.isFinite(amount)||amount<=0||amount>rest+.001)return alert('Bitte einen Betrag zwischen 0 und dem offenen Betrag eingeben.');e.payments=e.payments||{};e.payments[id]=e.payments[id]||[];e.payments[id].push({id:uid(),at:Date.now(),amount:Math.round(amount*100)/100});save();render()}
 function showResults(){if(db.evenings.length){eveningId=db.evenings[db.evenings.length-1].id;go('results')}else go('evening')}
 function home(){return `<div class="tiles">${button('<b>♠</b>Spielabend',"go('evening')",'tile')}${button('<b>♣</b>Spieler',"go('players')",'tile')}${button('<b>🏆</b>Ergebnisse','showResults()','tile')}${button('<b>€</b>Clubkasse',"go('cash')",'tile')}</div>

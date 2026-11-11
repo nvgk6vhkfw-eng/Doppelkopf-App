@@ -556,8 +556,8 @@ async function restore(ev){
  }catch(err){alert("Import fehlgeschlagen: "+err.message)}
 }
 /* Version 3: Original-Tischansicht beibehalten, Spielregeln erweitert */
-const APP_VERSION='1.2.3';
-const VERSION_NOTES=['1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
+const APP_VERSION='1.2.4';
+const VERSION_NOTES=['1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
 const oldRender=render;
 function stamp(ms){return ms?new Date(ms).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'}):'–'}
 function isClosed(e){return !!e.endedAt}
@@ -578,8 +578,9 @@ function evening(){
  const e=current();
  if(!e)return `<div class="card"><h2>Neuer Spielabend</h2><form onsubmit="createEvening(event)">
  <label>Datum</label><input type="date" id="date" value="${new Date().toLocaleDateString('sv-SE')}" required>
- <label>Gastgeber (manuell auswählen)</label><select id="host" required><option value="">Bitte wählen</option>${db.players.filter(p=>!p.guest).map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')}</select>
- <h3>Anwesende Spieler</h3>${db.players.map(p=>`<label class="check"><input type="checkbox" name="present" value="${p.id}" ${p.guest?'':'checked'}>${esc(p.name)}</label>`).join('')}
+ <h3>Anwesende Spieler</h3>
+ <div class="row" style="padding:5px 0"><span class="mini">Spieler</span><span class="mini" style="min-width:85px;text-align:center">Gastgeber</span></div>
+ ${db.players.map(p=>`<div class="row" style="padding:8px 0"><label class="check" style="flex:1;margin:0"><input type="checkbox" name="present" value="${p.id}" ${p.guest?'':'checked'} onchange="syncHostChoice('${p.id}')">${esc(p.name)}</label><label class="check" style="min-width:85px;justify-content:center;margin:0"><input type="checkbox" name="hostChoice" value="${p.id}" onchange="chooseHost('${p.id}')" aria-label="${esc(p.name)} als Gastgeber"></label></div>`).join('')}
  <button class="primary">Weiter zum Kartentisch</button></form></div>
  <div class="card"><h2>Vergangene Abende</h2>${[...db.evenings].reverse().map(x=>`<div class="row"><span>${esc(x.date)} · ${x.endedAt?'Abgeschlossen':'Offen'} · ${esc(name(x.host))}</span>${button('Öffnen',`openEvening('${x.id}')`)}</div>`).join('')||'Noch keine Spielabende.'}</div>`;
  const rot=rotation(e),order=orderOf(e),assigned={};sequence(order.length).forEach((p,i)=>assigned[p]=order[i]);const t=totals(e),closed=isClosed(e);
@@ -595,7 +596,21 @@ function evening(){
  `<div class="row"><div><b>Runde ${x.i+1}${x.r.solo?' · '+esc(x.r.soloType||'Solo'):''}</b><div class="mini">${stamp(x.r.at)} · ${x.r.bock?'Bock ×2 · ':''}${x.r.triggers?.length?'Bockauslöser: '+x.r.triggers.map(esc).join(', ')+' · ':''}${Object.entries(x.r.points||{}).map(([id,n])=>esc(name(id))+': '+(n>0?'+':'')+n).join(' · ')}</div></div>${closed?'':button('✕',`removeRound('${x.r.id}')`,'danger')}</div>`).join('')||'Noch keine Einträge.'}</div>
  ${!closed?`<div class="card"><h3>Spielabend beenden</h3><p class="muted">Nach dem Abschluss sind keine Änderungen mehr möglich. Offene Bockspiele verfallen.</p>${button('Spielabend abschließen','closeEvening()','danger')}</div>`:''}`;
 }
-function createEvening(ev){ev.preventDefault();const present=[...document.querySelectorAll('input[name="present"]:checked')].map(x=>x.value);if(present.length<4||present.length>6)return alert('Bitte 4 bis 6 Spieler wählen.');const host=$('host').value;if(!host)return alert('Gastgeber wählen.');pending={date:$('date').value,host,present,assigned:{}};selected=null;go('seating')}
+function chooseHost(id){
+ const boxes=[...document.querySelectorAll('input[name="hostChoice"]')];
+ const chosen=boxes.find(x=>x.value===id);
+ if(!chosen)return;
+ if(chosen.checked){
+  boxes.forEach(x=>{if(x!==chosen)x.checked=false});
+  const player=[...document.querySelectorAll('input[name="present"]')].find(x=>x.value===id);
+  if(player)player.checked=true;
+ }
+}
+function syncHostChoice(id){
+ const present=[...document.querySelectorAll('input[name="present"]')].find(x=>x.value===id);
+ if(present&&!present.checked){const host=[...document.querySelectorAll('input[name="hostChoice"]')].find(x=>x.value===id);if(host)host.checked=false;}
+}
+function createEvening(ev){ev.preventDefault();const present=[...document.querySelectorAll('input[name="present"]:checked')].map(x=>x.value);if(present.length<4||present.length>6)return alert('Bitte 4 bis 6 Spieler wählen.');const hosts=[...document.querySelectorAll('input[name="hostChoice"]:checked')].map(x=>x.value);if(hosts.length!==1||!present.includes(hosts[0]))return alert('Bitte einen anwesenden Gastgeber auswählen.');const host=hosts[0];pending={date:$('date').value,host,present,assigned:{}};selected=null;go('seating')}
 function finishEvening(){if(!pending)return;const seats=sequence(pending.present.length).map(p=>pending.assigned[p]);if(seats.some(x=>!x))return alert('Alle Plätze besetzen.');const e={id:uid(),date:pending.date,host:pending.host,startedAt:Date.now(),endedAt:null,present:[...pending.present],seats,firstMixer:pending.assigned.right,rounds:[],specials:[],soloPlayers:[],payments:{}};db.evenings.push(e);eveningId=e.id;pending=null;save();go('evening')}
 function closeEvening(){const e=current();if(!assertOpen(e))return;const rem=bockRemaining(e);if(!confirm(`Spielabend endgültig beenden? ${rem} offene Bockspiele verfallen. Danach sind keine Änderungen mehr möglich.`))return;e.expiredBock=rem;e.endedAt=Date.now();save();go('evening')}
 function triggersHtml(){return `<h3>Bockauslöser (optional)</h3><div class="triggers">${['120:120','Null Tacken','Herz-Doppelkopf'].map((t,i)=>`<label><input type="checkbox" class="trigger" value="${t}" onchange="${page==='solo'?'previewSolo()':'previewRound()'}">${t}</label>`).join('')}</div><p class="mini">Mehrere Auslöser in einer Runde starten zusammen nur eine neue Bockfolge.</p>`}

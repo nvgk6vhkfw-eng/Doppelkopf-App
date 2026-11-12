@@ -141,6 +141,18 @@ th,td{text-align:left;padding:10px 5px;border-bottom:1px solid #526b58}
 .paid-check{display:flex;justify-content:flex-end;margin:0;padding:0}
 .paid-check input{width:19px;height:19px;margin:0;accent-color:#a47748}
 @media(max-width:390px){.bill-table th,.bill-table td{padding:9px 2px;font-size:10px}.bill-table th:nth-child(1){width:22%}.bill-table th:nth-child(2){width:24%}.bill-table th:nth-child(3){width:16%}.bill-table th:nth-child(4){width:27%}.bill-table th:nth-child(5){width:11%}}
+/* V1.6.0: kompakte Touch-Einrichtung und Verlaufstabellen */
+.setup-date{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 10px}
+.setup-date label{margin:0;flex:0 0 auto}
+.setup-date input{width:min(185px,62%);max-width:100%;margin:0;min-width:0}
+.setup-player{gap:8px;border-bottom:1px solid rgba(211,181,135,.14)}
+.setup-player:last-of-type{border-bottom:0}
+@media(max-width:550px){
+ .setup-player{padding:5px 0!important}
+ .setup-player .check{font-size:14px}
+ .setup-date input{font-size:14px;padding:8px}
+ .bill-table th,.bill-table td{overflow-wrap:normal;word-break:normal}
+}
 </style>
 </head>
 <body>
@@ -275,7 +287,7 @@ function evening(){
  const e=current();
  if(!e)return `<div class="card"><h2>Neuer Spielabend</h2>
  <form onsubmit="createEvening(event)">
- <label>Datum</label><input type="date" id="date" value="${new Date().toLocaleDateString("sv-SE")}" required>
+ <div class="setup-date"><label>Datum</label><input type="date" id="date" value="${new Date().toLocaleDateString("sv-SE")}" required>
  <h3>Anwesende Spieler</h3>
  ${db.players.map(p=>`<label class="check"><input type="checkbox" name="present" value="${p.id}" ${p.guest?"":"checked"}>${esc(p.name)}</label>`).join("")}
  <p id="setupError" role="alert" style="display:none;color:#ffe2a7;background:#603a2c;border:1px solid #d3a56d;border-radius:9px;padding:11px;margin:10px 0"></p><button class="primary">Weiter zum Kartentisch</button></form></div>
@@ -639,8 +651,8 @@ async function restore(ev){
  }catch(err){alert("Import fehlgeschlagen: "+err.message)}
 }
 /* Version 3: Original-Tischansicht beibehalten, Spielregeln erweitert */
-const APP_VERSION='1.5.9';
-const VERSION_NOTES=['1.5.9 · Mobile Abrechnung mit fünf Spalten; Startgebühr automatisch; offene Zahlungen einheitlich zweizeilig','1.5.8 · Spielernamen mit Finger oder Maus an den Kartentisch ziehen; Antippen bleibt möglich','1.5.7 · Papierlisten zeilenweise in Euro nachtragen; Kassenanfangsbestand mit Korrekturverlauf','1.5.6 · Bock-Multiplikator unter Einstellungen frei wählbar (Standard ×2)','1.5.5 · Hochzeit am Kartentisch auswählen und sofort buchen, ohne Mischerwechsel','1.5.4 · Gewinner und Solospieler türkis markiert; Mischer bleibt bronze','1.5.3 · Solo: Spieler direkt am Tisch wählen, 1–7 Tacken sofort buchen','1.5.2 · Spielabend beenden nur noch in der Abrechnung','1.5.1 · Startseite kompakter: Zahlungen und letzte Treffen nebeneinander; Treffen/Spiele im Kopf','1.5.0 · Gewinner am Kartentisch, Tacken 1–7 sofort buchen, freie Eingabe und Mischerwechsel','1.4.9 · Jahresstatistik mit Spitzenreitern, Soloquote und Teilnahme-Rangliste','1.4.8 · Kasse mit offenen Spielerbeträgen, Zahlungsverlauf, Einnahmen/Ausgaben und Jahresfilter','1.4.7 · Nur vollständige Zahlungen mit Datum; Gewinner-Hinweis direkt in der App','1.4.6 · Start und Mehr fest in Kopfzeile, Spiel-Navigation entfernt; Clubname einstellbar; Entwicklerhinweis','1.4.5 · Laufenden Spielabend mit Gastgeber, Runden und Bockstand auf der Startseite anzeigen','1.4.4 · Doppelte Navigationseinträge Spieler und Kasse oben entfernt','1.4.3 · Spielabend nachtragen unter Mehr statt auf der Startseite','1.4.2 · Vergangene Spielabende Runde für Runde nachtragen; historisch bezahlt ohne Kassenbuchung','1.4.1 · Ergebnisse als Jahresliste mit Statistik-Umschalter','1.4.0 · Jahresstatistik für Spielabende, Tacken und Soli','1.3.1 · Gastgeber-Hinweis innerhalb der App; nur noch letzte Runde korrigieren','1.3.0 · Nur letzte Runde korrigieren oder rückgängig machen','1.2.6 · Spielabend ohne Browser-Bestätigung direkt beenden','1.2.5 · Spielabend direkt aus Abrechnung beenden; Abwesende automatisch als offen führen','1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
+const APP_VERSION='1.6.0';
+const VERSION_NOTES=['1.6.0 · Kompakte Spielabend-Einrichtung und Ergebnishistorie wie Abrechnung; Runden- und Start-Spalten entfernt','1.5.9 · Mobile Abrechnung mit fünf Spalten; Startgebühr automatisch; offene Zahlungen einheitlich zweizeilig','1.5.8 · Spielernamen mit Finger oder Maus an den Kartentisch ziehen; Antippen bleibt möglich','1.5.7 · Papierlisten zeilenweise in Euro nachtragen; Kassenanfangsbestand mit Korrekturverlauf','1.5.6 · Bock-Multiplikator unter Einstellungen frei wählbar (Standard ×2)','1.5.5 · Hochzeit am Kartentisch auswählen und sofort buchen, ohne Mischerwechsel','1.5.4 · Gewinner und Solospieler türkis markiert; Mischer bleibt bronze','1.5.3 · Solo: Spieler direkt am Tisch wählen, 1–7 Tacken sofort buchen','1.5.2 · Spielabend beenden nur noch in der Abrechnung','1.5.1 · Startseite kompakter: Zahlungen und letzte Treffen nebeneinander; Treffen/Spiele im Kopf','1.5.0 · Gewinner am Kartentisch, Tacken 1–7 sofort buchen, freie Eingabe und Mischerwechsel','1.4.9 · Jahresstatistik mit Spitzenreitern, Soloquote und Teilnahme-Rangliste','1.4.8 · Kasse mit offenen Spielerbeträgen, Zahlungsverlauf, Einnahmen/Ausgaben und Jahresfilter','1.4.7 · Nur vollständige Zahlungen mit Datum; Gewinner-Hinweis direkt in der App','1.4.6 · Start und Mehr fest in Kopfzeile, Spiel-Navigation entfernt; Clubname einstellbar; Entwicklerhinweis','1.4.5 · Laufenden Spielabend mit Gastgeber, Runden und Bockstand auf der Startseite anzeigen','1.4.4 · Doppelte Navigationseinträge Spieler und Kasse oben entfernt','1.4.3 · Spielabend nachtragen unter Mehr statt auf der Startseite','1.4.2 · Vergangene Spielabende Runde für Runde nachtragen; historisch bezahlt ohne Kassenbuchung','1.4.1 · Ergebnisse als Jahresliste mit Statistik-Umschalter','1.4.0 · Jahresstatistik für Spielabende, Tacken und Soli','1.3.1 · Gastgeber-Hinweis innerhalb der App; nur noch letzte Runde korrigieren','1.3.0 · Nur letzte Runde korrigieren oder rückgängig machen','1.2.6 · Spielabend ohne Browser-Bestätigung direkt beenden','1.2.5 · Spielabend direkt aus Abrechnung beenden; Abwesende automatisch als offen führen','1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
 const oldRender=render;
 function stamp(ms){return ms?new Date(ms).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'}):'–'}
 function isClosed(e){return !!e.endedAt}
@@ -661,10 +673,10 @@ function paidAmount(e,id){if(e.historical)return dueRows(e).find(x=>x.id===id)?.
 function evening(){
  const e=current();
  if(!e)return `<div class="card"><h2>${historicalSetup?'Spielabend nachtragen':'Neuer Spielabend'}</h2>${historicalSetup?'<p class="muted">Alte Runden vollständig erfassen. Alle Beträge gelten als historisch bezahlt und verändern den aktuellen Kassenbestand nicht.</p>':''}<form onsubmit="createEvening(event)">
- <label>Datum</label><input type="date" id="date" value="${new Date().toLocaleDateString('sv-SE')}" required>
+ <div class="setup-date"><label>Datum</label><input type="date" id="date" value="${new Date().toLocaleDateString('sv-SE')}" required></div>
  <h3>Anwesende Spieler</h3>
  <div class="row" style="padding:5px 0"><span class="mini">Spieler</span><span class="mini" style="min-width:85px;text-align:center">Gastgeber</span></div>
- ${db.players.map(p=>`<div class="row" style="padding:8px 0"><label class="check" style="flex:1;margin:0"><input type="checkbox" name="present" value="${p.id}" ${p.guest?'':'checked'} onchange="syncHostChoice('${p.id}')">${esc(p.name)}</label><label class="check" style="min-width:85px;justify-content:center;margin:0"><input type="checkbox" name="hostChoice" value="${p.id}" onchange="chooseHost('${p.id}')" aria-label="${esc(p.name)} als Gastgeber"></label></div>`).join('')}
+ ${db.players.map(p=>`<div class="row setup-player" style="padding:6px 0"><label class="check" style="flex:1;margin:0"><input type="checkbox" name="present" value="${p.id}" ${p.guest?'':'checked'} onchange="syncHostChoice('${p.id}')">${esc(p.name)}</label><label class="check" style="min-width:85px;justify-content:center;margin:0"><input type="checkbox" name="hostChoice" value="${p.id}" onchange="chooseHost('${p.id}')" aria-label="${esc(p.name)} als Gastgeber"></label></div>`).join('')}
  <p id="setupError" role="alert" style="display:none;color:#ffe2a7;background:#603a2c;border:1px solid #d3a56d;border-radius:9px;padding:11px;margin:10px 0"></p><button class="primary">Weiter zum Kartentisch</button></form></div>
  <div class="card"><h2>Vergangene Abende</h2>${[...db.evenings].reverse().map(x=>`<div class="row"><span>${esc(x.date)} · ${x.endedAt?'Abgeschlossen':'Offen'} · ${esc(name(x.host))}</span>${button('Öffnen',`openEvening('${x.id}')`)}</div>`).join('')||'Noch keine Spielabende.'}</div>`;
  const rot=rotation(e),order=orderOf(e),assigned={};sequence(order.length).forEach((p,i)=>assigned[p]=order[i]);const t=totals(e),closed=isClosed(e);
@@ -892,19 +904,17 @@ function resultsOverview(){
  const years=[...new Set(db.evenings.map(e=>String(e.date||'').slice(0,4)).filter(y=>/^\d{4}$/.test(y)))].sort().reverse();
  if(!years.includes(resultsYear))resultsYear=years[0]||String(new Date().getFullYear());
  const chosen=[...db.evenings].filter(e=>String(e.date||'').startsWith(resultsYear+'-')).sort((a,b)=>String(b.date).localeCompare(String(a.date))||Number(b.startedAt||0)-Number(a.startedAt||0));
- const heads='<tr><th>Datum</th><th>Gastgeber</th><th>Spieler</th><th>Runden</th><th>Spiel +/−</th><th>Start</th><th>Solo</th><th>Gesamt</th><th>Bezahlt</th><th>Offen</th><th>Abrechnung</th></tr>';
- const lines=chosen.map(e=>{
-  const t=totals(e);
-  const rows=dueRows(e);
-  return rows.map((r,i)=>{
+ const cards=chosen.map(e=>{
+  const t=totals(e),rows=dueRows(e);
+  const lines=rows.map(r=>{
    const game=r.present?(t[r.id]||0)*db.settings.tack:null;
-   const start=r.present?db.settings.startFee:null;
-   const solo=r.present?(soloCount(e,r.id)?0:db.settings.soloFee):null;
-   const paid=paidAmount(e,r.id),open=Math.max(0,Math.round((r.fee-paid)*100)/100);
-   return `<tr>${i===0?`<td rowspan="${rows.length}"><b>${esc(e.date)}</b><div class="mini">${isClosed(e)?'Abgeschlossen':'Offen'}${e.historical?' · Nachtrag':''}</div></td><td rowspan="${rows.length}">${esc(name(e.host))}</td>`:''}<td>${esc(name(r.id))}${r.present?'':' <small>(abwesend)</small>'}</td><td>${r.present?e.rounds.filter(q=>q.playing?.includes(r.id)||Object.hasOwn(q.points||{},r.id)).length:'–'}</td><td class="${game===null?'':game>=0?'good':'bad'}">${game===null?'–':(game>0?'+':'')+euro(game)}</td><td>${start===null?'–':euro(start)}</td><td>${solo===null?'–':euro(solo)}</td><td><b>${euro(r.fee)}</b></td><td>${euro(paid)}</td><td class="${open>0?'bad':''}">${euro(open)}</td>${i===0?`<td rowspan="${rows.length}">${button('Öffnen',`openResultsEvening('${e.id}')`)}</td>`:''}</tr>`;
+   const solo=r.present?(e.historical?0:(soloCount(e,r.id)?0:db.settings.soloFee)):null;
+   const paid=paidAmount(e,r.id),isPaid=e.historical||paid+0.005>=r.fee;
+   return `<tr><td>${esc(name(r.id))}${r.present?'':'<span class="bill-absent">abwesend</span>'}</td><td class="${game===null?'':game>=0?'good':'bad'}">${game===null?'–':(game>0?'+':'')+euro(game)}</td><td>${solo===null?'–':euro(solo)}</td><td class="bill-total"><b>${euro(r.fee)}</b></td><td>${isPaid?'✓':'○'}</td></tr>`;
   }).join('');
+  return `<div class="card"><div class="row"><div><h3 style="margin:0">${esc(e.date)}</h3><div class="mini">${esc(name(e.host))} · ${isClosed(e)?'Abgeschlossen':'Offen'}${e.historical?' · Nachtrag':''}</div></div>${button('Öffnen',`openResultsEvening('${e.id}')`)}</div><div class="bill-caption">Startgebühr ${euro(db.settings.startFee)} inklusive</div><div class="bill-wrap"><table class="bill-table"><tr><th>Spieler</th><th>Spiel +/−</th><th>Solo</th><th>Gesamt</th><th>✓</th></tr>${lines}</table></div></div>`;
  }).join('');
- return `<div class="card"><h2>Ergebnisse</h2><p class="muted">Alle Spielabende des ausgewählten Jahres, mit den gewohnten Abrechnungsbeträgen.</p><div class="actions" style="align-items:end"><div style="flex:1;min-width:150px"><label>Jahr auswählen</label><select onchange="resultsYear=this.value;render()">${years.length?years.map(y=>`<option value="${y}" ${resultsYear===y?'selected':''}>${y}</option>`).join(''):`<option>${resultsYear}</option>`}</select></div>${button('▥ Jahresstatistik',`statisticsYear=resultsYear;go('statistics')`)}</div><div class="row"><span>Spielabende im Jahr</span><b>${chosen.length}</b></div></div><div class="card"><h3>Spielabende ${esc(resultsYear)}</h3>${chosen.length?`<div class="scroll"><table>${heads}${lines}</table></div>`:'Für dieses Jahr sind noch keine Spielabende vorhanden.'}</div>`;
+ return `<div class="card"><h2>Ergebnisse</h2><p class="muted">Alle Spielabende des ausgewählten Jahres.</p><div class="actions" style="align-items:end"><div style="flex:1;min-width:150px"><label>Jahr auswählen</label><select onchange="resultsYear=this.value;render()">${years.length?years.map(y=>`<option value="${y}" ${resultsYear===y?'selected':''}>${y}</option>`).join(''):`<option>${resultsYear}</option>`}</select></div>${button('▥ Jahresstatistik',`statisticsYear=resultsYear;go('statistics')`)}</div><div class="row"><span>Spielabende im Jahr</span><b>${chosen.length}</b></div></div>${cards||'<div class="card">Für dieses Jahr sind noch keine Spielabende vorhanden.</div>'}`;
 }
 function openResultsEvening(id){eveningId=id;go('results')}
 

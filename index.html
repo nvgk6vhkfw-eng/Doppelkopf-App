@@ -200,6 +200,55 @@ input[type="checkbox"],input[type="radio"]{accent-color:#b77b3d}
 @media(min-width:700px){.compact-game-table .layout{grid-template-columns:120px minmax(0,1fr) 120px;grid-template-rows:65px 190px 65px;gap:10px}.compact-game-table .left .seat,.compact-game-table .right .seat{min-height:165px}.compact-game-table .seat .name{font-size:15px}}
 .stat-compact{width:100%;table-layout:auto}.stat-compact th,.stat-compact td{padding:10px 5px;white-space:nowrap;font-size:13px}.stat-compact th:last-child,.stat-compact td:last-child{text-align:right}.stat-tap{cursor:pointer}.stat-tap:active{background:#315c45}@media(max-width:390px){.stat-compact th,.stat-compact td{font-size:12px;padding:9px 3px}}
 .settings-panel{padding:14px}.settings-group{border:1px solid #56725c;border-radius:12px;margin:9px 0;background:#173a2d;overflow:hidden}.settings-group>summary{list-style:none;display:flex;align-items:center;gap:12px;padding:14px 12px;cursor:pointer;min-height:60px}.settings-group>summary::-webkit-details-marker{display:none}.settings-icon{display:flex;align-items:center;justify-content:center;flex:0 0 34px;height:34px;border-radius:9px;background:#315a44;color:#efc58a;font-weight:700;font-size:19px}.settings-title{flex:1;min-width:0}.settings-title strong{display:block;color:#f1d1a1;font-size:15px}.settings-title small{display:block;color:#cbbba4;font-size:11px;margin-top:3px;line-height:1.3}.settings-arrow{color:#e4c28d;font-size:20px;transition:transform .15s}.settings-group[open] .settings-arrow{transform:rotate(180deg)}.settings-body{padding:3px 13px 15px;border-top:1px solid #56725c}.settings-body hr{border:0;border-top:1px solid #56725c;margin:20px 0}.member-edit{display:flex;gap:8px;align-items:center;margin:8px 0}.member-edit input{flex:1;min-width:0;margin:0}.member-edit button{flex:0 0 auto;padding:11px 9px}.settings-body>button{margin-top:8px}
+
+/* V1.7.0: kompakte mobile Papierlisten */
+.hist-card{min-width:0}.hist-form-head,.hist-entry-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0 8px}.hist-form-head button,.hist-small{padding:6px 9px;font-size:12px}.hist-inputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.hist-input{min-width:0;margin:0;background:#1a3e2d;border:1px solid #58775c;border-radius:10px;padding:9px}.hist-input span{display:block;font-weight:700;margin-bottom:5px}.hist-input input{width:100%;min-width:0;margin:0;padding:10px 7px;font-size:17px}.hist-input small{display:block;color:#cdbb9e;margin-top:5px;font-size:11px}.hist-balance{font-size:12px;color:#ddc19c;margin:10px 0}.hist-history{margin-top:16px;border-top:1px solid #5c725c;padding-top:12px}.hist-history summary{cursor:pointer;font-weight:700;color:#e9c58e}.hist-entry{border-bottom:1px solid #4b6752;padding:8px 0}.hist-entry-head{margin:0 0 5px}.hist-entry-head .mini{flex:1;text-align:center;overflow-wrap:anywhere}.hist-values{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.hist-values span{display:flex;justify-content:space-between;gap:5px;background:#254735;border-radius:5px;padding:5px 7px;font-size:12px}.hist-values small{font-size:11px;color:#d4c5ac}.hist-delete{margin-top:9px;width:100%;border-color:#c68c83;color:#f2b2a9}@media(min-width:700px){.hist-inputs,.hist-values{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+/* Designauswahl: klassische Vorlage bleibt unverändert. */
+body[data-theme="modern"]{background:#10191c;color:#eef3f3}
+body[data-theme="modern"] header{background:#172429;border-color:#4b8e88;box-shadow:none}
+body[data-theme="modern"] .card{background:#1d2c30;border-color:#375257;border-radius:22px;box-shadow:0 8px 24px #0002}
+body[data-theme="modern"] button{background:#294348;border-color:#4b7775;border-radius:13px}
+body[data-theme="modern"] button.primary,body[data-theme="modern"] button.active{background:#167a76}
+body[data-theme="modern"] h1,body[data-theme="modern"] h2,body[data-theme="modern"] h3,body[data-theme="modern"] .big{color:#92dfd2}
+body[data-theme="modern"] input,body[data-theme="modern"] select{background:#142327;border-color:#4b7775}
+body[data-theme="modern"] .settings-group{background:#1b3033;border-color:#3c595c}
+body[data-theme="modern"] .settings-icon{background:#28595a;color:#a4eee1}
+body[data-theme="modern"] .settings-title strong{color:#d7f5ef}
+body[data-theme="light"]{background:#f6f2e9;color:#25352c}
+body[data-theme="light"] header{background:#e9e4d8;border-color:#a8895e;box-shadow:0 2px 9px #0001}
+body[data-theme="light"] .card{background:#fffdf8;border-color:#d6c9b6;box-shadow:0 4px 14px #0001}
+body[data-theme="light"] button{background:#e8ede6;color:#274332;border-color:#a6b5a5}
+body[data-theme="light"] button.primary,body[data-theme="light"] button.active{background:#356e57;color:white}
+body[data-theme="light"] h1,body[data-theme="light"] h2,body[data-theme="light"] h3,body[data-theme="light"] .big{color:#8c5a2f}
+body[data-theme="light"] input,body[data-theme="light"] select{background:#fff;color:#273b30;border-color:#b8b9a6}
+body[data-theme="light"] .muted,body[data-theme="light"] .mini,body[data-theme="light"] header small{color:#5c6a5c}
+body[data-theme="light"] .row,body[data-theme="light"] th,body[data-theme="light"] td{border-color:#dedbd0}
+body[data-theme="light"] .settings-group{background:#f8f5ed;border-color:#d4caba}
+body[data-theme="light"] .settings-title strong{color:#425847}
+body[data-theme="light"] .settings-title small{color:#677567}
+body[data-theme="light"] .settings-icon{background:#e4e9de;color:#3c7155}
+body[data-theme="light"] .settings-body{border-color:#d4caba}
+body[data-theme="light"] .good{color:#25704a}body[data-theme="light"] .bad{color:#a44437}
+body[data-theme="classic"]{background:#201d1a;color:#f3e7d2}
+body[data-theme="classic"] header{background:#30261e;border-color:#c4a16b}
+body[data-theme="classic"] .card{background:#352b23;border-color:#806a4f;border-radius:10px}
+body[data-theme="classic"] button{background:#574231;border-color:#a98c63;border-radius:7px}
+body[data-theme="classic"] button.primary,body[data-theme="classic"] button.active{background:#976b3b}
+body[data-theme="classic"] h1,body[data-theme="classic"] h2,body[data-theme="classic"] h3,body[data-theme="classic"] .big{color:#e5c18a;font-family:Georgia,serif}
+body[data-theme="classic"] input,body[data-theme="classic"] select{background:#29231e;border-color:#9b805d}
+body[data-theme="classic"] .settings-group{background:#3a2e24;border-color:#806a4f}
+body[data-theme="classic"] .settings-icon{background:#5e4630;color:#e9c38b}
+body[data-theme="classic"] .settings-title strong{color:#f1d6a8}
+/* Gemeinsame Vorschauauswahl */
+.theme-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:12px 0}
+.theme-choice{display:flex;flex-direction:column;gap:5px;align-items:flex-start;min-height:76px;padding:12px;border:2px solid #9a8c73;background:#2b4a3b;color:#fff;border-radius:12px;text-align:left}
+.theme-choice small{font-size:11px;opacity:.8}
+.theme-choice.selected{outline:2px solid #d3a75c;outline-offset:1px}
+.theme-choice[data-choice="modern"]{background:#1d2c30;color:#b9eee5;border-color:#4b7775}
+.theme-choice[data-choice="classic"]{background:#352b23;color:#f1d6a8;border-color:#a98c63}
+.theme-choice[data-choice="light"]{background:#fffdf8;color:#425847;border-color:#c9c1b3}
+
 </style>
 </head>
 <body>
@@ -238,6 +287,7 @@ const button=(label,action,cls="")=>`<button class="${cls}" onclick="${action}">
 function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){alert("Speichern fehlgeschlagen: "+e.message)}}
 function go(p){if(p==='evening'&&current()?.endedAt){eveningId=null;pending=null;}page=p;if(p==="round")winners=[];if(p==='home')historicalSetup=false;render()}
 function render(){
+ document.body.dataset.theme=["forest","modern","classic","light"].includes(db.settings.theme)?db.settings.theme:"forest";
  const tabs=[["home","⌂ Start"],["settings","⚙ Mehr"]];
  $("appTitle").textContent="♠ "+(db.settings.appName||"Doppelkopf Club");
  $("headerStats").innerHTML=`<span>Treffen <b>${db.evenings.length}</b></span><span>Spiele <b>${db.evenings.reduce((a,e)=>a+(e.rounds?.length||0),0)}</b></span>`;
@@ -445,7 +495,7 @@ function finishEvening(){
  const e={id:uid(),date:pending.date,present:[...pending.present],seats,firstMixer:pending.assigned.right,rounds:[],specials:[],soloPlayers:[],payments:{}};
  db.evenings.push(e);eveningId=e.id;pending=null;save();go("evening");
 }
-function openEvening(id){eveningId=id;go(current()?.endedAt?"results":"evening")}
+function openEvening(id){historicalEditIndex=-1;eveningId=id;go(current()?.endedAt?"results":"evening")}
 
 /* Punkte inklusive Sonderbuchungen */
 
@@ -631,9 +681,11 @@ function settings(){
  const members=`<p class="muted">Namen ändern oder Stammspieler hinzufügen. Vorhandene Ergebnisse bleiben zugeordnet.</p>${db.players.filter(p=>!p.guest).map(p=>`<div class="member-edit"><input aria-label="Name ${esc(p.name)}" id="member_${p.id}" maxlength="60" value="${esc(p.name)}"><button onclick="renameMember('${p.id}')">Speichern</button></div>`).join('')}<form onsubmit="addMember(event)"><label>Neuer Stammspieler</label><input id="newMemberName" maxlength="60" placeholder="Name" required><button class="primary">Hinzufügen</button></form><p class="muted">Gäste werden beim Spielabend hinzugefügt. Die Sitzordnung und Rotation wählst du beim Start eines Spielabends.</p>`;
  const rules=`<label>Euro pro Tacken</label><input id="tack" type="number" min="0" step=".01" value="${db.settings.tack}"><label>Bock-Faktor (×)</label><input id="bockMultiplier" type="number" min="1" max="20" step="1" value="${db.settings.bockMultiplier||2}"><p class="muted">Solo und Hochzeit werden direkt am Kartentisch ausgewählt. Der Bock-Faktor gilt für zukünftige Buchungen.</p>${button('Regeln speichern','saveSettings()','primary')}`;
  const fees=`<label>Startgebühr in Euro</label><input id="startFee" type="number" min="0" step=".01" value="${db.settings.startFee}"><label>Solo-Strafe in Euro</label><input id="soloFee" type="number" min="0" step=".01" value="${db.settings.soloFee}"><p class="muted">Die Abwesenheitsregel wird automatisch bei der Abrechnung berücksichtigt.</p>${button('Beiträge speichern','saveSettings()','primary')}`;
- const app=`<label>Clubname</label><input id="appNameInput" maxlength="70" value="${esc(db.settings.appName||'Doppelkopf Club')}">${button('Clubnamen speichern','saveAppName()','primary')}<hr><h3>Spielabend nachtragen</h3><p class="muted">Vergangene Spielabende erfassen, ohne die aktuelle Clubkasse zu verändern.</p>${button('Spielabend nachtragen','startHistorical()')}<hr><h3>Datensicherung</h3><p class="muted">Die Daten liegen lokal auf diesem Gerät. Bitte regelmäßig sichern.</p>${button('Backup herunterladen','backup()','primary')}<label>Backup importieren</label><input type="file" accept=".json" onchange="restore(event)"><hr><p class="muted" style="font-size:11px">Doppelkopf Club · Version ${APP_VERSION} · by Tom Bücker</p><details><summary class="muted" style="cursor:pointer">Versionsverlauf</summary>${VERSION_NOTES.map(n=>`<p class="muted">${esc(n)}</p>`).join('')}</details>`;
- return `<div class="card settings-panel"><h2 style="margin:0 0 5px">Einstellungen</h2><p class="muted" style="margin:0 0 13px">Tippe auf einen Bereich, um ihn zu bearbeiten.</p>${group('♟','Spieler & Sitzordnung',`${db.players.filter(p=>!p.guest).length} Stammspieler · Rotation beim Spielstart`,members)}${group('♣','Spielregeln',`${euro(db.settings.tack)} / Tacken · Bock ×${db.settings.bockMultiplier||2}`,rules)}${group('€','Kasse & Beiträge',`Start ${euro(db.settings.startFee)} · Solo ${euro(db.settings.soloFee)}`,fees)}${group('⚙','App & Datensicherung','Clubname · Nachträge · Backup',app)}</div>`;
+ const themes=`<h3>Design auswählen</h3><p class="muted">Sofortige Vorschau. Deine Spielstände bleiben erhalten.</p><div class="theme-choices">${[['forest','Waldgrün & Bronze','Unser bisheriges Design'],['modern','Modern & clean','Klare Formen · Petrol'],['classic','Klassisch','Dunkles Holz · warme Farben'],['light','Hell & freundlich','Creme · sanftes Grün']].map(([id,title,desc])=>`<button type="button" class="theme-choice ${((db.settings.theme||'forest')===id)?'selected':''}" data-choice="${id}" onclick="setTheme('${id}')"><strong>${title}</strong><small>${desc}</small></button>`).join('')}</div>`;
+ const app=`${themes}<hr><label>Clubname</label><input id="appNameInput" maxlength="70" value="${esc(db.settings.appName||'Doppelkopf Club')}">${button('Clubnamen speichern','saveAppName()','primary')}<hr><h3>Spielabend nachtragen</h3><p class="muted">Vergangene Spielabende erfassen, ohne die aktuelle Clubkasse zu verändern.</p>${button('Spielabend nachtragen','startHistorical()')}<hr><h3>Datensicherung</h3><p class="muted">Die Daten liegen lokal auf diesem Gerät. Bitte regelmäßig sichern.</p>${button('Backup herunterladen','backup()','primary')}<label>Backup importieren</label><input type="file" accept=".json" onchange="restore(event)"><hr><p class="muted" style="font-size:11px">Doppelkopf Club · Version ${APP_VERSION} · by Tom Bücker</p><details><summary class="muted" style="cursor:pointer">Versionsverlauf</summary>${VERSION_NOTES.map(n=>`<p class="muted">${esc(n)}</p>`).join('')}</details>`;
+ return `<div class="card settings-panel"><h2 style="margin:0 0 5px">Einstellungen</h2><p class="muted" style="margin:0 0 13px">Tippe auf einen Bereich, um ihn zu bearbeiten.</p>${group('♟','Spieler & Sitzordnung',`${db.players.filter(p=>!p.guest).length} Stammspieler · Rotation beim Spielstart`,members)}${group('♣','Spielregeln',`${euro(db.settings.tack)} / Tacken · Bock ×${db.settings.bockMultiplier||2}`,rules)}${group('€','Kasse & Beiträge',`Start ${euro(db.settings.startFee)} · Solo ${euro(db.settings.soloFee)}`,fees)}${group('⚙','App & Datensicherung','Design · Clubname · Backup',app)}</div>`;
 }
+function setTheme(theme){if(!['forest','modern','classic','light'].includes(theme))return;db.settings.theme=theme;save();render();const groups=document.querySelectorAll('.settings-group');if(groups.length)groups[3].open=true}
 function saveAppName(){
  const value=$("appNameInput").value.trim();
  if(!value){const el=$("appNameInput");el.setCustomValidity("Bitte einen Clubnamen eingeben.");el.reportValidity();el.setCustomValidity("");return}
@@ -687,8 +739,8 @@ async function restore(ev){
  }catch(err){alert("Import fehlgeschlagen: "+err.message)}
 }
 /* Version 3: Original-Tischansicht beibehalten, Spielregeln erweitert */
-const APP_VERSION='1.6.9';
-const VERSION_NOTES=['1.6.9 · Einstellungen in vier übersichtliche aufklappbare Bereiche gegliedert','1.6.8 · Schlanke Euro-Jahresrangliste nur für Stammspieler mit antippbaren Spielerprofilen','1.6.7 · Klassischer Kartentisch kompakter; Bockstatus in der Tischmitte; Solo/Hochzeit und Tacken ohne Scrollen','1.6.6 · Solo-Fehler behoben; Solo/Hochzeit direkt unter dem Tisch; Bockauslöser aufklappbar','1.6.5 · Tacken direkt am Kartentisch buchen; Soloart per Häkchen, gewonnen als Standard','1.6.4 · Nach vollständiger Zahlung zurück zur Startseite; letzte vier abgeschlossene Spielabende und Historienmenü','1.6.3 · Gewinner nach jeder Runde automatisch abwählen; aktive Spieler hervorheben und nächste Runde direkt vorbereiten','1.6.2 · Nach Spielabend beenden zurück zur Startseite; neuer Abend startet bei Spieler- und Gastgeberauswahl','1.6.1 · Bronze-Auswahlfelder in der Spielabend-Einrichtung','1.6.0 · Kompakte Spielabend-Einrichtung und Ergebnishistorie wie Abrechnung; Runden- und Start-Spalten entfernt','1.5.9 · Mobile Abrechnung mit fünf Spalten; Startgebühr automatisch; offene Zahlungen einheitlich zweizeilig','1.5.8 · Spielernamen mit Finger oder Maus an den Kartentisch ziehen; Antippen bleibt möglich','1.5.7 · Papierlisten zeilenweise in Euro nachtragen; Kassenanfangsbestand mit Korrekturverlauf','1.5.6 · Bock-Multiplikator unter Einstellungen frei wählbar (Standard ×2)','1.5.5 · Hochzeit am Kartentisch auswählen und sofort buchen, ohne Mischerwechsel','1.5.4 · Gewinner und Solospieler türkis markiert; Mischer bleibt bronze','1.5.3 · Solo: Spieler direkt am Tisch wählen, 1–7 Tacken sofort buchen','1.5.2 · Spielabend beenden nur noch in der Abrechnung','1.5.1 · Startseite kompakter: Zahlungen und letzte Treffen nebeneinander; Treffen/Spiele im Kopf','1.5.0 · Gewinner am Kartentisch, Tacken 1–7 sofort buchen, freie Eingabe und Mischerwechsel','1.4.9 · Jahresstatistik mit Spitzenreitern, Soloquote und Teilnahme-Rangliste','1.4.8 · Kasse mit offenen Spielerbeträgen, Zahlungsverlauf, Einnahmen/Ausgaben und Jahresfilter','1.4.7 · Nur vollständige Zahlungen mit Datum; Gewinner-Hinweis direkt in der App','1.4.6 · Start und Mehr fest in Kopfzeile, Spiel-Navigation entfernt; Clubname einstellbar; Entwicklerhinweis','1.4.5 · Laufenden Spielabend mit Gastgeber, Runden und Bockstand auf der Startseite anzeigen','1.4.4 · Doppelte Navigationseinträge Spieler und Kasse oben entfernt','1.4.3 · Spielabend nachtragen unter Mehr statt auf der Startseite','1.4.2 · Vergangene Spielabende Runde für Runde nachtragen; historisch bezahlt ohne Kassenbuchung','1.4.1 · Ergebnisse als Jahresliste mit Statistik-Umschalter','1.4.0 · Jahresstatistik für Spielabende, Tacken und Soli','1.3.1 · Gastgeber-Hinweis innerhalb der App; nur noch letzte Runde korrigieren','1.3.0 · Nur letzte Runde korrigieren oder rückgängig machen','1.2.6 · Spielabend ohne Browser-Bestätigung direkt beenden','1.2.5 · Spielabend direkt aus Abrechnung beenden; Abwesende automatisch als offen führen','1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
+const APP_VERSION='1.7.3';
+const VERSION_NOTES=['1.7.3 · Stilles Solo und vier auswählbare App-Designs','1.7.2 · Ergebnisse zeigen vier neueste Tabellen, ältere aufklappbar','1.7.1 · Kassenübersicht gestrafft, Korrekturbuchungen und Zahlungsprüfung ergänzt','1.7.0 · Papierlisten mobil erfassen, einzelne Zeilen korrigieren und löschen, Folgewerte automatisch neu berechnen','1.6.9 · Einstellungen in vier übersichtliche aufklappbare Bereiche gegliedert','1.6.8 · Schlanke Euro-Jahresrangliste nur für Stammspieler mit antippbaren Spielerprofilen','1.6.7 · Klassischer Kartentisch kompakter; Bockstatus in der Tischmitte; Solo/Hochzeit und Tacken ohne Scrollen','1.6.6 · Solo-Fehler behoben; Solo/Hochzeit direkt unter dem Tisch; Bockauslöser aufklappbar','1.6.5 · Tacken direkt am Kartentisch buchen; Soloart per Häkchen, gewonnen als Standard','1.6.4 · Nach vollständiger Zahlung zurück zur Startseite; letzte vier abgeschlossene Spielabende und Historienmenü','1.6.3 · Gewinner nach jeder Runde automatisch abwählen; aktive Spieler hervorheben und nächste Runde direkt vorbereiten','1.6.2 · Nach Spielabend beenden zurück zur Startseite; neuer Abend startet bei Spieler- und Gastgeberauswahl','1.6.1 · Bronze-Auswahlfelder in der Spielabend-Einrichtung','1.6.0 · Kompakte Spielabend-Einrichtung und Ergebnishistorie wie Abrechnung; Runden- und Start-Spalten entfernt','1.5.9 · Mobile Abrechnung mit fünf Spalten; Startgebühr automatisch; offene Zahlungen einheitlich zweizeilig','1.5.8 · Spielernamen mit Finger oder Maus an den Kartentisch ziehen; Antippen bleibt möglich','1.5.7 · Papierlisten zeilenweise in Euro nachtragen; Kassenanfangsbestand mit Korrekturverlauf','1.5.6 · Bock-Multiplikator unter Einstellungen frei wählbar (Standard ×2)','1.5.5 · Hochzeit am Kartentisch auswählen und sofort buchen, ohne Mischerwechsel','1.5.4 · Gewinner und Solospieler türkis markiert; Mischer bleibt bronze','1.5.3 · Solo: Spieler direkt am Tisch wählen, 1–7 Tacken sofort buchen','1.5.2 · Spielabend beenden nur noch in der Abrechnung','1.5.1 · Startseite kompakter: Zahlungen und letzte Treffen nebeneinander; Treffen/Spiele im Kopf','1.5.0 · Gewinner am Kartentisch, Tacken 1–7 sofort buchen, freie Eingabe und Mischerwechsel','1.4.9 · Jahresstatistik mit Spitzenreitern, Soloquote und Teilnahme-Rangliste','1.4.8 · Kasse mit offenen Spielerbeträgen, Zahlungsverlauf, Einnahmen/Ausgaben und Jahresfilter','1.4.7 · Nur vollständige Zahlungen mit Datum; Gewinner-Hinweis direkt in der App','1.4.6 · Start und Mehr fest in Kopfzeile, Spiel-Navigation entfernt; Clubname einstellbar; Entwicklerhinweis','1.4.5 · Laufenden Spielabend mit Gastgeber, Runden und Bockstand auf der Startseite anzeigen','1.4.4 · Doppelte Navigationseinträge Spieler und Kasse oben entfernt','1.4.3 · Spielabend nachtragen unter Mehr statt auf der Startseite','1.4.2 · Vergangene Spielabende Runde für Runde nachtragen; historisch bezahlt ohne Kassenbuchung','1.4.1 · Ergebnisse als Jahresliste mit Statistik-Umschalter','1.4.0 · Jahresstatistik für Spielabende, Tacken und Soli','1.3.1 · Gastgeber-Hinweis innerhalb der App; nur noch letzte Runde korrigieren','1.3.0 · Nur letzte Runde korrigieren oder rückgängig machen','1.2.6 · Spielabend ohne Browser-Bestätigung direkt beenden','1.2.5 · Spielabend direkt aus Abrechnung beenden; Abwesende automatisch als offen führen','1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
 const oldRender=render;
 function stamp(ms){return ms?new Date(ms).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'}):'–'}
 function isClosed(e){return !!e.endedAt}
@@ -771,7 +823,8 @@ function roundError(message){const el=$('roundError');if(el){el.textContent=mess
 function saveRound(){const e=current();if(!assertOpen(e))return;let r;try{r=calcRound()}catch(err){return roundError(err.message)}if(editingLastRoundId){saveCorrectedRound(r);return}const rot=rotation(e);e.rounds.push({id:uid(),at:Date.now(),...r,mixer:rot.mixer,playing:[...rot.playing],sitting:[...rot.sitting]});winners=[];save();go('evening')}
 function solo(){const e=current();if(!assertOpen(e))return '<div class="card">Abend abgeschlossen.</div>';const rot=rotation(editingBase(e)),order=orderOf(e),assigned={};sequence(order.length).forEach((p,i)=>assigned[p]=order[i]);return `<div class="card"><h2>♠ Solo – Runde ${rot.number}</h2><p>★ Mischer: <b>${esc(name(rot.mixer))}</b></p>${bockBanner(editingBase(e))}<p class="round-guide">1. Solospieler direkt am Tisch antippen. 2. Soloart und Ergebnis auswählen. 3. Tacken antippen – Solo wird sofort gebucht.</p>${table(e.present.length,assigned,'solo',rot)}<p id="soloStatus" class="round-guide">${chosenSolo?'Solospieler: '+esc(name(chosenSolo)):'Noch kein Solospieler ausgewählt.'}</p><label>Soloart</label><div class="solo-choices">
  <label class="check"><input type="checkbox" name="soloKind" value="Damen-Solo" checked onchange="chooseSoloKind(this)"> Damen-Solo</label>
- <label class="check"><input type="checkbox" name="soloKind" value="Buben-Solo" onchange="chooseSoloKind(this)"> Buben-Solo</label></div>
+ <label class="check"><input type="checkbox" name="soloKind" value="Buben-Solo" onchange="chooseSoloKind(this)"> Buben-Solo</label>
+ <label class="check"><input type="checkbox" name="soloKind" value="Stilles Solo" onchange="chooseSoloKind(this)"> Stilles Solo</label></div>
  <label class="check"><input type="checkbox" id="soloLost" onchange="previewSolo()"> Solo verloren</label>
  <p class="mini">Ohne Häkchen bei „Solo verloren“ gilt das Solo als gewonnen.</p><h3>Grundtacken (vor Bock)</h3><div class="quick-tacken">${[1,2,3,4,5,6,7].map(n=>`<button type="button" onclick="quickSaveSolo(${n})" aria-label="${n} Tacken und Solo beenden">${n}</button>`).join('')}</div><label for="soloPoints">Anderer Wert (auch 0 oder über 7)</label><div class="actions"><input id="soloPoints" type="number" min="0" step="1" inputmode="numeric" placeholder="Tacken" style="max-width:160px" oninput="previewSolo()">${button('Wert buchen','saveSolo()','primary')}</div><div id="roundError" class="preview" role="alert" style="display:none;color:#ffcfaa"></div><div class="preview" id="soloPreview"></div>${triggersHtml()}<div class="actions">${button('Abbrechen',"editingLastRoundId=null;chosenSolo=null;go('evening')")}</div></div>`}
 function chooseSoloKind(el){document.querySelectorAll('input[name="soloKind"]').forEach(x=>x.checked=(x===el));previewSolo()}
@@ -793,6 +846,7 @@ function outstandingByPlayer(){
  return [...out].map(([id,amount])=>({id,amount})).sort((a,b)=>b.amount-a.amount);
 }
 function recordPayment(e,id,amount){
+ if(!Number.isFinite(amount)||amount<=0)return;
  e.payments=e.payments||{};e.payments[id]=e.payments[id]||[];
  e.payments[id].push({id:uid(),at:Date.now(),amount:Math.round(amount*100)/100});
 }
@@ -841,14 +895,37 @@ function results(){
  <div class="row"><span>Noch offen</span><b class="bad">${euro(Math.max(0,sum-received))}</b></div></div>
  <div class="actions">${button('Zurück',"go('evening')")}${!isClosed(e)?button(e.historical?'Nachtrag abschließen':'Spielabend beenden','closeEvening()','danger'):''}</div></div>`;
 }
+let historicalEditIndex=-1;
 function historicalEditor(e){
  const last=e.rounds.length?e.rounds[e.rounds.length-1].historicalCents||{}:{};
  const previous={};e.present.forEach(id=>previous[id]=Number(last[id]||0));
- const history=e.rounds.map((r,i)=>`<tr><td>${i+1}</td>${e.present.map(id=>`<td style="white-space:nowrap">${r.historicalSitting?.includes(id)?'— ':''}${euro(Number(r.historicalCents?.[id]||0)/100)}</td>`).join('')}<td>${esc(r.historicalNote||'')}</td></tr>`).join('');
- return `<div class="card"><h3>Papierliste übertragen · Zeile ${e.rounds.length+1}</h3><p class="muted">Laufende Eurostände aus der nächsten Zeile eintragen. Beispiel: 560 = 5,60 €; −200 = −2,00 €. Ein leeres Feld oder „–“ übernimmt den bisherigen Stand. Die Eingaben sind Euro-Cent, wenn kein Komma angegeben ist.</p>
- ${isClosed(e)?'<p class="pill">Dieser Nachtrag ist abgeschlossen.</p>':`<form onsubmit="addHistoricalRow(event)"><div class="scroll"><table><tr>${e.present.map(id=>`<th>${esc(name(id))}</th>`).join('')}</tr><tr>${e.present.map(id=>`<td><input style="min-width:86px;width:95px" inputmode="decimal" aria-label="${esc(name(id))}" name="hist_${id}" placeholder="${String(previous[id])}" autocomplete="off"></td>`).join('')}</tr></table></div><label>Notiz (freiwillig)</label><input id="historicalNote" placeholder="z. B. Bock, Solo, Hochzeit"><p id="histError" class="bad" role="alert"></p><button class="primary">Zeile speichern und nächste erfassen</button></form>`}
- <h3>Übertragene Zeilen (${e.rounds.length})</h3><div class="scroll"><table><tr><th>Nr.</th>${e.present.map(id=>`<th>${esc(name(id))}</th>`).join('')}<th>Notiz</th></tr>${history||`<tr><td colspan="${e.present.length+2}">Noch keine Zeilen erfasst.</td></tr>`}</table></div></div>`;
+ const edit=historicalEditIndex>=0&&historicalEditIndex<e.rounds.length?historicalEditIndex:-1;
+ const base=edit>=0?(edit?e.rounds[edit-1].historicalCents||{}:{}):previous;
+ const values=edit>=0?e.rounds[edit].historicalCents||{}:{};
+ const list=e.rounds.map((r,i)=>`<div class="hist-entry"><div class="hist-entry-head"><b>Zeile ${i+1}</b><span class="mini">${esc(r.historicalNote||'')}</span><button type="button" class="hist-small" onclick="editHistoricalRow(${i})">Bearbeiten</button></div><div class="hist-values">${e.present.map(id=>`<span><small>${esc(name(id))}</small><b>${euro(Number(r.historicalCents?.[id]||0)/100)}</b></span>`).join('')}</div></div>`).join('');
+ return `<div class="card hist-card"><div class="row"><h3>Papierliste · ${e.rounds.length} Zeilen</h3><span class="pill">Ohne Kassenbuchung</span></div>
+ <p class="mini">Laufende Eurostände vom Spielzettel übernehmen. 560 = 5,60 € · 5,60 = 5,60 €. Leere Felder behalten den vorherigen Stand.</p>
+ ${isClosed(e)&&edit<0?'<p class="pill">Nachtrag abgeschlossen · Zeilen können zur Korrektur bearbeitet werden.</p>':''}
+ ${(!isClosed(e)||edit>=0)?`<form onsubmit="saveHistoricalRow(event)"><div class="hist-form-head"><b>${edit>=0?'Zeile '+(edit+1)+' korrigieren':'Neue Zeile '+(e.rounds.length+1)}</b>${edit>=0?'<button type="button" onclick="cancelHistoricalEdit()">Abbrechen</button>':''}</div>
+ <div class="hist-inputs">${e.present.map(id=>`<label class="hist-input"><span>${esc(name(id))}</span><input inputmode="decimal" aria-label="${esc(name(id))}" name="hist_${id}" placeholder="${String(Number(base[id]||0))}" value="${edit>=0?esc(String(Number(values[id]||0))):''}" autocomplete="off"><small>Vorher ${euro(Number(base[id]||0)/100)}</small></label>`).join('')}</div>
+ <label>Notiz (optional)</label><input id="historicalNote" placeholder="Bock, Solo, Hochzeit …" value="${edit>=0?esc(e.rounds[edit].historicalNote||''):''}">
+ <div class="hist-balance" id="histBalance">${edit>=0?'Korrektur':'Nächste Zeile'} · ${e.present.length} Spieler</div><p id="histError" class="bad" role="alert"></p>
+ <button class="primary" style="width:100%">${edit>=0?'Korrektur speichern':'Zeile speichern & weiter'}</button>
+ ${edit>=0?`<button type="button" class="hist-delete" onclick="deleteHistoricalRow(${edit})">Diese Zeile löschen</button>`:''}</form>`:''}
+ <details class="hist-history" ${e.rounds.length<=3?'open':''}><summary>Übertragene Zeilen (${e.rounds.length})</summary>${list||'<p class="muted">Noch keine Zeilen erfasst.</p>'}</details>
+ </div>`;
 }
+function editHistoricalRow(i){const e=current();if(!e?.historical||i<0||i>=e.rounds.length)return;historicalEditIndex=i;render();document.querySelector('.hist-form-head')?.scrollIntoView({block:'nearest'});}
+function cancelHistoricalEdit(){historicalEditIndex=-1;render()}
+function deleteHistoricalRow(i){const e=current();if(!e?.historical||i<0||i>=e.rounds.length)return;if(!confirm('Zeile '+(i+1)+' wirklich löschen? Die folgenden Zeilen bleiben als Eurostände erhalten.'))return;e.rounds.splice(i,1);rebuildHistoricalPoints(e);historicalEditIndex=-1;save();render()}
+function rebuildHistoricalPoints(e){let previous={};for(const r of e.rounds){const points={};for(const id of e.present){const now=Number(r.historicalCents?.[id]||0);points[id]=(now-Number(previous[id]||0))/100/db.settings.tack;}r.points=points;previous=r.historicalCents||{};}}
+function saveHistoricalRow(ev){ev.preventDefault();const e=current();if(!e?.historical)return;const edit=historicalEditIndex>=0&&historicalEditIndex<e.rounds.length?historicalEditIndex:-1;if(isClosed(e)&&edit<0)return;
+ const prior=edit>=0?(edit?e.rounds[edit-1].historicalCents||{}:{}):(e.rounds.length?e.rounds[e.rounds.length-1].historicalCents||{}:{});
+ const cents={};try{for(const id of e.present)cents[id]=parseHistoricalCents(document.querySelector(`[name="hist_${id}"]`)?.value,Number(prior[id]||0));}catch(err){$('histError').textContent=err.message;return}
+ const note=$('historicalNote')?.value.trim()||'';
+ if(edit>=0){Object.assign(e.rounds[edit],{historicalCents:cents,historicalNote:note,solo:/solo/i.test(note),soloType:note});}
+ else e.rounds.push({id:uid(),at:Date.now()+e.rounds.length,points:{},playing:[...e.present],sitting:[],historicalCents:cents,historicalNote:note,historical:true,solo:/solo/i.test(note),soloType:note});
+ rebuildHistoricalPoints(e);historicalEditIndex=-1;save();render();}
 function parseHistoricalCents(value,previous){
  const raw=String(value||'').trim().replace(/\s/g,'');if(!raw||raw==='–'||raw==='—'||raw==='-')return previous;
  // Papierwerte ohne Komma sind Cent: 560 = 5,60 EUR; mit Komma Euro: 5,60 = 5,60 EUR.
@@ -856,23 +933,31 @@ function parseHistoricalCents(value,previous){
  if(!Number.isFinite(n)||Math.abs(n)>10000000)throw Error('Ungültiger Eurostand: '+raw);
  return Math.round(n);
 }
-function addHistoricalRow(ev){ev.preventDefault();const e=current();if(!e||!e.historical||isClosed(e))return;
- const last=e.rounds.length?e.rounds[e.rounds.length-1].historicalCents||{}:{};
- const cents={},points={};try{for(const id of e.present){const prior=Number(last[id]||0);cents[id]=parseHistoricalCents(document.querySelector(`[name="hist_${id}"]`)?.value,prior);points[id]=(cents[id]-prior)/100/db.settings.tack;}}
- catch(err){const el=$('histError');if(el)el.textContent=err.message;return}
- const sum=Object.values(cents).reduce((a,b)=>a+b,0);
- // No zero-sum requirement: paper sheets may contain additional special entries.
- const note=$('historicalNote')?.value.trim()||'';
- e.rounds.push({id:uid(),at:Date.now()+e.rounds.length,points,playing:[...e.present],sitting:[],historicalCents:cents,historicalNote:note,historical:true,solo:/solo/i.test(note),soloType:note});
- save();render();
-}
-function undoHistoricalLast(){const e=current();if(!e||!e.historical||isClosed(e)||!e.rounds.length)return;e.rounds.pop();save();render()}
+function addHistoricalRow(ev){return saveHistoricalRow(ev)}
+function undoHistoricalLast(){const e=current();if(!e||!e.historical||isClosed(e)||!e.rounds.length)return;e.rounds.pop();historicalEditIndex=-1;save();render()}
 function cashOpening(){return Number(db.cashOpening?.amount||0)}
+function cashCorrection(id){
+ const c=db.cash.find(x=>x.id===id);if(!c||c.reversalOf||db.cash.some(x=>x.reversalOf===id))return;
+ if(!confirm('Diese Buchung durch eine Gegenbuchung stornieren? Der Verlauf bleibt erhalten.'))return;
+ db.cash.push({id:uid(),at:Date.now(),text:'Storno: '+(c.text||'Buchung'),amount:-Number(c.amount||0),reversalOf:id});save();render();
+}
+function cashAudit(){
+ const issues=[];const seen=new Set();
+ for(const t of cashTransactions()){
+  if(t.id&&seen.has(t.id))issues.push('Doppelte Buchungs-ID');
+  if(t.id)seen.add(t.id);
+  if(!Number.isFinite(t.amount))issues.push('Ungültiger Buchungsbetrag');
+ }
+ for(const e of db.evenings.filter(x=>!x.historical))for(const r of dueRows(e)){
+  if(paidAmount(e,r.id)>r.fee+0.009)issues.push('Überzahlung: '+name(r.id)+' ('+e.date+')');
+ }
+ return [...new Set(issues)];
+}
 function updateCashOpening(ev){ev.preventDefault();const raw=$('openingAmount')?.value;const value=Number(raw);if(raw===''||!Number.isFinite(value)||value<0)return;
  const old=cashOpening();db.cashOpening=db.cashOpening||{amount:0,history:[]};db.cashOpening.history=db.cashOpening.history||[];
  if(!db.cashOpening.setAt)db.cashOpening.setAt=Date.now();db.cashOpening.history.push({id:uid(),at:Date.now(),old,amount:Math.round(value*100)/100});db.cashOpening.amount=Math.round(value*100)/100;save();render();}
 function cashTransactions(){
- const tx=db.cash.map(c=>({id:c.id,at:c.at||0,amount:Number(c.amount||0),text:c.text||'Freie Buchung',kind:'free'}));
+ const tx=db.cash.map(c=>({id:c.id,at:c.at||0,amount:Number(c.amount||0),text:c.text||'Freie Buchung',kind:'free',reversalOf:c.reversalOf}));
  db.evenings.filter(e=>!e.historical).forEach(e=>Object.entries(e.payments||{}).forEach(([id,arr])=>arr.forEach(p=>tx.push({id:p.id,at:p.at||0,amount:Number(p.amount||0),text:name(id)+' · Spielabend '+e.date,kind:'payment',player:id,evening:e.id}))));
  return tx.sort((a,b)=>b.at-a.at);
 }
@@ -885,15 +970,15 @@ function cash(){
  const dues=db.evenings.filter(e=>selected==='all'||String((e.date||'').slice(0,4))===selected).reduce((a,e)=>a+dueRows(e).reduce((b,r)=>b+Math.max(0,r.fee-paidAmount(e,r.id)),0),0);
  const debtors=outstandingByPlayer();
  const payments=filtered.filter(t=>t.kind==='payment');
- const e=current();
+ const e=current(),audit=cashAudit();
  return `<div class="card"><h2>Kasse</h2><p class="muted">Tatsächlicher Kassenbestand: Anfangsbestand plus Buchungen seit dessen Festlegung</p><div class="big">${euro(balance)}</div></div>
- <div class="card"><h3>Kassenanfangsbestand</h3><p class="muted">Trage das Geld ein, das tatsächlich in eurer Kasse liegt. Alte Spielabende werden nicht hinzugezählt. Änderungen werden mit Datum protokolliert.</p><form onsubmit="updateCashOpening(event)"><label>Bestand in €</label><input id="openingAmount" type="number" min="0" step="0.01" value="${cashOpening().toFixed(2)}" required><button class="primary">Anfangsbestand speichern / korrigieren</button></form><details><summary>Änderungsverlauf</summary>${(db.cashOpening?.history||[]).slice().reverse().map(h=>`<div class="row"><span>${stamp(h.at)}</span><span>${euro(h.old)} → ${euro(h.amount)}</span></div>`).join('')||'Noch keine Änderungen.'}</details></div><div class="card"><h3>Jahresübersicht</h3><label>Zeitraum</label><select onchange="window.cashYear=this.value;render()"><option value="all" ${selected==='all'?'selected':''}>Alle Jahre</option>${years.map(y=>`<option value="${y}" ${selected===String(y)?'selected':''}>${y}</option>`).join('')}</select>
+ <details class="card"><summary><b>Kassenanfangsbestand ändern</b> · ${euro(cashOpening())}</summary><p class="muted">Trage das Geld ein, das tatsächlich in eurer Kasse liegt. Alte Spielabende werden nicht hinzugezählt. Änderungen werden mit Datum protokolliert.</p><form onsubmit="updateCashOpening(event)"><label>Bestand in €</label><input id="openingAmount" type="number" min="0" step="0.01" value="${cashOpening().toFixed(2)}" required><button class="primary">Anfangsbestand speichern / korrigieren</button></form><details><summary>Änderungsverlauf</summary>${(db.cashOpening?.history||[]).slice().reverse().map(h=>`<div class="row"><span>${stamp(h.at)}</span><span>${euro(h.old)} → ${euro(h.amount)}</span></div>`).join('')||'Noch keine Änderungen.'}</details></details><div class="card"><h3>Jahresübersicht</h3><label>Zeitraum</label><select onchange="window.cashYear=this.value;render()"><option value="all" ${selected==='all'?'selected':''}>Alle Jahre</option>${years.map(y=>`<option value="${y}" ${selected===String(y)?'selected':''}>${y}</option>`).join('')}</select>
  <div class="row"><span>Einnahmen</span><b class="good">${euro(income)}</b></div><div class="row"><span>Ausgaben</span><b class="bad">${euro(expenses)}</b></div><div class="row"><span>Saldo im gewählten Zeitraum</span><b>${euro(income-expenses)}</b></div><div class="row"><span>Noch offene Spielabend-Beiträge</span><b>${euro(dues)}</b></div></div>
- <div class="card"><h3>Offene Spielerzahlungen</h3><p class="muted">Gesamtschulden aus allen Spielabenden · nur vollständig bezahlen.</p>${debtors.length?debtors.map(d=>`<div class="row"><div><b>${esc(name(d.id))}</b><div class="mini">Noch offen</div></div><div class="actions"><b class="bad">${euro(d.amount)}</b>${button('Bezahlen',`showDebt('${d.id}')`,'primary')}</div></div>`).join(''):'Alle Spielerzahlungen sind beglichen.'}</div>
+ ${audit.length?`<div class="card"><h3>Prüfhinweise</h3>${audit.map(x=>`<p class="bad">⚠ ${esc(x)}</p>`).join('')}</div>`:''}<div class="card"><h3>Offene Spielerzahlungen</h3><p class="muted">Gesamtschulden aus allen Spielabenden · nur vollständig bezahlen.</p>${debtors.length?debtors.map(d=>`<div class="row"><div><b>${esc(name(d.id))}</b><div class="mini">Noch offen</div></div><div class="actions"><b class="bad">${euro(d.amount)}</b>${button('Bezahlen',`showDebt('${d.id}')`,'primary')}</div></div>`).join(''):'Alle Spielerzahlungen sind beglichen.'}</div>
  ${e?`<div class="card"><h3>Zahlungen – ${esc(e.date)}</h3>${dueRows(e).map(x=>{const paid=paidAmount(e,x.id),rest=Math.max(0,x.fee-paid);return `<div class="row"><div><b>${esc(name(x.id))}</b><div class="mini">Soll ${euro(x.fee)} · Bezahlt ${euro(paid)} · Offen ${euro(rest)}</div></div>${rest>0?button('Bezahlen',`payEveningFull('${x.id}')`,'primary'):'✓ Bezahlt'}</div>`}).join('')}</div>`:''}
  <div class="card"><h3>Ein- oder Ausgabe buchen</h3><form onsubmit="addCash(event)"><label>Beschreibung</label><input id="ct" maxlength="150" placeholder="z. B. Getränke oder Spende" required><label>Betrag in €</label><input id="ca" type="number" step=".01" min="0.01" required><label>Art</label><select id="cashType"><option value="income">Einnahme (+)</option><option value="expense">Ausgabe (−)</option></select><button class="primary">Buchen</button></form><p class="muted">Spielerzahlungen bitte oben über „Bezahlen“ erfassen, damit keine doppelte Buchung entsteht.</p></div>
- <div class="card"><h3>Zahlungsverlauf der Spieler</h3>${payments.length?payments.map(t=>`<div class="row"><div><b>${esc(name(t.player))}</b><div class="mini">${stamp(t.at)} · Spielabend ${esc(db.evenings.find(e=>e.id===t.evening)?.date||'')}</div></div><b class="good">+${euro(t.amount)}</b></div>`).join(''):'Keine Spielerzahlungen im gewählten Zeitraum.'}</div>
- <div class="card"><h3>Kassenbuch · alle Buchungen</h3>${filtered.length?filtered.map(t=>`<div class="row"><div><b>${esc(t.text)}</b><div class="mini">${stamp(t.at)} · ${t.kind==='payment'?'Spielerzahlung':'Freie Buchung'}</div></div><b class="${t.amount>=0?'good':'bad'}">${t.amount>0?'+':''}${euro(t.amount)}</b></div>`).join(''):'Noch keine Buchungen in diesem Zeitraum.'}</div>`;
+ <details class="card"><summary><b>Zahlungsverlauf der Spieler</b> · ${payments.length} Buchungen</summary>${payments.length?payments.map(t=>`<div class="row"><div><b>${esc(name(t.player))}</b><div class="mini">${stamp(t.at)} · Spielabend ${esc(db.evenings.find(e=>e.id===t.evening)?.date||'')}</div></div><b class="good">+${euro(t.amount)}</b></div>`).join(''):'Keine Spielerzahlungen im gewählten Zeitraum.'}</details>
+ <details class="card"><summary><b>Kassenbuch</b> · ${filtered.length} Buchungen</summary>${filtered.length?filtered.map(t=>`<div class="row"><div><b>${esc(t.text)}</b><div class="mini">${stamp(t.at)} · ${t.kind==='payment'?'Spielerzahlung':'Freie Buchung'}</div></div><b class="${t.amount>=0?'good':'bad'}">${t.amount>0?'+':''}${euro(t.amount)}</b>${t.kind==='free'&&!t.reversalOf&&!db.cash.some(c=>c.reversalOf===t.id)?button('Storno',`cashCorrection('${t.id}')`):''}</div>`).join(''):'Noch keine Buchungen in diesem Zeitraum.'}</details>`;
 }
 function addCash(ev){
  ev.preventDefault();const label=$('ct').value.trim(),value=Number($('ca').value),type=$('cashType').value;
@@ -923,7 +1008,7 @@ function statistics(){
  const selected=statisticsYear;
  const evenings=db.evenings.filter(e=>selected==='all'||String(e.date||'').startsWith(selected+'-'));
  const data=db.players.filter(p=>!p.guest).map(p=>{
-  let nights=0,rounds=0,solos=0,wonSolos=0,lostSolos=0,damen=0,buben=0,tacken=0;
+  let nights=0,rounds=0,solos=0,wonSolos=0,lostSolos=0,damen=0,buben=0,stille=0,tacken=0;
   const history=[];
   for(const e of [...evenings].sort((a,b)=>String(a.date).localeCompare(String(b.date)))){
    if(!e.present.includes(p.id))continue;
@@ -935,11 +1020,12 @@ function statistics(){
    lostSolos+=own.filter(r=>r.soloWon===false||r.won===false).length;
    damen+=own.filter(r=>/damen/i.test(String(r.soloType||''))).length;
    buben+=own.filter(r=>/buben/i.test(String(r.soloType||''))).length;
+   stille+=own.filter(r=>/still/i.test(String(r.soloType||''))).length;
    const value=totals(e)[p.id]||0;
    tacken+=value;
    history.push({date:e.date,value:value*db.settings.tack});
   }
-  return {p,nights,rounds,solos,wonSolos,lostSolos,damen,buben,tacken,amount:tacken*db.settings.tack,history};
+  return {p,nights,rounds,solos,wonSolos,lostSolos,damen,buben,stille,tacken,amount:tacken*db.settings.tack,history};
  }).sort((a,b)=>b.amount-a.amount||b.nights-a.nights||a.p.name.localeCompare(b.p.name,'de'));
  const active=data.filter(x=>x.nights>0);
  const totalRounds=evenings.reduce((n,e)=>n+e.rounds.length,0);
@@ -951,7 +1037,7 @@ function statistics(){
  <div class="row"><span>Spielabende</span><b>${chosen.nights}</b></div>
  <div class="row"><span>Gespielte Runden</span><b>${chosen.rounds}</b></div>
  <div class="row"><span>Soli insgesamt</span><b>${chosen.solos}</b></div>
- <div class="row"><span>Damen-Solo / Buben-Solo</span><b>${chosen.damen} / ${chosen.buben}</b></div>
+ <div class="row"><span>Damen / Buben / Still</span><b>${chosen.damen} / ${chosen.buben} / ${chosen.stille}</b></div>
  <div class="row"><span>Soli gewonnen / verloren*</span><b>${chosen.wonSolos} / ${chosen.lostSolos}</b></div>
  <p class="mini">* Nur eindeutig gespeicherte Solo-Ergebnisse. Historische Notizen ohne Solospieler können nicht zugeordnet werden.</p>
  <h3>Entwicklung nach Spielabend</h3>${chosen.history.length?chosen.history.map((h,i)=>`<div class="row"><span>${esc(h.date)}</span><b class="${h.value>=0?'good':'bad'}">${formatAmount(h.value)}</b></div>`).join(''):'Noch keine Teilnahme erfasst.'}</div>`:'';
@@ -968,7 +1054,7 @@ function resultsOverview(){
  const years=[...new Set(db.evenings.map(e=>String(e.date||'').slice(0,4)).filter(y=>/^\d{4}$/.test(y)))].sort().reverse();
  if(!years.includes(resultsYear))resultsYear=years[0]||String(new Date().getFullYear());
  const chosen=[...db.evenings].filter(e=>String(e.date||'').startsWith(resultsYear+'-')).sort((a,b)=>String(b.date).localeCompare(String(a.date))||Number(b.startedAt||0)-Number(a.startedAt||0));
- const cards=chosen.map(e=>{
+ const makeResultCard=e=>{
   const t=totals(e),rows=dueRows(e);
   const lines=rows.map(r=>{
    const game=r.present?(t[r.id]||0)*db.settings.tack:null;
@@ -977,8 +1063,10 @@ function resultsOverview(){
    return `<tr><td>${esc(name(r.id))}${r.present?'':'<span class="bill-absent">abwesend</span>'}</td><td class="${game===null?'':game>=0?'good':'bad'}">${game===null?'–':(game>0?'+':'')+euro(game)}</td><td>${solo===null?'–':euro(solo)}</td><td class="bill-total"><b>${euro(r.fee)}</b></td><td>${isPaid?'✓':'○'}</td></tr>`;
   }).join('');
   return `<div class="card"><div class="row"><div><h3 style="margin:0">${esc(e.date)}</h3><div class="mini">${esc(name(e.host))} · ${isClosed(e)?'Abgeschlossen':'Offen'}${e.historical?' · Nachtrag':''}</div></div>${button('Öffnen',`openResultsEvening('${e.id}')`)}</div><div class="bill-caption">Startgebühr ${euro(db.settings.startFee)} inklusive</div><div class="bill-wrap"><table class="bill-table"><tr><th>Spieler</th><th>Spiel +/−</th><th>Solo</th><th>Gesamt</th><th>✓</th></tr>${lines}</table></div></div>`;
- }).join('');
- return `<div class="card"><h2>Ergebnisse</h2><p class="muted">Alle Spielabende des ausgewählten Jahres.</p><div class="actions" style="align-items:end"><div style="flex:1;min-width:150px"><label>Jahr auswählen</label><select onchange="resultsYear=this.value;render()">${years.length?years.map(y=>`<option value="${y}" ${resultsYear===y?'selected':''}>${y}</option>`).join(''):`<option>${resultsYear}</option>`}</select></div>${button('▥ Jahresstatistik',`statisticsYear=resultsYear;go('statistics')`)}</div><div class="row"><span>Spielabende im Jahr</span><b>${chosen.length}</b></div></div>${cards||'<div class="card">Für dieses Jahr sind noch keine Spielabende vorhanden.</div>'}`;
+ };
+ const cards=chosen.slice(0,4).map(makeResultCard).join('');
+ const older=chosen.length>4?`<details class="card"><summary>Ältere Spielabende anzeigen (${chosen.length-4})</summary><div style="margin-top:12px">${chosen.slice(4).map(makeResultCard).join('')}</div></details>`:'';
+ return `<div class="card"><h2>Ergebnisse</h2><p class="muted">Alle Spielabende des ausgewählten Jahres.</p><div class="actions" style="align-items:end"><div style="flex:1;min-width:150px"><label>Jahr auswählen</label><select onchange="resultsYear=this.value;render()">${years.length?years.map(y=>`<option value="${y}" ${resultsYear===y?'selected':''}>${y}</option>`).join(''):`<option>${resultsYear}</option>`}</select></div>${button('▥ Jahresstatistik',`statisticsYear=resultsYear;go('statistics')`)}</div><div class="row"><span>Spielabende im Jahr</span><b>${chosen.length}</b></div></div>${cards||'<div class="card">Für dieses Jahr sind noch keine Spielabende vorhanden.</div>'}${older}`;
 }
 function openResultsEvening(id){eveningId=id;go('results')}
 

@@ -198,6 +198,8 @@ input[type="checkbox"],input[type="radio"]{accent-color:#b77b3d}
 .compact-evening .preview:empty{display:none}
 .compact-evening .bock-extra{margin-top:10px}
 @media(min-width:700px){.compact-game-table .layout{grid-template-columns:120px minmax(0,1fr) 120px;grid-template-rows:65px 190px 65px;gap:10px}.compact-game-table .left .seat,.compact-game-table .right .seat{min-height:165px}.compact-game-table .seat .name{font-size:15px}}
+.stat-compact{width:100%;table-layout:auto}.stat-compact th,.stat-compact td{padding:10px 5px;white-space:nowrap;font-size:13px}.stat-compact th:last-child,.stat-compact td:last-child{text-align:right}.stat-tap{cursor:pointer}.stat-tap:active{background:#315c45}@media(max-width:390px){.stat-compact th,.stat-compact td{font-size:12px;padding:9px 3px}}
+.settings-panel{padding:14px}.settings-group{border:1px solid #56725c;border-radius:12px;margin:9px 0;background:#173a2d;overflow:hidden}.settings-group>summary{list-style:none;display:flex;align-items:center;gap:12px;padding:14px 12px;cursor:pointer;min-height:60px}.settings-group>summary::-webkit-details-marker{display:none}.settings-icon{display:flex;align-items:center;justify-content:center;flex:0 0 34px;height:34px;border-radius:9px;background:#315a44;color:#efc58a;font-weight:700;font-size:19px}.settings-title{flex:1;min-width:0}.settings-title strong{display:block;color:#f1d1a1;font-size:15px}.settings-title small{display:block;color:#cbbba4;font-size:11px;margin-top:3px;line-height:1.3}.settings-arrow{color:#e4c28d;font-size:20px;transition:transform .15s}.settings-group[open] .settings-arrow{transform:rotate(180deg)}.settings-body{padding:3px 13px 15px;border-top:1px solid #56725c}.settings-body hr{border:0;border-top:1px solid #56725c;margin:20px 0}.member-edit{display:flex;gap:8px;align-items:center;margin:8px 0}.member-edit input{flex:1;min-width:0;margin:0}.member-edit button{flex:0 0 auto;padding:11px 9px}.settings-body>button{margin-top:8px}
 </style>
 </head>
 <body>
@@ -625,23 +627,12 @@ function addCash(ev){
 /* Einstellungen und Backup */
 
 function settings(){
- return `<div class="card"><h2>App-Name</h2><p class="muted">Ändert die Überschrift in der dauerhaft sichtbaren Kopfzeile. Der App-Name „Doppelkopf Club“ und der Entwicklerhinweis bleiben in der Versionsinfo erhalten.</p><label for="appNameInput">Clubname in der Kopfzeile</label><input id="appNameInput" maxlength="70" value="${esc(db.settings.appName||'Doppelkopf Club')}"><button class="primary" onclick="saveAppName()">Namen speichern</button></div><div class="card"><h2>Einstellungen</h2>
- <label>€ pro Tacken</label><input id="tack" type="number" min="0" step=".01" value="${db.settings.tack}">
- <label>Startgebühr €</label><input id="startFee" type="number" min="0" step=".01" value="${db.settings.startFee}">
- <label>Solo-Strafe €</label><input id="soloFee" type="number" min="0" step=".01" value="${db.settings.soloFee}">
- <label>Bock-Faktor (×)</label><input id="bockMultiplier" type="number" min="1" max="20" step="1" value="${db.settings.bockMultiplier||2}"><p class="muted">Standard ×2. Gilt für künftig gebuchte Bockspiele.</p>
- ${button("Einstellungen speichern","saveSettings()","primary")}</div>
- <div class="card"><h2>Spielabend nachtragen</h2><p class="muted">Vergangene Spielabende mit allen einzelnen Runden erfassen. Historische Beträge gelten als bezahlt.</p>${button('Spielabend nachtragen','startHistorical()','primary')}</div>
- <div class="card"><h2>Stammspieler verwalten</h2>
- <p class="muted">Namen ändern oder einen weiteren Stammspieler hinzufügen. Die Spielstände bleiben den Spielern zugeordnet.</p>
- ${db.players.filter(p=>!p.guest).map(p=>`<label for="member_${p.id}">Stammspieler</label><div class="actions" style="margin-top:3px"><input style="flex:3;min-width:120px;margin:0" id="member_${p.id}" maxlength="60" value="${esc(p.name)}"><button style="flex:1" onclick="renameMember('${p.id}')">Speichern</button></div>`).join('')}
- <form onsubmit="addMember(event)"><label>Neuen Stammspieler hinzufügen</label><input id="newMemberName" maxlength="60" placeholder="Name" required><button class="primary">Hinzufügen</button></form>
- </div>
- <div class="card"><h2>Datensicherung</h2>
- <p>Die Daten liegen lokal auf diesem Gerät. Sichere sie regelmäßig.</p>
- ${button("Backup herunterladen","backup()","primary")}
- <label>Backup importieren</label><input type="file" accept=".json" onchange="restore(event)">
- </div><div class="card"><p class="muted" style="font-size:11px;margin:0">Doppelkopf Club · Version ${APP_VERSION} · by Tom Bücker</p><details><summary class="muted" style="cursor:pointer;font-size:12px">Versionsverlauf</summary>${VERSION_NOTES.map(n=>`<p class="muted">${esc(n)}</p>`).join('')}</details></div>`;
+ const group=(icon,title,desc,content)=>`<details class="settings-group"><summary><span class="settings-icon">${icon}</span><span class="settings-title"><strong>${title}</strong><small>${desc}</small></span><span class="settings-arrow">⌄</span></summary><div class="settings-body">${content}</div></details>`;
+ const members=`<p class="muted">Namen ändern oder Stammspieler hinzufügen. Vorhandene Ergebnisse bleiben zugeordnet.</p>${db.players.filter(p=>!p.guest).map(p=>`<div class="member-edit"><input aria-label="Name ${esc(p.name)}" id="member_${p.id}" maxlength="60" value="${esc(p.name)}"><button onclick="renameMember('${p.id}')">Speichern</button></div>`).join('')}<form onsubmit="addMember(event)"><label>Neuer Stammspieler</label><input id="newMemberName" maxlength="60" placeholder="Name" required><button class="primary">Hinzufügen</button></form><p class="muted">Gäste werden beim Spielabend hinzugefügt. Die Sitzordnung und Rotation wählst du beim Start eines Spielabends.</p>`;
+ const rules=`<label>Euro pro Tacken</label><input id="tack" type="number" min="0" step=".01" value="${db.settings.tack}"><label>Bock-Faktor (×)</label><input id="bockMultiplier" type="number" min="1" max="20" step="1" value="${db.settings.bockMultiplier||2}"><p class="muted">Solo und Hochzeit werden direkt am Kartentisch ausgewählt. Der Bock-Faktor gilt für zukünftige Buchungen.</p>${button('Regeln speichern','saveSettings()','primary')}`;
+ const fees=`<label>Startgebühr in Euro</label><input id="startFee" type="number" min="0" step=".01" value="${db.settings.startFee}"><label>Solo-Strafe in Euro</label><input id="soloFee" type="number" min="0" step=".01" value="${db.settings.soloFee}"><p class="muted">Die Abwesenheitsregel wird automatisch bei der Abrechnung berücksichtigt.</p>${button('Beiträge speichern','saveSettings()','primary')}`;
+ const app=`<label>Clubname</label><input id="appNameInput" maxlength="70" value="${esc(db.settings.appName||'Doppelkopf Club')}">${button('Clubnamen speichern','saveAppName()','primary')}<hr><h3>Spielabend nachtragen</h3><p class="muted">Vergangene Spielabende erfassen, ohne die aktuelle Clubkasse zu verändern.</p>${button('Spielabend nachtragen','startHistorical()')}<hr><h3>Datensicherung</h3><p class="muted">Die Daten liegen lokal auf diesem Gerät. Bitte regelmäßig sichern.</p>${button('Backup herunterladen','backup()','primary')}<label>Backup importieren</label><input type="file" accept=".json" onchange="restore(event)"><hr><p class="muted" style="font-size:11px">Doppelkopf Club · Version ${APP_VERSION} · by Tom Bücker</p><details><summary class="muted" style="cursor:pointer">Versionsverlauf</summary>${VERSION_NOTES.map(n=>`<p class="muted">${esc(n)}</p>`).join('')}</details>`;
+ return `<div class="card settings-panel"><h2 style="margin:0 0 5px">Einstellungen</h2><p class="muted" style="margin:0 0 13px">Tippe auf einen Bereich, um ihn zu bearbeiten.</p>${group('♟','Spieler & Sitzordnung',`${db.players.filter(p=>!p.guest).length} Stammspieler · Rotation beim Spielstart`,members)}${group('♣','Spielregeln',`${euro(db.settings.tack)} / Tacken · Bock ×${db.settings.bockMultiplier||2}`,rules)}${group('€','Kasse & Beiträge',`Start ${euro(db.settings.startFee)} · Solo ${euro(db.settings.soloFee)}`,fees)}${group('⚙','App & Datensicherung','Clubname · Nachträge · Backup',app)}</div>`;
 }
 function saveAppName(){
  const value=$("appNameInput").value.trim();
@@ -696,8 +687,8 @@ async function restore(ev){
  }catch(err){alert("Import fehlgeschlagen: "+err.message)}
 }
 /* Version 3: Original-Tischansicht beibehalten, Spielregeln erweitert */
-const APP_VERSION='1.6.7';
-const VERSION_NOTES=['1.6.7 · Klassischer Kartentisch kompakter; Bockstatus in der Tischmitte; Solo/Hochzeit und Tacken ohne Scrollen','1.6.6 · Solo-Fehler behoben; Solo/Hochzeit direkt unter dem Tisch; Bockauslöser aufklappbar','1.6.5 · Tacken direkt am Kartentisch buchen; Soloart per Häkchen, gewonnen als Standard','1.6.4 · Nach vollständiger Zahlung zurück zur Startseite; letzte vier abgeschlossene Spielabende und Historienmenü','1.6.3 · Gewinner nach jeder Runde automatisch abwählen; aktive Spieler hervorheben und nächste Runde direkt vorbereiten','1.6.2 · Nach Spielabend beenden zurück zur Startseite; neuer Abend startet bei Spieler- und Gastgeberauswahl','1.6.1 · Bronze-Auswahlfelder in der Spielabend-Einrichtung','1.6.0 · Kompakte Spielabend-Einrichtung und Ergebnishistorie wie Abrechnung; Runden- und Start-Spalten entfernt','1.5.9 · Mobile Abrechnung mit fünf Spalten; Startgebühr automatisch; offene Zahlungen einheitlich zweizeilig','1.5.8 · Spielernamen mit Finger oder Maus an den Kartentisch ziehen; Antippen bleibt möglich','1.5.7 · Papierlisten zeilenweise in Euro nachtragen; Kassenanfangsbestand mit Korrekturverlauf','1.5.6 · Bock-Multiplikator unter Einstellungen frei wählbar (Standard ×2)','1.5.5 · Hochzeit am Kartentisch auswählen und sofort buchen, ohne Mischerwechsel','1.5.4 · Gewinner und Solospieler türkis markiert; Mischer bleibt bronze','1.5.3 · Solo: Spieler direkt am Tisch wählen, 1–7 Tacken sofort buchen','1.5.2 · Spielabend beenden nur noch in der Abrechnung','1.5.1 · Startseite kompakter: Zahlungen und letzte Treffen nebeneinander; Treffen/Spiele im Kopf','1.5.0 · Gewinner am Kartentisch, Tacken 1–7 sofort buchen, freie Eingabe und Mischerwechsel','1.4.9 · Jahresstatistik mit Spitzenreitern, Soloquote und Teilnahme-Rangliste','1.4.8 · Kasse mit offenen Spielerbeträgen, Zahlungsverlauf, Einnahmen/Ausgaben und Jahresfilter','1.4.7 · Nur vollständige Zahlungen mit Datum; Gewinner-Hinweis direkt in der App','1.4.6 · Start und Mehr fest in Kopfzeile, Spiel-Navigation entfernt; Clubname einstellbar; Entwicklerhinweis','1.4.5 · Laufenden Spielabend mit Gastgeber, Runden und Bockstand auf der Startseite anzeigen','1.4.4 · Doppelte Navigationseinträge Spieler und Kasse oben entfernt','1.4.3 · Spielabend nachtragen unter Mehr statt auf der Startseite','1.4.2 · Vergangene Spielabende Runde für Runde nachtragen; historisch bezahlt ohne Kassenbuchung','1.4.1 · Ergebnisse als Jahresliste mit Statistik-Umschalter','1.4.0 · Jahresstatistik für Spielabende, Tacken und Soli','1.3.1 · Gastgeber-Hinweis innerhalb der App; nur noch letzte Runde korrigieren','1.3.0 · Nur letzte Runde korrigieren oder rückgängig machen','1.2.6 · Spielabend ohne Browser-Bestätigung direkt beenden','1.2.5 · Spielabend direkt aus Abrechnung beenden; Abwesende automatisch als offen führen','1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
+const APP_VERSION='1.6.9';
+const VERSION_NOTES=['1.6.9 · Einstellungen in vier übersichtliche aufklappbare Bereiche gegliedert','1.6.8 · Schlanke Euro-Jahresrangliste nur für Stammspieler mit antippbaren Spielerprofilen','1.6.7 · Klassischer Kartentisch kompakter; Bockstatus in der Tischmitte; Solo/Hochzeit und Tacken ohne Scrollen','1.6.6 · Solo-Fehler behoben; Solo/Hochzeit direkt unter dem Tisch; Bockauslöser aufklappbar','1.6.5 · Tacken direkt am Kartentisch buchen; Soloart per Häkchen, gewonnen als Standard','1.6.4 · Nach vollständiger Zahlung zurück zur Startseite; letzte vier abgeschlossene Spielabende und Historienmenü','1.6.3 · Gewinner nach jeder Runde automatisch abwählen; aktive Spieler hervorheben und nächste Runde direkt vorbereiten','1.6.2 · Nach Spielabend beenden zurück zur Startseite; neuer Abend startet bei Spieler- und Gastgeberauswahl','1.6.1 · Bronze-Auswahlfelder in der Spielabend-Einrichtung','1.6.0 · Kompakte Spielabend-Einrichtung und Ergebnishistorie wie Abrechnung; Runden- und Start-Spalten entfernt','1.5.9 · Mobile Abrechnung mit fünf Spalten; Startgebühr automatisch; offene Zahlungen einheitlich zweizeilig','1.5.8 · Spielernamen mit Finger oder Maus an den Kartentisch ziehen; Antippen bleibt möglich','1.5.7 · Papierlisten zeilenweise in Euro nachtragen; Kassenanfangsbestand mit Korrekturverlauf','1.5.6 · Bock-Multiplikator unter Einstellungen frei wählbar (Standard ×2)','1.5.5 · Hochzeit am Kartentisch auswählen und sofort buchen, ohne Mischerwechsel','1.5.4 · Gewinner und Solospieler türkis markiert; Mischer bleibt bronze','1.5.3 · Solo: Spieler direkt am Tisch wählen, 1–7 Tacken sofort buchen','1.5.2 · Spielabend beenden nur noch in der Abrechnung','1.5.1 · Startseite kompakter: Zahlungen und letzte Treffen nebeneinander; Treffen/Spiele im Kopf','1.5.0 · Gewinner am Kartentisch, Tacken 1–7 sofort buchen, freie Eingabe und Mischerwechsel','1.4.9 · Jahresstatistik mit Spitzenreitern, Soloquote und Teilnahme-Rangliste','1.4.8 · Kasse mit offenen Spielerbeträgen, Zahlungsverlauf, Einnahmen/Ausgaben und Jahresfilter','1.4.7 · Nur vollständige Zahlungen mit Datum; Gewinner-Hinweis direkt in der App','1.4.6 · Start und Mehr fest in Kopfzeile, Spiel-Navigation entfernt; Clubname einstellbar; Entwicklerhinweis','1.4.5 · Laufenden Spielabend mit Gastgeber, Runden und Bockstand auf der Startseite anzeigen','1.4.4 · Doppelte Navigationseinträge Spieler und Kasse oben entfernt','1.4.3 · Spielabend nachtragen unter Mehr statt auf der Startseite','1.4.2 · Vergangene Spielabende Runde für Runde nachtragen; historisch bezahlt ohne Kassenbuchung','1.4.1 · Ergebnisse als Jahresliste mit Statistik-Umschalter','1.4.0 · Jahresstatistik für Spielabende, Tacken und Soli','1.3.1 · Gastgeber-Hinweis innerhalb der App; nur noch letzte Runde korrigieren','1.3.0 · Nur letzte Runde korrigieren oder rückgängig machen','1.2.6 · Spielabend ohne Browser-Bestätigung direkt beenden','1.2.5 · Spielabend direkt aus Abrechnung beenden; Abwesende automatisch als offen führen','1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
 const oldRender=render;
 function stamp(ms){return ms?new Date(ms).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'}):'–'}
 function isClosed(e){return !!e.endedAt}
@@ -925,37 +916,52 @@ function home(){
  <div class="home-panels">${debtCard}${recentCard}</div>`;
 }
 
-let statisticsYear='all';
+let statisticsYear=String(new Date().getFullYear());
+let statisticsPlayer=null;
 function statistics(){
  const years=[...new Set(db.evenings.map(e=>String(e.date||'').slice(0,4)).filter(y=>/^\d{4}$/.test(y)))].sort().reverse();
  const selected=statisticsYear;
  const evenings=db.evenings.filter(e=>selected==='all'||String(e.date||'').startsWith(selected+'-'));
- const data=db.players.map(p=>{
-  let nights=0,rounds=0,solos=0,tacken=0,soloNights=0;
-  for(const e of evenings){
+ const data=db.players.filter(p=>!p.guest).map(p=>{
+  let nights=0,rounds=0,solos=0,wonSolos=0,lostSolos=0,damen=0,buben=0,tacken=0;
+  const history=[];
+  for(const e of [...evenings].sort((a,b)=>String(a.date).localeCompare(String(b.date)))){
    if(!e.present.includes(p.id))continue;
    nights++;
    rounds+=e.rounds.filter(r=>r.playing?.includes(p.id)||Object.hasOwn(r.points||{},p.id)).length;
-   const count=e.rounds.filter(r=>r.solo&&r.soloPlayer===p.id).length;
-   solos+=count;if(count>0)soloNights++;
-   tacken+=totals(e)[p.id]||0;
+   const own=e.rounds.filter(r=>r.solo&&r.soloPlayer===p.id);
+   solos+=own.length;
+   wonSolos+=own.filter(r=>r.soloWon===true||r.won===true).length;
+   lostSolos+=own.filter(r=>r.soloWon===false||r.won===false).length;
+   damen+=own.filter(r=>/damen/i.test(String(r.soloType||''))).length;
+   buben+=own.filter(r=>/buben/i.test(String(r.soloType||''))).length;
+   const value=totals(e)[p.id]||0;
+   tacken+=value;
+   history.push({date:e.date,value:value*db.settings.tack});
   }
-  return {p,nights,rounds,solos,tacken,soloNights};
- }).filter(x=>x.nights>0).sort((a,b)=>b.tacken-a.tacken);
- const bySolo=[...data].sort((a,b)=>b.solos-a.solos||b.nights-a.nights);
- const byNights=[...data].sort((a,b)=>b.nights-a.nights||b.rounds-a.rounds);
- const leader=(arr,field)=>arr.length&&arr[0][field]>0?esc(arr.filter(x=>x[field]===arr[0][field]).map(x=>x.p.name).join(', ')):'–';
+  return {p,nights,rounds,solos,wonSolos,lostSolos,damen,buben,tacken,amount:tacken*db.settings.tack,history};
+ }).sort((a,b)=>b.amount-a.amount||b.nights-a.nights||a.p.name.localeCompare(b.p.name,'de'));
+ const active=data.filter(x=>x.nights>0);
  const totalRounds=evenings.reduce((n,e)=>n+e.rounds.length,0);
  const totalSolos=evenings.reduce((n,e)=>n+e.rounds.filter(r=>r.solo).length,0);
- return `<div class="card"><div class="actions">${button('← Ergebnisse',"go('resultsOverview')")}</div><h2>Jahresstatistik</h2><p class="muted">Spielergebnisse aus gespielten Runden, unabhängig von Einzahlungen in die Kasse.</p>
- <label>Jahr auswählen</label><select onchange="statisticsYear=this.value;render()"><option value="all" ${selected==='all'?'selected':''}>Alle Jahre</option>${years.map(y=>`<option value="${y}" ${selected===y?'selected':''}>${y}</option>`).join('')}</select>
- <div class="row"><span>Spielabende</span><b>${evenings.length}</b></div><div class="row"><span>Gespielte Runden</span><b>${totalRounds}</b></div><div class="row"><span>Gespielte Soli</span><b>${totalSolos}</b></div></div>
- <div class="card"><h3>🏆 Spitzenreiter</h3><div class="row"><span>Meiste Tacken</span><b>${leader(data,'tacken')}</b></div><div class="row"><span>Meiste Soli</span><b>${leader(bySolo,'solos')}</b></div><div class="row"><span>Meiste Spielabende</span><b>${leader(byNights,'nights')}</b></div></div>
- <div class="card"><h2>Spielerübersicht</h2><p class="muted">Nach gewonnenen Tacken sortiert. Die Soloquote zeigt, an wie vielen besuchten Abenden mindestens ein Solo gespielt wurde.</p><div class="scroll"><table><tr><th>Platz</th><th>Spieler</th><th>Abende</th><th>Runden</th><th>Soli</th><th>Solo-Abende</th><th>Tacken +/−</th><th>Spiel € +/−</th></tr>
- ${data.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.p.name)}</td><td>${x.nights}</td><td>${x.rounds}</td><td>${x.solos}</td><td>${x.soloNights}/${x.nights}</td><td class="${x.tacken>=0?'good':'bad'}">${x.tacken>0?'+':''}${x.tacken}</td><td class="${x.tacken>=0?'good':'bad'}">${euro(x.tacken*db.settings.tack)}</td></tr>`).join('')||'<tr><td colspan="8">Für diesen Zeitraum sind noch keine Ergebnisse vorhanden.</td></tr>'}</table></div></div>
- <div class="card"><h3>Teilnahme-Rangliste</h3>${byNights.map((x,i)=>`<div class="row"><span>${i+1}. ${esc(x.p.name)}</span><b>${x.nights} ${x.nights===1?'Abend':'Abende'}</b></div>`).join('')||'Noch keine Teilnahmen erfasst.'}</div>`;
+ const chosen=data.find(x=>x.p.id===statisticsPlayer);
+ const formatAmount=n=>(n>0?'+':'')+euro(n);
+ const playerDetails=chosen?`<div class="card"><div class="row"><h3>${esc(chosen.p.name)}</h3>${button('Schließen','statisticsPlayer=null;render()')}</div>
+ <div class="row"><span>Gesamtergebnis</span><b class="${chosen.amount>=0?'good':'bad'}">${formatAmount(chosen.amount)}</b></div>
+ <div class="row"><span>Spielabende</span><b>${chosen.nights}</b></div>
+ <div class="row"><span>Gespielte Runden</span><b>${chosen.rounds}</b></div>
+ <div class="row"><span>Soli insgesamt</span><b>${chosen.solos}</b></div>
+ <div class="row"><span>Damen-Solo / Buben-Solo</span><b>${chosen.damen} / ${chosen.buben}</b></div>
+ <div class="row"><span>Soli gewonnen / verloren*</span><b>${chosen.wonSolos} / ${chosen.lostSolos}</b></div>
+ <p class="mini">* Nur eindeutig gespeicherte Solo-Ergebnisse. Historische Notizen ohne Solospieler können nicht zugeordnet werden.</p>
+ <h3>Entwicklung nach Spielabend</h3>${chosen.history.length?chosen.history.map((h,i)=>`<div class="row"><span>${esc(h.date)}</span><b class="${h.value>=0?'good':'bad'}">${formatAmount(h.value)}</b></div>`).join(''):'Noch keine Teilnahme erfasst.'}</div>`:'';
+ return `<div class="card"><div class="actions">${button('← Ergebnisse',"go('resultsOverview')")}</div><h2>Jahresrangliste</h2>
+ <label>Zeitraum</label><select onchange="statisticsYear=this.value;statisticsPlayer=null;render()"><option value="all" ${selected==='all'?'selected':''}>Alle Jahre</option>${years.map(y=>`<option value="${y}" ${selected===y?'selected':''}>${y}</option>`).join('')}</select>
+ <div class="row"><span>Spielabende</span><b>${evenings.length}</b></div><div class="row"><span>Runden / Soli</span><b>${totalRounds} / ${totalSolos}</b></div>
+ <p class="mini">Nur Stammspieler · Rangfolge nach Spielgewinn in Euro · Kasse und Gebühren bleiben getrennt.</p></div>
+ <div class="card"><h3>🏆 Rangliste</h3><div class="scroll"><table class="stat-compact"><thead><tr><th>Platz</th><th>Spieler</th><th>Abende</th><th>Ergebnis</th></tr></thead><tbody>
+ ${data.map((x,i)=>`<tr class="stat-tap" onclick="statisticsPlayer='${x.p.id}';render()"><td>${i+1}.</td><td><b>${esc(x.p.name)}</b></td><td>${x.nights}</td><td class="${x.amount>=0?'good':'bad'}"><b>${formatAmount(x.amount)}</b></td></tr>`).join('')}</tbody></table></div><p class="mini">Spieler antippen für Details.</p></div>${playerDetails}`;
 }
-
 
 let resultsYear=String(new Date().getFullYear());
 function resultsOverview(){

@@ -1,0 +1,12 @@
+DOPPELKOPF CLUB V1.8.0
+
+Auf GitHub im Repository Doppelkopf-App alle fünf Dateien aus diesem ZIP in den Hauptordner (main) hochladen:
+index.html
+sw.js
+manifest.webmanifest
+icon-192.png
+icon-512.png
+
+Nicht nur index.html hochladen, sonst funktioniert die Offline-Installation nicht.
+Nach dem Hochladen die Webseite einmal online öffnen, dann die App auf dem Home-Bildschirm installieren. Offline-Modus durch Flugmodus testen.
+Vor einem Gerätewechsel in Einstellungen ein JSON-Backup exportieren und auf dem neuen Gerät importieren. Die App synchronisiert nicht zwischen Geräten.

@@ -172,6 +172,32 @@ input[type="checkbox"],input[type="radio"]{accent-color:#b77b3d}
 .recent-menu-content{position:absolute;right:0;top:calc(100% + 5px);z-index:20;background:#263f31;border:1px solid #6b765e;border-radius:10px;padding:8px;min-width:210px;box-shadow:0 8px 20px #0005}
 .recent-menu-content button{width:100%;white-space:normal;text-align:left}
 .bock-extra{margin:14px 0;padding:12px;border:1px solid #99764d;border-radius:12px;background:#19372c}.bock-extra summary{cursor:pointer;color:#e4bd85;font-weight:650;list-style-position:inside}.bock-extra[open] summary{margin-bottom:12px}.special-actions{margin:12px 0 8px}.special-actions button{flex:1;min-height:46px}
+
+/* V1.6.7 – klassische Tischoptik, kompakte Smartphone-Spielrunde */
+.compact-evening{padding:11px 12px}
+.compact-evening>.row:first-child{padding:3px 0 6px}
+.compact-evening>.row:first-child h2{font-size:18px;margin:0}
+.compact-evening>.mini{margin:4px 0;font-size:11px;line-height:1.25}
+.compact-evening .game-meta{padding:5px 0;margin-bottom:6px;font-size:12px;color:#edc48d}
+.compact-evening .compact-game-table{padding:6px}
+.compact-game-table .layout{grid-template-rows:49px 115px 49px;gap:5px;grid-template-columns:minmax(57px,1fr) minmax(0,3fr) minmax(57px,1fr)}
+.compact-game-table .left .seat,.compact-game-table .right .seat{min-height:105px}
+.compact-game-table .seat{border-radius:9px;padding:3px;gap:1px}
+.compact-game-table .seat .name{font-size:12px;line-height:1.1}
+.compact-game-table .seat .hint{font-size:9px}
+.compact-game-table .felt{border-width:6px;border-radius:22px;box-shadow:inset 0 0 0 2px #d5a66c}
+.compact-game-table .table-bock{text-align:center;color:#f0c88e;font-size:clamp(12px,3.6vw,17px);font-weight:750;line-height:1.15}
+.compact-game-table .table-bock small{display:block;font-size:10px;font-weight:500;margin-top:3px}
+.compact-evening>.muted{font-size:11px;margin:6px 0 3px;line-height:1.25}
+.compact-evening .round-guide{margin:4px 0;font-size:11px}
+.compact-evening .special-actions{margin:7px 0 4px;gap:7px}
+.compact-evening .special-actions button{padding:10px 5px}
+.compact-evening .tacken-caption{color:#edc48d;font-size:12px;font-weight:700;margin:5px 0 2px}
+.compact-evening .quick-tacken{margin:4px 0 7px;gap:4px}
+.compact-evening .quick-tacken button{padding:10px 0;font-size:17px;min-height:43px}
+.compact-evening .preview:empty{display:none}
+.compact-evening .bock-extra{margin-top:10px}
+@media(min-width:700px){.compact-game-table .layout{grid-template-columns:120px minmax(0,1fr) 120px;grid-template-rows:65px 190px 65px;gap:10px}.compact-game-table .left .seat,.compact-game-table .right .seat{min-height:165px}.compact-game-table .seat .name{font-size:15px}}
 </style>
 </head>
 <body>
@@ -258,10 +284,10 @@ function seat(pos,id,mode,rot){
 }
 function table(n,assigned,mode="setup",rot=null){
  const ps=positions(n),s=p=>ps.includes(p)?seat(p,assigned[p],mode,rot):"";
- return `<div class="setup"><div class="layout">
+ return `<div class="setup ${mode==="game"?"compact-game-table":""}"><div class="layout">
  <div class="top">${s("top1")}${s("top2")}</div>
  <div class="left">${s("left")}</div>
- <div class="felt"><div class="cards">♣ ♥ ♠ ♦</div><strong>Doppelkopf</strong></div>
+ <div class="felt">${mode==="game"&&rot?`<div class="table-bock">${bockRemaining(current())?`BOCK ×${bockFactor()}<small>${bockRemaining(current())} übrig</small>`:`<span>♣ ♥ ♠ ♦</span><small>Kein Bock</small>`}</div>`:`<div class="cards">♣ ♥ ♠ ♦</div><strong>Doppelkopf</strong>`}</div>
  <div class="right">${s("right")}</div>
  <div class="bottom">${s("bottom1")}${s("bottom2")}</div>
  </div></div>`;
@@ -670,8 +696,8 @@ async function restore(ev){
  }catch(err){alert("Import fehlgeschlagen: "+err.message)}
 }
 /* Version 3: Original-Tischansicht beibehalten, Spielregeln erweitert */
-const APP_VERSION='1.6.6';
-const VERSION_NOTES=['1.6.6 · Solo-Fehler behoben; Solo/Hochzeit direkt unter dem Tisch; Bockauslöser aufklappbar','1.6.5 · Tacken direkt am Kartentisch buchen; Soloart per Häkchen, gewonnen als Standard','1.6.4 · Nach vollständiger Zahlung zurück zur Startseite; letzte vier abgeschlossene Spielabende und Historienmenü','1.6.3 · Gewinner nach jeder Runde automatisch abwählen; aktive Spieler hervorheben und nächste Runde direkt vorbereiten','1.6.2 · Nach Spielabend beenden zurück zur Startseite; neuer Abend startet bei Spieler- und Gastgeberauswahl','1.6.1 · Bronze-Auswahlfelder in der Spielabend-Einrichtung','1.6.0 · Kompakte Spielabend-Einrichtung und Ergebnishistorie wie Abrechnung; Runden- und Start-Spalten entfernt','1.5.9 · Mobile Abrechnung mit fünf Spalten; Startgebühr automatisch; offene Zahlungen einheitlich zweizeilig','1.5.8 · Spielernamen mit Finger oder Maus an den Kartentisch ziehen; Antippen bleibt möglich','1.5.7 · Papierlisten zeilenweise in Euro nachtragen; Kassenanfangsbestand mit Korrekturverlauf','1.5.6 · Bock-Multiplikator unter Einstellungen frei wählbar (Standard ×2)','1.5.5 · Hochzeit am Kartentisch auswählen und sofort buchen, ohne Mischerwechsel','1.5.4 · Gewinner und Solospieler türkis markiert; Mischer bleibt bronze','1.5.3 · Solo: Spieler direkt am Tisch wählen, 1–7 Tacken sofort buchen','1.5.2 · Spielabend beenden nur noch in der Abrechnung','1.5.1 · Startseite kompakter: Zahlungen und letzte Treffen nebeneinander; Treffen/Spiele im Kopf','1.5.0 · Gewinner am Kartentisch, Tacken 1–7 sofort buchen, freie Eingabe und Mischerwechsel','1.4.9 · Jahresstatistik mit Spitzenreitern, Soloquote und Teilnahme-Rangliste','1.4.8 · Kasse mit offenen Spielerbeträgen, Zahlungsverlauf, Einnahmen/Ausgaben und Jahresfilter','1.4.7 · Nur vollständige Zahlungen mit Datum; Gewinner-Hinweis direkt in der App','1.4.6 · Start und Mehr fest in Kopfzeile, Spiel-Navigation entfernt; Clubname einstellbar; Entwicklerhinweis','1.4.5 · Laufenden Spielabend mit Gastgeber, Runden und Bockstand auf der Startseite anzeigen','1.4.4 · Doppelte Navigationseinträge Spieler und Kasse oben entfernt','1.4.3 · Spielabend nachtragen unter Mehr statt auf der Startseite','1.4.2 · Vergangene Spielabende Runde für Runde nachtragen; historisch bezahlt ohne Kassenbuchung','1.4.1 · Ergebnisse als Jahresliste mit Statistik-Umschalter','1.4.0 · Jahresstatistik für Spielabende, Tacken und Soli','1.3.1 · Gastgeber-Hinweis innerhalb der App; nur noch letzte Runde korrigieren','1.3.0 · Nur letzte Runde korrigieren oder rückgängig machen','1.2.6 · Spielabend ohne Browser-Bestätigung direkt beenden','1.2.5 · Spielabend direkt aus Abrechnung beenden; Abwesende automatisch als offen führen','1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
+const APP_VERSION='1.6.7';
+const VERSION_NOTES=['1.6.7 · Klassischer Kartentisch kompakter; Bockstatus in der Tischmitte; Solo/Hochzeit und Tacken ohne Scrollen','1.6.6 · Solo-Fehler behoben; Solo/Hochzeit direkt unter dem Tisch; Bockauslöser aufklappbar','1.6.5 · Tacken direkt am Kartentisch buchen; Soloart per Häkchen, gewonnen als Standard','1.6.4 · Nach vollständiger Zahlung zurück zur Startseite; letzte vier abgeschlossene Spielabende und Historienmenü','1.6.3 · Gewinner nach jeder Runde automatisch abwählen; aktive Spieler hervorheben und nächste Runde direkt vorbereiten','1.6.2 · Nach Spielabend beenden zurück zur Startseite; neuer Abend startet bei Spieler- und Gastgeberauswahl','1.6.1 · Bronze-Auswahlfelder in der Spielabend-Einrichtung','1.6.0 · Kompakte Spielabend-Einrichtung und Ergebnishistorie wie Abrechnung; Runden- und Start-Spalten entfernt','1.5.9 · Mobile Abrechnung mit fünf Spalten; Startgebühr automatisch; offene Zahlungen einheitlich zweizeilig','1.5.8 · Spielernamen mit Finger oder Maus an den Kartentisch ziehen; Antippen bleibt möglich','1.5.7 · Papierlisten zeilenweise in Euro nachtragen; Kassenanfangsbestand mit Korrekturverlauf','1.5.6 · Bock-Multiplikator unter Einstellungen frei wählbar (Standard ×2)','1.5.5 · Hochzeit am Kartentisch auswählen und sofort buchen, ohne Mischerwechsel','1.5.4 · Gewinner und Solospieler türkis markiert; Mischer bleibt bronze','1.5.3 · Solo: Spieler direkt am Tisch wählen, 1–7 Tacken sofort buchen','1.5.2 · Spielabend beenden nur noch in der Abrechnung','1.5.1 · Startseite kompakter: Zahlungen und letzte Treffen nebeneinander; Treffen/Spiele im Kopf','1.5.0 · Gewinner am Kartentisch, Tacken 1–7 sofort buchen, freie Eingabe und Mischerwechsel','1.4.9 · Jahresstatistik mit Spitzenreitern, Soloquote und Teilnahme-Rangliste','1.4.8 · Kasse mit offenen Spielerbeträgen, Zahlungsverlauf, Einnahmen/Ausgaben und Jahresfilter','1.4.7 · Nur vollständige Zahlungen mit Datum; Gewinner-Hinweis direkt in der App','1.4.6 · Start und Mehr fest in Kopfzeile, Spiel-Navigation entfernt; Clubname einstellbar; Entwicklerhinweis','1.4.5 · Laufenden Spielabend mit Gastgeber, Runden und Bockstand auf der Startseite anzeigen','1.4.4 · Doppelte Navigationseinträge Spieler und Kasse oben entfernt','1.4.3 · Spielabend nachtragen unter Mehr statt auf der Startseite','1.4.2 · Vergangene Spielabende Runde für Runde nachtragen; historisch bezahlt ohne Kassenbuchung','1.4.1 · Ergebnisse als Jahresliste mit Statistik-Umschalter','1.4.0 · Jahresstatistik für Spielabende, Tacken und Soli','1.3.1 · Gastgeber-Hinweis innerhalb der App; nur noch letzte Runde korrigieren','1.3.0 · Nur letzte Runde korrigieren oder rückgängig machen','1.2.6 · Spielabend ohne Browser-Bestätigung direkt beenden','1.2.5 · Spielabend direkt aus Abrechnung beenden; Abwesende automatisch als offen führen','1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
 const oldRender=render;
 function stamp(ms){return ms?new Date(ms).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'}):'–'}
 function isClosed(e){return !!e.endedAt}
@@ -699,13 +725,13 @@ function evening(){
  <p id="setupError" role="alert" style="display:none;color:#ffe2a7;background:#603a2c;border:1px solid #d3a56d;border-radius:9px;padding:11px;margin:10px 0"></p><button class="primary">Weiter zum Kartentisch</button></form></div>
  <div class="card"><h2>Vergangene Abende</h2>${[...db.evenings].reverse().map(x=>`<div class="row"><span>${esc(x.date)} · ${x.endedAt?'Abgeschlossen':'Offen'} · ${esc(name(x.host))}</span>${button('Öffnen',`openEvening('${x.id}')`)}</div>`).join('')||'Noch keine Spielabende.'}</div>`;
  const rot=rotation(e),order=orderOf(e),assigned={};sequence(order.length).forEach((p,i)=>assigned[p]=order[i]);const t=totals(e),closed=isClosed(e);
- return `<div class="card ${closed?'locked':''}"><div class="row"><h2>Spielabend ${esc(e.date)}</h2>${button('Zurück',"eveningId=null;go('evening')")}</div>
+ return `<div class="card ${closed?'locked':''} ${!closed&&!e.historical?'compact-evening':''}"><div class="row"><h2>Spielabend ${esc(e.date)}</h2>${button('Zurück',"eveningId=null;go('evening')")}</div>
  ${e.historical?'<p class="pill">Historischer Nachtrag · bereits bezahlt</p>':''}<p class="mini">🏠 Gastgeber: <b>${esc(name(e.host))}</b> · Start: ${stamp(e.startedAt)} · Ende: ${stamp(e.endedAt)}</p>
- ${closed?`<div class="bockbar off">✓ Spielabend abgeschlossen · ${e.expiredBock||0} Bockspiele verfallen</div>`:`<div class="row"><span class="pill">Runde ${rot.number}</span><b>★ ${esc(name(rot.mixer))} mischt</b></div>${bockBanner(e)}`}
+ ${closed?`<div class="bockbar off">✓ Spielabend abgeschlossen · ${e.expiredBock||0} Bockspiele verfallen</div>`:`<div class="row game-meta"><span>Runde ${rot.number}</span><span>★ ${esc(name(rot.mixer))} mischt</span></div>`}
  ${e.historical?historicalEditor(e):table(e.present.length,assigned,closed?'game':'game',closed?null:rot)}
  ${e.historical?`<div class="actions">${button('Abrechnung',"go('results')")}${!closed?button('Letzte Zeile löschen','undoHistoricalLast()'):''}</div>`:!closed?`<p class="muted">${rot.sitting.length?'Setzen aus: '+rot.sitting.map(id=>esc(name(id))).join(', '):'Alle vier spielen.'}</p><div id="winnerStatus" class="round-guide">Zwei Gewinner am Tisch antippen.</div>
  <div class="actions special-actions">${button('♠ Solo',"go('solo')")}${button('♛ Hochzeit',"go('hochzeit')")}</div>
- <h3>Tacken je Gewinner</h3>
+ <div class="tacken-caption">Tacken je Gewinner</div>
  <div class="quick-tacken">${[1,2,3,4,5,6,7].map(n=>`<button type="button" onclick="quickSaveRound(${n})">${n}</button>`).join('')}</div>
  <div class="actions"><input id="points" type="number" min="0" step="1" inputmode="numeric" placeholder="Andere Tacken" style="max-width:150px">${button('Wert buchen','saveRound()','primary')}</div>
  <div id="roundError" class="preview" role="alert" style="display:none;color:#ffcfaa"></div>

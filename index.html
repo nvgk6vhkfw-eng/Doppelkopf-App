@@ -3,12 +3,12 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#123429">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Doppelkopf Club</title>
 <style>
 :root{font-family:system-ui,-apple-system,sans-serif;background:#102d24;color:#f5eddf}
@@ -397,6 +397,36 @@ body[data-theme="forest"] .hist-mode button.active{background:#c39863;color:#142
 .hist-mode button:not(.active){opacity:.75}
 @media print{header,.header-nav,.settings-group:not([open]),button,.storage-actions{display:none!important}body{background:white!important;color:black!important}.card,.settings-body{color:black!important;box-shadow:none!important}}
 .undo-round{font-size:12px;opacity:.88}.backup-reminder{border:1px solid #ba9065}
+
+/* V1.8.10: Die gewählte Farbe gilt auch für die Wurzelfläche hinter der iOS-Statusleiste. */
+:root:has(body[data-theme="copper"]){background:#171c22;color-scheme:dark}
+:root:has(body[data-theme="light"]){background:#f4efe7;color-scheme:light}
+:root:has(body[data-theme="forest"]){background:#123429;color-scheme:dark}
+@media(display-mode:standalone){body{padding-top:env(safe-area-inset-top,0px)}}
+.settings-overview{padding:18px 14px}
+.settings-overview h2{margin:0 0 4px}
+.settings-intro{margin:0 0 12px;font-size:13px}
+.settings-menu{display:grid;gap:9px}
+.settings-menu-item{display:flex;align-items:center;gap:12px;width:100%;padding:12px;text-align:left;min-height:69px;border-radius:13px;background:#173a2d;border:1px solid #56725c}
+.settings-menu-item .settings-icon{flex:0 0 40px;width:40px;height:40px;font-size:21px}
+.settings-menu-item .settings-title strong{font-size:15px}
+.settings-menu-item .settings-title small{font-size:11px}
+.settings-menu-arrow{font-size:27px;line-height:1;color:#e4c28d}
+.settings-detail{padding:16px}
+.settings-back{font-size:13px;padding:8px 12px;margin:0 0 12px}
+.settings-detail h2{margin:0 0 4px}
+.settings-detail-sub{margin:0 0 17px;font-size:12px}
+.settings-detail-body>h3:first-child{margin-top:0}
+.compact-theme-choices{grid-template-columns:1fr;gap:8px}
+.compact-theme-choices .theme-choice{min-height:0;padding:11px 13px;gap:3px}
+.compact-theme-choices .theme-choice strong{font-size:15px}
+.compact-theme-choices .theme-choice small{font-size:11px}
+body[data-theme="copper"] .settings-menu-item{background:#303a43;border-color:#80634f}
+body[data-theme="copper"] .settings-menu-arrow{color:#efb88a}
+body[data-theme="light"] .settings-menu-item{background:#f8f1e9;border-color:#d6c3b2}
+body[data-theme="light"] .settings-menu-arrow{color:#965f3d}
+@media(min-width:680px){.settings-overview{max-width:680px;margin:auto}.settings-detail{max-width:850px;margin:auto}.compact-theme-choices{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
 </style>
 </head>
 <body>
@@ -423,6 +453,7 @@ db.evenings.forEach(e=>{
  if(!Array.isArray(e.rounds))e.rounds=[];
 });
 let page="home",eveningId=null,pending=null,selected=null;
+let settingsSection="";
 let historicalSetup=false;
 let winners=[],dragId=null,dragStart=null;
 const $=id=>document.getElementById(id);
@@ -433,12 +464,15 @@ const name=id=>db.players.find(p=>p.id===id)?.name||"Unbekannt";
 const current=()=>db.evenings.find(e=>e.id===eveningId);
 const button=(label,action,cls="")=>`<button class="${cls}" onclick="${action}">${label}</button>`;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){alert("Speichern fehlgeschlagen: "+e.message)}}
-function go(p){if(p==='evening'&&current()?.endedAt){eveningId=null;pending=null;}page=p;if(p==="round")winners=[];if(p==='home')historicalSetup=false;render()}
+function go(p){if(p==='settings')settingsSection="";if(p==='evening'&&current()?.endedAt){eveningId=null;pending=null;}page=p;if(p==="round")winners=[];if(p==='home')historicalSetup=false;render()}
 function render(){
  document.body.dataset.theme=["forest","copper","light"].includes(db.settings.theme)?db.settings.theme:"forest";
  const themeColors={forest:"#123429",copper:"#171c22",light:"#f4efe7"};
  const themeMeta=document.querySelector('meta[name="theme-color"]');
  if(themeMeta)themeMeta.setAttribute("content",themeColors[document.body.dataset.theme]);
+ document.documentElement.style.backgroundColor=themeColors[document.body.dataset.theme];
+ const appleBar=document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+ if(appleBar)appleBar.content=document.body.dataset.theme==="light"?"default":"black-translucent";
  const tabs=[["home","⌂ Start"],["settings","⚙"]];
  $("appTitle").textContent="♠ "+(db.settings.appName||"Doppelkopf Club");
  $("headerStats").innerHTML=`<span>Treffen <b>${db.evenings.length}</b></span><span>Spiele <b>${db.evenings.reduce((a,e)=>a+(e.rounds?.length||0),0)}</b></span>`;
@@ -833,15 +867,25 @@ function addCash(ev){
 
 /* Einstellungen und Backup */
 
+function openSettingsSection(section){settingsSection=section;render();window.scrollTo(0,0)}
 function settings(){
- const group=(icon,title,desc,content)=>`<details class="settings-group"><summary><span class="settings-icon">${icon}</span><span class="settings-title"><strong>${title}</strong><small>${desc}</small></span><span class="settings-arrow">⌄</span></summary><div class="settings-body">${content}</div></details>`;
  const members=`<p class="muted">Namen ändern oder Stammspieler hinzufügen. Vorhandene Ergebnisse bleiben zugeordnet.</p>${db.players.filter(p=>!p.guest).map(p=>`<div class="member-edit"><input aria-label="Name ${esc(p.name)}" id="member_${p.id}" maxlength="60" value="${esc(p.name)}"><button onclick="renameMember('${p.id}')">Speichern</button></div>`).join('')}<form onsubmit="addMember(event)"><label>Neuer Stammspieler</label><input id="newMemberName" maxlength="60" placeholder="Name" required><button class="primary">Hinzufügen</button></form><p class="muted">Gäste werden beim Spielabend hinzugefügt. Die Sitzordnung und Rotation wählst du beim Start eines Spielabends.</p>`;
  const rules=`<label>Euro pro Tacken</label><input id="tack" type="number" min="0" step=".01" value="${db.settings.tack}"><label>Bock-Faktor (×)</label><input id="bockMultiplier" type="number" min="1" max="20" step="1" value="${db.settings.bockMultiplier||2}"><p class="muted">Solo und Hochzeit werden direkt am Kartentisch ausgewählt. Der Bock-Faktor gilt für zukünftige Buchungen.</p>${button('Regeln speichern','saveSettings()','primary')}`;
  const fees=`${cashManagement()}<hr>${yearCashClose()}<hr>${dataCheckHtml()}<hr><h3>Spielabend nachtragen</h3><p class="muted">Vergangene Spielabende erfassen, ohne die aktuelle Clubkasse zu verändern.</p>${button('Spielabend nachtragen','startHistorical()')}<hr><label>Startgebühr in Euro</label><input id="startFee" type="number" min="0" step=".01" value="${db.settings.startFee}"><label>Solo-Strafe in Euro</label><input id="soloFee" type="number" min="0" step=".01" value="${db.settings.soloFee}"><p class="muted">Die Abwesenheitsregel wird automatisch bei der Abrechnung berücksichtigt.</p>${button('Beiträge speichern','saveSettings()','primary')}`;
- const themes=`<h3>Design auswählen</h3><p class="muted">Sofortige Vorschau. Deine Spielstände bleiben erhalten.</p><div class="theme-choices">${[['forest','Klassisch Grün','Standard · Waldgrün & Bronze'],['copper','Anthrazit & Kupfer','Eleganter Dunkelmodus mit Kupfer'],['light','Cremeweiß & Kupfer','Helles, elegantes Design']].map(([id,title,desc])=>`<button type="button" class="theme-choice ${((db.settings.theme||'forest')===id)?'selected':''}" data-choice="${id}" onclick="setTheme('${id}')"><strong>${title}</strong><small>${desc}</small></button>`).join('')}</div>`;
- const app=`${themes}<hr><label>Clubname</label><input id="appNameInput" maxlength="70" value="${esc(db.settings.appName||'Doppelkopf Club')}">${button('Clubnamen speichern','saveAppName()','primary')}<hr><h3>Datensicherung</h3><p class="muted">Die Daten liegen nur auf diesem Gerät. Vor Gerätewechsel und regelmäßig sichern.</p><div class="backup-help">📦 Das Backup enthält Spielabende, Kasse, Spieler und Einstellungen. Speichere die JSON-Datei außerhalb des Tablets, z. B. in Dateien oder auf einem USB-Stick.</div><p class="mini">Zuletzt Backup angestoßen: ${stamp(Number(localStorage.getItem('doko-last-backup-at')||0))} · Bitte prüfen, ob die Datei in „Dateien“ gespeichert wurde.</p>${button('Vollständiges Backup herunterladen','backup()','primary')}<label>Backup wiederherstellen</label><input type="file" accept=".json,application/json" onchange="restore(event)"><p class="muted">Beim Wiederherstellen werden die aktuellen Daten auf diesem Gerät ersetzt. Vorher wird eine Sicherheitskopie angeboten.</p><hr><h3>Speicherübersicht</h3><div id="storageOverview">${storageOverviewHtml()}</div><div class="storage-actions">${button('Daten löschen','requestDataDeletion()','danger delete-data-btn')}</div><p class="mini">Löscht nur die Daten auf diesem Gerät. Gesicherte Backup-Dateien bleiben bestehen.</p><hr><h3>Offline-App</h3><p class="muted">Nach dem ersten Online-Aufruf kann die App offline geöffnet werden. Zum Installieren im Browser „Zum Home-Bildschirm“ (iPhone) bzw. „App installieren“ (Android) wählen. Wichtig: Daten bleiben gerätegebunden.</p><hr><p class="muted" style="font-size:11px">Doppelkopf Club · Version ${APP_VERSION} · by Tom Bücker</p><details><summary class="muted" style="cursor:pointer">Versionsverlauf</summary>${VERSION_NOTES.map(n=>`<p class="muted">${esc(n)}</p>`).join('')}</details>`;
- return `<div class="card settings-panel"><h2 style="margin:0 0 5px">Einstellungen</h2><p class="muted" style="margin:0 0 13px">Tippe auf einen Bereich, um ihn zu bearbeiten.</p>${group('♟','Spieler & Sitzordnung',`${db.players.filter(p=>!p.guest).length} Stammspieler · Rotation beim Spielstart`,members)}${group('♣','Spielregeln',`${euro(db.settings.tack)} / Tacken · Bock ×${db.settings.bockMultiplier||2}`,rules)}${group('€','Kasse & Beiträge',`Start ${euro(db.settings.startFee)} · Solo ${euro(db.settings.soloFee)}`,fees)}${group('⚙','App & Datensicherung','Design · Clubname · Backup',app)}</div>`;
+ const themes=`<h3>Design auswählen</h3><p class="muted">Sofortige Vorschau. Deine Spielstände bleiben erhalten.</p><div class="theme-choices compact-theme-choices">${[['forest','Klassisch Grün','Standard · Waldgrün & Bronze'],['copper','Anthrazit & Kupfer','Eleganter Dunkelmodus mit Kupfer'],['light','Cremeweiß & Kupfer','Helles, elegantes Design']].map(([id,title,desc])=>`<button type="button" class="theme-choice ${((db.settings.theme||'forest')===id)?'selected':''}" data-choice="${id}" onclick="setTheme('${id}')"><strong>${title}</strong><small>${desc}</small></button>`).join('')}</div>`;
+ const app=`<label>Clubname</label><input id="appNameInput" maxlength="70" value="${esc(db.settings.appName||'Doppelkopf Club')}">${button('Clubnamen speichern','saveAppName()','primary')}<hr><h3>Datensicherung</h3><p class="muted">Die Daten liegen nur auf diesem Gerät. Vor Gerätewechsel und regelmäßig sichern.</p><div class="backup-help">📦 Das Backup enthält Spielabende, Kasse, Spieler und Einstellungen. Speichere die JSON-Datei außerhalb des Tablets, z. B. in Dateien oder auf einem USB-Stick.</div><p class="mini">Zuletzt Backup angestoßen: ${stamp(Number(localStorage.getItem('doko-last-backup-at')||0))} · Bitte prüfen, ob die Datei in „Dateien“ gespeichert wurde.</p>${button('Vollständiges Backup herunterladen','backup()','primary')}<label>Backup wiederherstellen</label><input type="file" accept=".json,application/json" onchange="restore(event)"><p class="muted">Beim Wiederherstellen werden die aktuellen Daten auf diesem Gerät ersetzt. Vorher wird eine Sicherheitskopie angeboten.</p><hr><h3>Speicherübersicht</h3><div id="storageOverview">${storageOverviewHtml()}</div><div class="storage-actions">${button('Daten löschen','requestDataDeletion()','danger delete-data-btn')}</div><p class="mini">Löscht nur die Daten auf diesem Gerät. Gesicherte Backup-Dateien bleiben bestehen.</p><hr><h3>Offline-App</h3><p class="muted">Nach dem ersten Online-Aufruf kann die App offline geöffnet werden. Zum Installieren im Browser „Zum Home-Bildschirm“ (iPhone) bzw. „App installieren“ (Android) wählen. Wichtig: Daten bleiben gerätegebunden.</p><hr><p class="muted" style="font-size:11px">Doppelkopf Club · Version ${APP_VERSION} · by Tom Bücker</p><details><summary class="muted" style="cursor:pointer">Versionsverlauf</summary>${VERSION_NOTES.map(n=>`<p class="muted">${esc(n)}</p>`).join('')}</details>`;
+ const sections=[
+  ['players','♟','Spieler & Sitzordnung',`${db.players.filter(p=>!p.guest).length} Stammspieler · Rotation beim Spielstart`,members],
+  ['rules','♣','Spielregeln',`${euro(db.settings.tack)} / Tacken · Bock ×${db.settings.bockMultiplier||2}`,rules],
+  ['fees','€','Kasse & Beiträge',`Start ${euro(db.settings.startFee)} · Solo ${euro(db.settings.soloFee)}`,fees],
+  ['design','◈','Design & Darstellung','Farben · Drei Designs',themes],
+  ['app','⚙','App & Datensicherung','Clubname · Backup · Speicher',app]
+ ];
+ const selectedSection=sections.find(s=>s[0]===settingsSection);
+ if(selectedSection){return `<div class="card settings-panel settings-detail"><button type="button" class="settings-back" onclick="openSettingsSection('')">‹ Alle Einstellungen</button><h2>${selectedSection[2]}</h2><p class="muted settings-detail-sub">${selectedSection[3]}</p><div class="settings-detail-body">${selectedSection[4]}</div></div>`}
+ return `<div class="card settings-panel settings-overview"><h2>Einstellungen</h2><p class="muted settings-intro">Wähle einen Bereich aus.</p><div class="settings-menu">${sections.map(s=>`<button type="button" class="settings-menu-item" onclick="openSettingsSection('${s[0]}')"><span class="settings-icon">${s[1]}</span><span class="settings-title"><strong>${s[2]}</strong><small>${s[3]}</small></span><span class="settings-menu-arrow">›</span></button>`).join('')}</div></div>`;
 }
+
 function storageOverviewHtml(){
  const data=localStorage.getItem(KEY)||JSON.stringify(db);
  const bytes=new Blob([data]).size;
@@ -862,7 +906,7 @@ function requestDataDeletion(){
   alert('Die lokalen Doppelkopf-Daten wurden gelöscht.');
  }catch(err){alert('Löschen fehlgeschlagen: '+err.message)}
 }
-function setTheme(theme){if(!['forest','copper','light'].includes(theme))return;db.settings.theme=theme;save();render();const groups=document.querySelectorAll('.settings-group');if(groups.length)groups[3].open=true}
+function setTheme(theme){if(!['forest','copper','light'].includes(theme))return;db.settings.theme=theme;save();render()}
 function saveAppName(){
  const value=$("appNameInput").value.trim();
  if(!value){const el=$("appNameInput");el.setCustomValidity("Bitte einen Clubnamen eingeben.");el.reportValidity();el.setCustomValidity("");return}
@@ -926,8 +970,8 @@ async function restore(ev){
  finally{if(ev.target)ev.target.value=''}
 }
 /* Version 3: Original-Tischansicht beibehalten, Spielregeln erweitert */
-const APP_VERSION='1.8.9';
-const VERSION_NOTES=['1.8.9 · Nachtrag mit Endbeträgen inklusive Gebühren, Rückgängig, Clubrekorde, Kassen-Jahresabschluss, Datenprüfung und Backup-Erinnerung','1.8.8 · Drei vollständige Designs, Speicherübersicht, zweifach bestätigtes Datenlöschen und Zahnrad-Navigation','1.8.7 · Spielerprofile, Clubstatistiken, korrigierbare Spielabende, kompakte Kasse und neue Startseite','1.8.6 · Online-/Offline-Anzeige in Kopfzeile entfernt','1.8.5 · Historische Einzelrunden oder Endergebnisse ohne Tischansicht, strukturierte Spielarten','1.8.4 · Kassenprüfung und Korrekturen unter Mehr, Anfangsbestand einmalig','1.8.3 · Offene Zahlungen direkt mit Bezahlen begleichen','1.8.2 · Kompakte Solo- und Bockauswahl, Abrechnung oben rechts, Startseite gestrafft','1.8.1 · Tablet-Querformat, installierbare Offline-App und geprüfte Datensicherung','1.7.3 · Stilles Solo und vier auswählbare App-Designs','1.7.2 · Ergebnisse zeigen vier neueste Tabellen, ältere aufklappbar','1.7.1 · Kassenübersicht gestrafft, Korrekturbuchungen und Zahlungsprüfung ergänzt','1.7.0 · Papierlisten mobil erfassen, einzelne Zeilen korrigieren und löschen, Folgewerte automatisch neu berechnen','1.6.9 · Einstellungen in vier übersichtliche aufklappbare Bereiche gegliedert','1.6.8 · Schlanke Euro-Jahresrangliste nur für Stammspieler mit antippbaren Spielerprofilen','1.6.7 · Klassischer Kartentisch kompakter; Bockstatus in der Tischmitte; Solo/Hochzeit und Tacken ohne Scrollen','1.6.6 · Solo-Fehler behoben; Solo/Hochzeit direkt unter dem Tisch; Bockauslöser aufklappbar','1.6.5 · Tacken direkt am Kartentisch buchen; Soloart per Häkchen, gewonnen als Standard','1.6.4 · Nach vollständiger Zahlung zurück zur Startseite; letzte vier abgeschlossene Spielabende und Historienmenü','1.6.3 · Gewinner nach jeder Runde automatisch abwählen; aktive Spieler hervorheben und nächste Runde direkt vorbereiten','1.6.2 · Nach Spielabend beenden zurück zur Startseite; neuer Abend startet bei Spieler- und Gastgeberauswahl','1.6.1 · Bronze-Auswahlfelder in der Spielabend-Einrichtung','1.6.0 · Kompakte Spielabend-Einrichtung und Ergebnishistorie wie Abrechnung; Runden- und Start-Spalten entfernt','1.5.9 · Mobile Abrechnung mit fünf Spalten; Startgebühr automatisch; offene Zahlungen einheitlich zweizeilig','1.5.8 · Spielernamen mit Finger oder Maus an den Kartentisch ziehen; Antippen bleibt möglich','1.5.7 · Papierlisten zeilenweise in Euro nachtragen; Kassenanfangsbestand mit Korrekturverlauf','1.5.6 · Bock-Multiplikator unter Einstellungen frei wählbar (Standard ×2)','1.5.5 · Hochzeit am Kartentisch auswählen und sofort buchen, ohne Mischerwechsel','1.5.4 · Gewinner und Solospieler türkis markiert; Mischer bleibt bronze','1.5.3 · Solo: Spieler direkt am Tisch wählen, 1–7 Tacken sofort buchen','1.5.2 · Spielabend beenden nur noch in der Abrechnung','1.5.1 · Startseite kompakter: Zahlungen und letzte Treffen nebeneinander; Treffen/Spiele im Kopf','1.5.0 · Gewinner am Kartentisch, Tacken 1–7 sofort buchen, freie Eingabe und Mischerwechsel','1.4.9 · Jahresstatistik mit Spitzenreitern, Soloquote und Teilnahme-Rangliste','1.4.8 · Kasse mit offenen Spielerbeträgen, Zahlungsverlauf, Einnahmen/Ausgaben und Jahresfilter','1.4.7 · Nur vollständige Zahlungen mit Datum; Gewinner-Hinweis direkt in der App','1.4.6 · Start und Mehr fest in Kopfzeile, Spiel-Navigation entfernt; Clubname einstellbar; Entwicklerhinweis','1.4.5 · Laufenden Spielabend mit Gastgeber, Runden und Bockstand auf der Startseite anzeigen','1.4.4 · Doppelte Navigationseinträge Spieler und Kasse oben entfernt','1.4.3 · Spielabend nachtragen unter Mehr statt auf der Startseite','1.4.2 · Vergangene Spielabende Runde für Runde nachtragen; historisch bezahlt ohne Kassenbuchung','1.4.1 · Ergebnisse als Jahresliste mit Statistik-Umschalter','1.4.0 · Jahresstatistik für Spielabende, Tacken und Soli','1.3.1 · Gastgeber-Hinweis innerhalb der App; nur noch letzte Runde korrigieren','1.3.0 · Nur letzte Runde korrigieren oder rückgängig machen','1.2.6 · Spielabend ohne Browser-Bestätigung direkt beenden','1.2.5 · Spielabend direkt aus Abrechnung beenden; Abwesende automatisch als offen führen','1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
+const APP_VERSION='1.8.10';
+const VERSION_NOTES=['1.8.10 · Einstellungen als fünf kompakte Unterseiten, Designauswahl gestrafft, Hintergrundfarbe inklusive iPhone-Statusleistenbereich angepasst','1.8.9 · Nachtrag mit Endbeträgen inklusive Gebühren, Rückgängig, Clubrekorde, Kassen-Jahresabschluss, Datenprüfung und Backup-Erinnerung','1.8.8 · Drei vollständige Designs, Speicherübersicht, zweifach bestätigtes Datenlöschen und Zahnrad-Navigation','1.8.7 · Spielerprofile, Clubstatistiken, korrigierbare Spielabende, kompakte Kasse und neue Startseite','1.8.6 · Online-/Offline-Anzeige in Kopfzeile entfernt','1.8.5 · Historische Einzelrunden oder Endergebnisse ohne Tischansicht, strukturierte Spielarten','1.8.4 · Kassenprüfung und Korrekturen unter Mehr, Anfangsbestand einmalig','1.8.3 · Offene Zahlungen direkt mit Bezahlen begleichen','1.8.2 · Kompakte Solo- und Bockauswahl, Abrechnung oben rechts, Startseite gestrafft','1.8.1 · Tablet-Querformat, installierbare Offline-App und geprüfte Datensicherung','1.7.3 · Stilles Solo und vier auswählbare App-Designs','1.7.2 · Ergebnisse zeigen vier neueste Tabellen, ältere aufklappbar','1.7.1 · Kassenübersicht gestrafft, Korrekturbuchungen und Zahlungsprüfung ergänzt','1.7.0 · Papierlisten mobil erfassen, einzelne Zeilen korrigieren und löschen, Folgewerte automatisch neu berechnen','1.6.9 · Einstellungen in vier übersichtliche aufklappbare Bereiche gegliedert','1.6.8 · Schlanke Euro-Jahresrangliste nur für Stammspieler mit antippbaren Spielerprofilen','1.6.7 · Klassischer Kartentisch kompakter; Bockstatus in der Tischmitte; Solo/Hochzeit und Tacken ohne Scrollen','1.6.6 · Solo-Fehler behoben; Solo/Hochzeit direkt unter dem Tisch; Bockauslöser aufklappbar','1.6.5 · Tacken direkt am Kartentisch buchen; Soloart per Häkchen, gewonnen als Standard','1.6.4 · Nach vollständiger Zahlung zurück zur Startseite; letzte vier abgeschlossene Spielabende und Historienmenü','1.6.3 · Gewinner nach jeder Runde automatisch abwählen; aktive Spieler hervorheben und nächste Runde direkt vorbereiten','1.6.2 · Nach Spielabend beenden zurück zur Startseite; neuer Abend startet bei Spieler- und Gastgeberauswahl','1.6.1 · Bronze-Auswahlfelder in der Spielabend-Einrichtung','1.6.0 · Kompakte Spielabend-Einrichtung und Ergebnishistorie wie Abrechnung; Runden- und Start-Spalten entfernt','1.5.9 · Mobile Abrechnung mit fünf Spalten; Startgebühr automatisch; offene Zahlungen einheitlich zweizeilig','1.5.8 · Spielernamen mit Finger oder Maus an den Kartentisch ziehen; Antippen bleibt möglich','1.5.7 · Papierlisten zeilenweise in Euro nachtragen; Kassenanfangsbestand mit Korrekturverlauf','1.5.6 · Bock-Multiplikator unter Einstellungen frei wählbar (Standard ×2)','1.5.5 · Hochzeit am Kartentisch auswählen und sofort buchen, ohne Mischerwechsel','1.5.4 · Gewinner und Solospieler türkis markiert; Mischer bleibt bronze','1.5.3 · Solo: Spieler direkt am Tisch wählen, 1–7 Tacken sofort buchen','1.5.2 · Spielabend beenden nur noch in der Abrechnung','1.5.1 · Startseite kompakter: Zahlungen und letzte Treffen nebeneinander; Treffen/Spiele im Kopf','1.5.0 · Gewinner am Kartentisch, Tacken 1–7 sofort buchen, freie Eingabe und Mischerwechsel','1.4.9 · Jahresstatistik mit Spitzenreitern, Soloquote und Teilnahme-Rangliste','1.4.8 · Kasse mit offenen Spielerbeträgen, Zahlungsverlauf, Einnahmen/Ausgaben und Jahresfilter','1.4.7 · Nur vollständige Zahlungen mit Datum; Gewinner-Hinweis direkt in der App','1.4.6 · Start und Mehr fest in Kopfzeile, Spiel-Navigation entfernt; Clubname einstellbar; Entwicklerhinweis','1.4.5 · Laufenden Spielabend mit Gastgeber, Runden und Bockstand auf der Startseite anzeigen','1.4.4 · Doppelte Navigationseinträge Spieler und Kasse oben entfernt','1.4.3 · Spielabend nachtragen unter Mehr statt auf der Startseite','1.4.2 · Vergangene Spielabende Runde für Runde nachtragen; historisch bezahlt ohne Kassenbuchung','1.4.1 · Ergebnisse als Jahresliste mit Statistik-Umschalter','1.4.0 · Jahresstatistik für Spielabende, Tacken und Soli','1.3.1 · Gastgeber-Hinweis innerhalb der App; nur noch letzte Runde korrigieren','1.3.0 · Nur letzte Runde korrigieren oder rückgängig machen','1.2.6 · Spielabend ohne Browser-Bestätigung direkt beenden','1.2.5 · Spielabend direkt aus Abrechnung beenden; Abwesende automatisch als offen führen','1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
 const oldRender=render;
 function dateDE(iso){const m=String(iso||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);return m?m[3]+'.'+m[2]+'.'+m[1]:String(iso||'')}
 function stamp(ms){return ms?new Date(ms).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'}):'–'}

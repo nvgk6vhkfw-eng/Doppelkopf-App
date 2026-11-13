@@ -442,6 +442,34 @@ html:has(body[data-theme="forest"]),html:has(body[data-theme="forest"]) body{--p
 .historical-grid input{width:100%;min-width:0}.historical-counter{display:flex;align-items:center;gap:8px}.historical-counter button{min-width:42px;padding:8px}.historical-counter b{min-width:25px;text-align:center}
 .historical-stat-note{padding:12px;border-radius:11px;border:1px solid #8a795f;margin:12px 0}
 @media(max-width:380px){.historical-grid{grid-template-columns:1fr}}
+
+/* V1.9.0 – Gleich große Sitzkacheln und ein echter Kartenstich */
+.layout{--seat-size:clamp(58px,19vw,82px);grid-template-columns:var(--seat-size) minmax(0,1fr) var(--seat-size);grid-template-rows:var(--seat-size) minmax(120px,1fr) var(--seat-size)}
+.top,.bottom{align-items:center;gap:6px}
+.top .seat,.bottom .seat,.left .seat,.right .seat{box-sizing:border-box;width:var(--seat-size);height:var(--seat-size);min-height:0;max-width:none;flex:0 0 var(--seat-size)}
+.left,.right{display:flex;justify-content:center;align-items:center;height:100%;min-width:0}
+.seat{padding:3px;gap:2px}
+.seat .name{font-size:clamp(10px,2.8vw,13px);line-height:1.15}
+.seat .hint{font-size:clamp(8px,2.1vw,10px);line-height:1.15}
+.seat .plus{font-size:23px}
+.compact-game-table .layout{--seat-size:clamp(52px,16vw,70px);grid-template-columns:var(--seat-size) minmax(0,1fr) var(--seat-size);grid-template-rows:var(--seat-size) 120px var(--seat-size)}
+.compact-game-table .left .seat,.compact-game-table .right .seat{min-height:0;height:var(--seat-size);width:var(--seat-size)}
+.compact-game-table .top .seat,.compact-game-table .bottom .seat{height:var(--seat-size);width:var(--seat-size)}
+.felt{min-width:0}
+.card-suits{display:flex;gap:5px;align-items:center;justify-content:center;background:#fff8ed;border-radius:8px;padding:7px 10px;transform:rotate(-5deg);margin-bottom:9px;box-shadow:0 3px 8px #0003}
+.card-suits span{font-size:clamp(17px,4.6vw,29px);line-height:1;color:#202124}
+.card-suits span.red{color:#ba3838}
+.trick-cards{position:relative;width:clamp(78px,26vw,135px);height:clamp(65px,18vw,90px);margin:0 auto;pointer-events:none}
+.trick-card{position:absolute;display:flex;justify-content:center;align-items:center;width:36%;height:69%;background:#fff9ee;border:1px solid #ddcdb6;border-radius:5px;box-shadow:0 3px 7px #0005;font-family:Georgia,serif;font-size:clamp(19px,5vw,29px);color:#202124}
+.trick-card.red{color:#bd3535}
+.trick-card:nth-child(1){left:11%;top:4%;transform:rotate(-23deg)}
+.trick-card:nth-child(2){left:48%;top:5%;transform:rotate(18deg)}
+.trick-card:nth-child(3){left:17%;top:28%;transform:rotate(13deg)}
+.trick-card:nth-child(4){left:48%;top:28%;transform:rotate(-13deg)}
+.table-bock .trick-cards{margin-top:2px}
+@media(min-width:700px){.layout{--seat-size:96px;grid-template-columns:96px minmax(0,1fr) 96px;grid-template-rows:96px 220px 96px}.compact-game-table .layout{--seat-size:90px;grid-template-columns:90px minmax(0,1fr) 90px;grid-template-rows:90px 190px 90px}.compact-game-table .left .seat,.compact-game-table .right .seat{min-height:0}}
+@media(min-width:900px) and (orientation:landscape){.compact-evening .compact-game-table .layout{--seat-size:110px;grid-template-columns:110px minmax(0,1fr) 110px;grid-template-rows:110px 225px 110px}.compact-evening .compact-game-table .left .seat,.compact-evening .compact-game-table .right .seat{min-height:0}}
+
 </style>
 </head>
 <body>
@@ -552,7 +580,7 @@ function table(n,assigned,mode="setup",rot=null){
  return `<div class="setup ${(mode==="game"||mode==="solo")?"compact-game-table":""}"><div class="layout">
  <div class="top">${s("top1")}${s("top2")}</div>
  <div class="left">${s("left")}</div>
- <div class="felt">${(mode==="game"||mode==="solo")&&rot?`<div class="table-bock">${bockRemaining(editingBase(current()))?`BOCK<small>Noch ${bockRemaining(editingBase(current()))} Runden</small>`:`<span>♣ ♥ ♠ ♦</span>`}</div>`:`<div class="cards">♣ ♥ ♠ ♦</div><strong>Doppelkopf</strong>`}</div>
+ <div class="felt">${(mode==="game"||mode==="solo")&&rot?`<div class="table-bock">${bockRemaining(editingBase(current()))?`BOCK<small>Noch ${bockRemaining(editingBase(current()))} Runden</small>`:""}<div class="trick-cards" aria-label="Vier ausgespielte Karten"><span class="trick-card">♣</span><span class="trick-card red">♥</span><span class="trick-card">♠</span><span class="trick-card red">♦</span></div></div>`:`<div class="card-suits" aria-label="Kartenfarben Schwarz Rot Schwarz Rot"><span>♣</span><span class="red">♥</span><span>♠</span><span class="red">♦</span></div><strong>Doppelkopf</strong>`}</div>
  <div class="right">${s("right")}</div>
  <div class="bottom">${s("bottom1")}${s("bottom2")}</div>
  </div></div>`;
@@ -998,8 +1026,8 @@ async function restore(ev){
  finally{if(ev.target)ev.target.value=''}
 }
 /* Version 3: Original-Tischansicht beibehalten, Spielregeln erweitert */
-const APP_VERSION='1.8.11';
-const VERSION_NOTES=['1.8.11 · Statistik-Nachtrag aus Tacken-Endständen, faire €/Runde-Rangliste, App-Bestätigungsdialoge und Theme-Statusleiste','1.8.10 · Einstellungen als fünf kompakte Unterseiten, Designauswahl gestrafft, Hintergrundfarbe inklusive iPhone-Statusleistenbereich angepasst','1.8.9 · Nachtrag mit Endbeträgen inklusive Gebühren, Rückgängig, Clubrekorde, Kassen-Jahresabschluss, Datenprüfung und Backup-Erinnerung','1.8.8 · Drei vollständige Designs, Speicherübersicht, zweifach bestätigtes Datenlöschen und Zahnrad-Navigation','1.8.7 · Spielerprofile, Clubstatistiken, korrigierbare Spielabende, kompakte Kasse und neue Startseite','1.8.6 · Online-/Offline-Anzeige in Kopfzeile entfernt','1.8.5 · Historische Einzelrunden oder Endergebnisse ohne Tischansicht, strukturierte Spielarten','1.8.4 · Kassenprüfung und Korrekturen unter Mehr, Anfangsbestand einmalig','1.8.3 · Offene Zahlungen direkt mit Bezahlen begleichen','1.8.2 · Kompakte Solo- und Bockauswahl, Abrechnung oben rechts, Startseite gestrafft','1.8.1 · Tablet-Querformat, installierbare Offline-App und geprüfte Datensicherung','1.7.3 · Stilles Solo und vier auswählbare App-Designs','1.7.2 · Ergebnisse zeigen vier neueste Tabellen, ältere aufklappbar','1.7.1 · Kassenübersicht gestrafft, Korrekturbuchungen und Zahlungsprüfung ergänzt','1.7.0 · Papierlisten mobil erfassen, einzelne Zeilen korrigieren und löschen, Folgewerte automatisch neu berechnen','1.6.9 · Einstellungen in vier übersichtliche aufklappbare Bereiche gegliedert','1.6.8 · Schlanke Euro-Jahresrangliste nur für Stammspieler mit antippbaren Spielerprofilen','1.6.7 · Klassischer Kartentisch kompakter; Bockstatus in der Tischmitte; Solo/Hochzeit und Tacken ohne Scrollen','1.6.6 · Solo-Fehler behoben; Solo/Hochzeit direkt unter dem Tisch; Bockauslöser aufklappbar','1.6.5 · Tacken direkt am Kartentisch buchen; Soloart per Häkchen, gewonnen als Standard','1.6.4 · Nach vollständiger Zahlung zurück zur Startseite; letzte vier abgeschlossene Spielabende und Historienmenü','1.6.3 · Gewinner nach jeder Runde automatisch abwählen; aktive Spieler hervorheben und nächste Runde direkt vorbereiten','1.6.2 · Nach Spielabend beenden zurück zur Startseite; neuer Abend startet bei Spieler- und Gastgeberauswahl','1.6.1 · Bronze-Auswahlfelder in der Spielabend-Einrichtung','1.6.0 · Kompakte Spielabend-Einrichtung und Ergebnishistorie wie Abrechnung; Runden- und Start-Spalten entfernt','1.5.9 · Mobile Abrechnung mit fünf Spalten; Startgebühr automatisch; offene Zahlungen einheitlich zweizeilig','1.5.8 · Spielernamen mit Finger oder Maus an den Kartentisch ziehen; Antippen bleibt möglich','1.5.7 · Papierlisten zeilenweise in Euro nachtragen; Kassenanfangsbestand mit Korrekturverlauf','1.5.6 · Bock-Multiplikator unter Einstellungen frei wählbar (Standard ×2)','1.5.5 · Hochzeit am Kartentisch auswählen und sofort buchen, ohne Mischerwechsel','1.5.4 · Gewinner und Solospieler türkis markiert; Mischer bleibt bronze','1.5.3 · Solo: Spieler direkt am Tisch wählen, 1–7 Tacken sofort buchen','1.5.2 · Spielabend beenden nur noch in der Abrechnung','1.5.1 · Startseite kompakter: Zahlungen und letzte Treffen nebeneinander; Treffen/Spiele im Kopf','1.5.0 · Gewinner am Kartentisch, Tacken 1–7 sofort buchen, freie Eingabe und Mischerwechsel','1.4.9 · Jahresstatistik mit Spitzenreitern, Soloquote und Teilnahme-Rangliste','1.4.8 · Kasse mit offenen Spielerbeträgen, Zahlungsverlauf, Einnahmen/Ausgaben und Jahresfilter','1.4.7 · Nur vollständige Zahlungen mit Datum; Gewinner-Hinweis direkt in der App','1.4.6 · Start und Mehr fest in Kopfzeile, Spiel-Navigation entfernt; Clubname einstellbar; Entwicklerhinweis','1.4.5 · Laufenden Spielabend mit Gastgeber, Runden und Bockstand auf der Startseite anzeigen','1.4.4 · Doppelte Navigationseinträge Spieler und Kasse oben entfernt','1.4.3 · Spielabend nachtragen unter Mehr statt auf der Startseite','1.4.2 · Vergangene Spielabende Runde für Runde nachtragen; historisch bezahlt ohne Kassenbuchung','1.4.1 · Ergebnisse als Jahresliste mit Statistik-Umschalter','1.4.0 · Jahresstatistik für Spielabende, Tacken und Soli','1.3.1 · Gastgeber-Hinweis innerhalb der App; nur noch letzte Runde korrigieren','1.3.0 · Nur letzte Runde korrigieren oder rückgängig machen','1.2.6 · Spielabend ohne Browser-Bestätigung direkt beenden','1.2.5 · Spielabend direkt aus Abrechnung beenden; Abwesende automatisch als offen führen','1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
+const APP_VERSION='1.9.0';
+const VERSION_NOTES=['1.9.0 · Quadratische Spielerkacheln auf allen vier Tischseiten, schwarz-rote Kartenfarben bei der Sitzordnung und vier ausgespielte Karten während des Spiels','1.8.12 · Kompakte Clubstatistik mit Jahresvergleich, persönlichen Spielhistorien und ewigen Rekorden','1.8.11 · Statistik-Nachtrag aus Tacken-Endständen, faire €/Runde-Rangliste, App-Bestätigungsdialoge und Theme-Statusleiste','1.8.10 · Einstellungen als fünf kompakte Unterseiten, Designauswahl gestrafft, Hintergrundfarbe inklusive iPhone-Statusleistenbereich angepasst','1.8.9 · Nachtrag mit Endbeträgen inklusive Gebühren, Rückgängig, Clubrekorde, Kassen-Jahresabschluss, Datenprüfung und Backup-Erinnerung','1.8.8 · Drei vollständige Designs, Speicherübersicht, zweifach bestätigtes Datenlöschen und Zahnrad-Navigation','1.8.7 · Spielerprofile, Clubstatistiken, korrigierbare Spielabende, kompakte Kasse und neue Startseite','1.8.6 · Online-/Offline-Anzeige in Kopfzeile entfernt','1.8.5 · Historische Einzelrunden oder Endergebnisse ohne Tischansicht, strukturierte Spielarten','1.8.4 · Kassenprüfung und Korrekturen unter Mehr, Anfangsbestand einmalig','1.8.3 · Offene Zahlungen direkt mit Bezahlen begleichen','1.8.2 · Kompakte Solo- und Bockauswahl, Abrechnung oben rechts, Startseite gestrafft','1.8.1 · Tablet-Querformat, installierbare Offline-App und geprüfte Datensicherung','1.7.3 · Stilles Solo und vier auswählbare App-Designs','1.7.2 · Ergebnisse zeigen vier neueste Tabellen, ältere aufklappbar','1.7.1 · Kassenübersicht gestrafft, Korrekturbuchungen und Zahlungsprüfung ergänzt','1.7.0 · Papierlisten mobil erfassen, einzelne Zeilen korrigieren und löschen, Folgewerte automatisch neu berechnen','1.6.9 · Einstellungen in vier übersichtliche aufklappbare Bereiche gegliedert','1.6.8 · Schlanke Euro-Jahresrangliste nur für Stammspieler mit antippbaren Spielerprofilen','1.6.7 · Klassischer Kartentisch kompakter; Bockstatus in der Tischmitte; Solo/Hochzeit und Tacken ohne Scrollen','1.6.6 · Solo-Fehler behoben; Solo/Hochzeit direkt unter dem Tisch; Bockauslöser aufklappbar','1.6.5 · Tacken direkt am Kartentisch buchen; Soloart per Häkchen, gewonnen als Standard','1.6.4 · Nach vollständiger Zahlung zurück zur Startseite; letzte vier abgeschlossene Spielabende und Historienmenü','1.6.3 · Gewinner nach jeder Runde automatisch abwählen; aktive Spieler hervorheben und nächste Runde direkt vorbereiten','1.6.2 · Nach Spielabend beenden zurück zur Startseite; neuer Abend startet bei Spieler- und Gastgeberauswahl','1.6.1 · Bronze-Auswahlfelder in der Spielabend-Einrichtung','1.6.0 · Kompakte Spielabend-Einrichtung und Ergebnishistorie wie Abrechnung; Runden- und Start-Spalten entfernt','1.5.9 · Mobile Abrechnung mit fünf Spalten; Startgebühr automatisch; offene Zahlungen einheitlich zweizeilig','1.5.8 · Spielernamen mit Finger oder Maus an den Kartentisch ziehen; Antippen bleibt möglich','1.5.7 · Papierlisten zeilenweise in Euro nachtragen; Kassenanfangsbestand mit Korrekturverlauf','1.5.6 · Bock-Multiplikator unter Einstellungen frei wählbar (Standard ×2)','1.5.5 · Hochzeit am Kartentisch auswählen und sofort buchen, ohne Mischerwechsel','1.5.4 · Gewinner und Solospieler türkis markiert; Mischer bleibt bronze','1.5.3 · Solo: Spieler direkt am Tisch wählen, 1–7 Tacken sofort buchen','1.5.2 · Spielabend beenden nur noch in der Abrechnung','1.5.1 · Startseite kompakter: Zahlungen und letzte Treffen nebeneinander; Treffen/Spiele im Kopf','1.5.0 · Gewinner am Kartentisch, Tacken 1–7 sofort buchen, freie Eingabe und Mischerwechsel','1.4.9 · Jahresstatistik mit Spitzenreitern, Soloquote und Teilnahme-Rangliste','1.4.8 · Kasse mit offenen Spielerbeträgen, Zahlungsverlauf, Einnahmen/Ausgaben und Jahresfilter','1.4.7 · Nur vollständige Zahlungen mit Datum; Gewinner-Hinweis direkt in der App','1.4.6 · Start und Mehr fest in Kopfzeile, Spiel-Navigation entfernt; Clubname einstellbar; Entwicklerhinweis','1.4.5 · Laufenden Spielabend mit Gastgeber, Runden und Bockstand auf der Startseite anzeigen','1.4.4 · Doppelte Navigationseinträge Spieler und Kasse oben entfernt','1.4.3 · Spielabend nachtragen unter Mehr statt auf der Startseite','1.4.2 · Vergangene Spielabende Runde für Runde nachtragen; historisch bezahlt ohne Kassenbuchung','1.4.1 · Ergebnisse als Jahresliste mit Statistik-Umschalter','1.4.0 · Jahresstatistik für Spielabende, Tacken und Soli','1.3.1 · Gastgeber-Hinweis innerhalb der App; nur noch letzte Runde korrigieren','1.3.0 · Nur letzte Runde korrigieren oder rückgängig machen','1.2.6 · Spielabend ohne Browser-Bestätigung direkt beenden','1.2.5 · Spielabend direkt aus Abrechnung beenden; Abwesende automatisch als offen führen','1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
 const oldRender=render;
 function dateDE(iso){const m=String(iso||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);return m?m[3]+'.'+m[2]+'.'+m[1]:String(iso||'')}
 function stamp(ms){return ms?new Date(ms).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'}):'–'}
@@ -1415,61 +1443,71 @@ let statisticsYear=String(new Date().getFullYear());
 let statisticsPlayer=null;
 function statistics(){
  const years=[...new Set(db.evenings.map(e=>String(e.date||'').slice(0,4)).filter(y=>/^\d{4}$/.test(y)))].sort().reverse();
+ if(statisticsYear!=='all'&&!years.includes(statisticsYear))statisticsYear=years[0]||String(new Date().getFullYear());
  const selected=statisticsYear;
  const evenings=db.evenings.filter(e=>selected==='all'||String(e.date||'').startsWith(selected+'-'));
- const data=db.players.filter(p=>!p.guest).map(p=>{
-  let nights=0,rounds=0,allEuro=0,ratedEuro=0,solos=0,weddings=0,wins=0,losses=0,unknown=0,best=null;
+ const rate=e=>Number(e.historicalStats?.tackRate??db.settings.tack);
+ const gameAmount=(e,id)=>e.historicalMode==='stats'?Number(e.historicalStats?.players?.[id]?.tacken||0)*rate(e):e.historicalMode==='summary'?null:(totals(e)[id]||0)*Number(db.settings.tack);
+ const statsFor=(es,p)=>{
+  let nights=0,rounds=0,allEuro=0,ratedEuro=0,solos=0,weddings=0,wins=0,losses=0,unknown=0;
   const history=[];
-  for(const e of evenings){
-   if(!e.present.includes(p.id))continue;
+  for(const e of es){
+   if(!e.present?.includes(p.id))continue;
    nights++;
+   const amount=gameAmount(e,p.id);
+   if(amount===null){unknown++;continue}
+   allEuro+=amount;
+   let personalRounds=0;
    if(e.historicalMode==='stats'){
-    const x=e.historicalStats?.players?.[p.id];if(!x)continue;
-    const amount=Number(x.tacken||0)*Number(e.historicalStats?.tackRate||db.settings.tack);
-    allEuro+=amount;solos+=Number(x.solos||0);weddings+=Number(x.weddings||0);
-    const pr=x.rounds;
-    if(Number.isInteger(pr)&&pr>0){rounds+=pr;ratedEuro+=amount}else unknown++;
-    history.push({date:e.date,amount,source:'Nachtrag'});
-    if(best===null||amount>best)best=amount;
-   }else if(e.historicalMode==='summary'){
-    // Legacy fee-inclusive amounts are not valid gameplay totals.
-    unknown++;
+    const x=e.historicalStats?.players?.[p.id]||{};
+    solos+=Number(x.solos||0);weddings+=Number(x.weddings||0);
+    personalRounds=Number.isInteger(x.rounds)&&x.rounds>0?x.rounds:0;
    }else{
-    const own=e.rounds.filter(r=>r.playing?.includes(p.id)||Object.hasOwn(r.points||{},p.id));
-    const amount=(totals(e)[p.id]||0)*db.settings.tack;
-    allEuro+=amount;ratedEuro+=amount;rounds+=own.length;
+    const own=(e.rounds||[]).filter(r=>r.playing?.includes(p.id)||Object.hasOwn(r.points||{},p.id));
+    personalRounds=own.length;
     wins+=own.filter(r=>Number(r.points?.[p.id]||0)>0).length;
     losses+=own.filter(r=>Number(r.points?.[p.id]||0)<0).length;
-    solos+=e.rounds.filter(r=>r.solo&&r.soloPlayer===p.id).length;
-    weddings+=e.rounds.filter(r=>r.hochzeitPlayer===p.id||r.hochzeit===p.id).length;
-    history.push({date:e.date,amount,source:'Spielabend'});
-    if(best===null||amount>best)best=amount;
+    solos+=(e.rounds||[]).filter(r=>r.solo&&r.soloPlayer===p.id).length;
+    weddings+=(e.rounds||[]).filter(r=>r.hochzeitPlayer===p.id||r.hochzeit===p.id).length;
    }
+   if(personalRounds>0){rounds+=personalRounds;ratedEuro+=amount}else unknown++;
+   history.push({date:e.date,host:name(e.host),amount,source:e.historical?'Historisch':'Spielabend',solos:e.historicalMode==='stats'?Number(e.historicalStats?.players?.[p.id]?.solos||0):null,weddings:e.historicalMode==='stats'?Number(e.historicalStats?.players?.[p.id]?.weddings||0):null,rounds:personalRounds});
   }
-  return {p,nights,rounds,allEuro,ratedEuro,avg:rounds>0?ratedEuro/rounds:null,solos,weddings,wins,losses,unknown,best,history};
- }).sort((a,b)=>(b.avg??-Infinity)-(a.avg??-Infinity)||b.rounds-a.rounds||a.p.name.localeCompare(b.p.name,'de'));
+  return {p,nights,rounds,allEuro,ratedEuro,avg:rounds>0?ratedEuro/rounds:null,solos,weddings,wins,losses,unknown,history};
+ };
+ const data=db.players.filter(p=>!p.guest).map(p=>statsFor(evenings,p)).sort((a,b)=>(b.avg??-Infinity)-(a.avg??-Infinity)||b.rounds-a.rounds||a.p.name.localeCompare(b.p.name,'de'));
  const chosen=data.find(x=>x.p.id===statisticsPlayer);
  const money=n=>(n>0?'+':'')+euro(n);
- const totalRounds=evenings.reduce((n,e)=>n+(e.historicalMode==='stats'?Number(e.historicalStats?.totalRounds||0):e.rounds.length),0);
+ const totalRounds=evenings.reduce((n,e)=>n+(e.historicalMode==='stats'?Number(e.historicalStats?.totalRounds||0):(e.rounds||[]).length),0);
  const totalSolos=data.reduce((n,x)=>n+x.solos,0);
- const active=data.filter(x=>x.nights>0);
+ const recordSet=es=>{
+  const players=db.players.filter(p=>!p.guest).map(p=>statsFor(es,p));
+  const entries=players.flatMap(x=>x.history.map(h=>({...h,player:x.p.name})));
+  const byGain=[...entries].sort((a,b)=>b.amount-a.amount);
+  const bySolo=entries.filter(x=>x.solos!==null).sort((a,b)=>b.solos-a.solos);
+  const byWedding=entries.filter(x=>x.weddings!==null).sort((a,b)=>b.weddings-a.weddings);
+  const row=(label,x,val)=>`<div class="row"><span>${label}</span><b>${x?esc(x.player)+' · '+val+'<small class="mini" style="display:block;font-weight:normal">'+esc(dateDE(x.date))+'</small>':'–'}</b></div>`;
+  return row('Höchster Abendgewinn',byGain[0],byGain.length?money(byGain[0].amount):'')+row('Größter Abendverlust',byGain.length?byGain[byGain.length-1]:null,byGain.length?money(byGain[byGain.length-1].amount):'')+row('Meiste Soli an einem Abend',bySolo[0]?.solos!=null?bySolo[0]:null,bySolo.length?bySolo[0].solos:'')+row('Meiste Hochzeiten an einem Abend',byWedding[0]?.weddings!=null?byWedding[0]:null,byWedding.length?byWedding[0].weddings:'');
+ };
  const playerDetails=chosen?`<div class="card" id="playerDetails"><div class="row"><h3>${esc(chosen.p.name)}</h3>${button('Schließen','statisticsPlayer=null;render()')}</div>
  <div class="row"><span>Ø pro gespielter Runde</span><b>${chosen.avg===null?'–':money(chosen.avg)}</b></div>
- <div class="row"><span>Gesamtergebnis aus erfassten Spielständen</span><b>${money(chosen.allEuro)}</b></div>
- <div class="row"><span>Gespielte Runden (bekannt)</span><b>${chosen.rounds}</b></div><div class="row"><span>Spielabende</span><b>${chosen.nights}</b></div>
+ <div class="row"><span>Gesamtergebnis</span><b>${money(chosen.allEuro)}</b></div>
+ <div class="row"><span>Gespielte Runden (bekannt)</span><b>${chosen.rounds}</b></div>
+ <div class="row"><span>Spielabende</span><b>${chosen.nights}</b></div>
  <div class="row"><span>Soli / Hochzeiten</span><b>${chosen.solos} / ${chosen.weddings}</b></div>
- <div class="row"><span>Gewonnene / verlorene Einzelrunden (bekannt)</span><b>${chosen.wins} / ${chosen.losses}</b></div>
- ${chosen.unknown?`<p class="mini">Bei ${chosen.unknown} Abend(en) fehlen vergleichbare Rundenzahlen oder reine Spielstände. Diese zählen nicht in den Ø pro Runde.</p>`:''}
- <h3>Ergebnisse nach Spielabend</h3>${chosen.history.sort((a,b)=>String(b.date).localeCompare(String(a.date))).map(h=>`<div class="row"><span>${esc(dateDE(h.date))} · ${esc(h.source)}</span><b>${money(h.amount)}</b></div>`).join('')||'<p class="muted">Noch keine Ergebnisse.</p>'}</div>`:'';
- const best=active.flatMap(x=>x.history.map(h=>({name:x.p.name,...h}))).sort((a,b)=>b.amount-a.amount);
- const mostSolo=[...active].sort((a,b)=>b.solos-a.solos)[0];
- return `<div class="card"><div class="actions">${button('← Ergebnisse',"go('resultsOverview')")}</div><h2>Jahresrangliste</h2>
+ ${chosen.unknown?`<p class="mini">Bei ${chosen.unknown} Abend(en) fehlen reine Ergebnisse oder persönliche Rundenzahlen. Diese zählen nicht zum Ø pro Runde.</p>`:''}
+ <h3>Persönliche Rekorde</h3>${chosen.history.length?`<div class="row"><span>Bester Abend</span><b>${money(Math.max(...chosen.history.map(h=>h.amount)))}</b></div><div class="row"><span>Schlechtester Abend</span><b>${money(Math.min(...chosen.history.map(h=>h.amount)))}</b></div>`:'<p class="mini">Noch keine Ergebnisse.</p>'}
+ <h3>Spielhistorie</h3>${chosen.history.sort((a,b)=>String(b.date).localeCompare(String(a.date))).map(h=>`<div class="row"><span><b>${esc(dateDE(h.date))}</b><small class="mini" style="display:block">Bei ${esc(h.host)} · ${esc(h.source)}${h.rounds?' · '+h.rounds+' Runden':''}${h.solos!==null?' · '+h.solos+' Soli · '+h.weddings+' Hochzeiten':''}</small></span><b class="${h.amount>=0?'good':'bad'}">${money(h.amount)}</b></div>`).join('')||'<p class="muted">Noch keine Ergebnisse.</p>'}</div>`:'';
+ const yearRows=years.map(y=>{const es=db.evenings.filter(e=>String(e.date||'').startsWith(y+'-'));const count=es.reduce((n,e)=>n+(e.historicalMode==='stats'?Number(e.historicalStats?.totalRounds||0):(e.rounds||[]).length),0);return `<tr><td>${y}</td><td>${es.length}</td><td>${count}</td></tr>`}).join('');
+ return `<div class="card"><div class="actions">${button('← Ergebnisse',"go('resultsOverview')")}</div><h2>Clubstatistik</h2>
  <label>Zeitraum</label><select onchange="statisticsYear=this.value;statisticsPlayer=null;render()"><option value="all" ${selected==='all'?'selected':''}>Alle Jahre</option>${years.map(y=>`<option value="${y}" ${selected===y?'selected':''}>${y}</option>`).join('')}</select>
- <div class="row"><span>Spielabende</span><b>${evenings.length}</b></div><div class="row"><span>Runden insgesamt / Soli</span><b>${totalRounds} / ${totalSolos}</b></div></div>
- <div class="card"><h3>🏆 Rangliste</h3><div class="scroll"><table class="stat-compact"><thead><tr><th>Platz</th><th>Spieler</th><th>Runden</th><th>Ø €/Runde</th></tr></thead><tbody>
- ${data.map((x,i)=>`<tr class="stat-tap" onclick="statisticsPlayer='${x.p.id}';render()"><td>${x.avg===null?'–':i+1+'.'}</td><td><b>${esc(x.p.name)}</b></td><td>${x.rounds}</td><td class="${x.avg===null?'':x.avg>=0?'good':'bad'}"><b>${x.avg===null?'–':money(x.avg)}</b></td></tr>`).join('')}</tbody></table></div>
- <div class="historical-stat-note"><b>So funktioniert die Rangliste</b><p class="mini">Reiner Gewinn oder Verlust in Euro ÷ tatsächlich gespielte Runden = durchschnittliches Ergebnis pro Runde. Startgeld und Solo-Strafen zählen nicht. Es gibt keine Mindestanzahl an Runden. Bei fehlenden persönlichen Rundenzahlen wird der betroffene Abend nicht in den Durchschnitt eingerechnet.</p></div><p class="mini">Spieler antippen für Gesamtgewinn, Soli, Hochzeiten und einzelne Abende. Alte Kassen-Endbeträge werden nicht als Spielergebnis gewertet.</p></div>
- <div class="card"><h3>Clubrekorde</h3><div class="row"><span>Meiste Soli</span><b>${mostSolo?esc(mostSolo.p.name)+' · '+mostSolo.solos:'–'}</b></div><div class="row"><span>Höchster Abendgewinn</span><b>${best.length?esc(best[0].name)+' · '+money(best[0].amount):'–'}</b></div><div class="row"><span>Größter Abendverlust</span><b>${best.length?esc(best[best.length-1].name)+' · '+money(best[best.length-1].amount):'–'}</b></div><p class="mini">Rekorde beruhen nur auf erfassten reinen Spielständen.</p></div>${playerDetails}`;
+ <div class="row"><span>Spielabende</span><b>${evenings.length}</b></div><div class="row"><span>Runden insgesamt</span><b>${totalRounds}</b></div><div class="row"><span>Erfasste Soli</span><b>${totalSolos}</b></div><div class="row"><span>Erfasste Hochzeiten</span><b>${data.reduce((n,x)=>n+x.weddings,0)}</b></div></div>
+ <div class="card"><h3>Jahresrangliste</h3><div class="scroll"><table class="stat-compact"><thead><tr><th>Platz</th><th>Spieler</th><th>Runden</th><th>Ø €/Runde</th></tr></thead><tbody>
+ ${data.map((x,i)=>`<tr class="stat-tap" onclick="statisticsPlayer='${x.p.id}';render()"><td>${x.avg===null?'–':data.slice(0,i+1).filter(z=>z.avg!==null).length+'.'}</td><td><b>${esc(x.p.name)}</b></td><td>${x.rounds}</td><td class="${x.avg===null?'':x.avg>=0?'good':'bad'}"><b>${x.avg===null?'–':money(x.avg)}</b></td></tr>`).join('')}</tbody></table></div>
+ <div class="historical-stat-note"><b>So funktioniert die Rangliste</b><p class="mini">Reines Spielergebnis in Euro geteilt durch tatsächlich gespielte persönliche Runden. Startgeld und Solo-Strafen zählen nicht. Keine Mindestanzahl. Abende ohne bekannte persönliche Rundenzahl bleiben aus diesem Durchschnitt heraus.</p></div><p class="mini">Spielernamen antippen, um Ergebnisse und Historie zu sehen.</p></div>
+ <div class="card"><h3>${selected==='all'?'Clubrekorde · alle Jahre':'Clubrekorde · '+selected}</h3>${recordSet(evenings)}<p class="mini">Nur erfasste reine Spielergebnisse; Soli und Hochzeiten soweit dokumentiert.</p></div>
+ ${selected==='all'?'':`<div class="card"><h3>Ewige Clubrekorde</h3>${recordSet(db.evenings)}</div>`}
+ <div class="card"><h3>Jahresvergleich</h3><div class="scroll"><table class="stat-compact"><thead><tr><th>Jahr</th><th>Spielabende</th><th>Runden</th></tr></thead><tbody>${yearRows||'<tr><td colspan="3">Noch keine Daten</td></tr>'}</tbody></table></div><p class="mini">Schlichte Jahresübersicht ohne Diagramme.</p></div>${playerDetails}`;
 }
 
 let resultsYear=String(new Date().getFullYear());

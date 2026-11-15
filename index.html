@@ -738,6 +738,186 @@ body[data-theme="light"] .seating-table .seat.filled,body[data-theme="light"] .w
 .stat-compact th{font-size:12px;white-space:normal}
 .stat-compact td{font-variant-numeric:tabular-nums}
 @media(min-width:650px){.stats-kpi-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* V1.9.24 – Startseite: Clubname nur in der festen Kopfzeile */
+.club-home-intro{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:7px 3px 13px}
+.club-home-intro>span{font-size:clamp(18px,4.8vw,23px);font-weight:750;color:#e9bd82}
+.club-home-intro>small{font-size:clamp(10px,2.7vw,12px);opacity:.75;text-align:right}
+@media(max-width:620px){
+ .home-panels{grid-template-columns:minmax(0,1fr);gap:12px}
+ .home-panels .card{padding:15px 17px}
+ .home-panels .recent-item{padding:7px 0}
+ .home-panels .recent-open{flex-direction:row;align-items:center;justify-content:space-between;gap:12px}
+ .home-panels .recent-date,.home-panels .recent-name{font-size:13px}
+ .home-panels h2{font-size:17px}
+}
+body[data-theme="light"] .club-home-intro>span{color:#865536}
+
+/* V1.9.25 – fünf Designs: konsequente Farbpaletten ohne Änderung der Spiellogik. */
+body[data-theme="light"]{
+  --accent:#A5533B;--card:#F6EDE0;--surface:#E8D8C2;--input-bg:#FFF8EF;
+  --page-bg:#E8D8C2!important;--safe-top-bg:#E8D8C2!important;
+  background:#E8D8C2!important;color:#593A30;
+}
+html:has(body[data-theme="light"]),html:has(body[data-theme="light"]) body{
+  --page-bg:#E8D8C2!important;background:#E8D8C2!important;
+}
+:root:has(body[data-theme="light"]){background:#E8D8C2!important;color-scheme:light}
+body[data-theme="light"] header{background:#E0CDB5;border-color:#A5533B;box-shadow:0 2px 9px #593a301a}
+body[data-theme="light"] h1,body[data-theme="light"] h2,body[data-theme="light"] h3,body[data-theme="light"] .big,
+body[data-theme="light"] .club-home-intro>span{color:#914D35}
+body[data-theme="light"] .card,body[data-theme="light"] .app-dialog-box{background:#F6EDE0;color:#593A30;border-color:#C98965;box-shadow:0 5px 18px #593a3015}
+body[data-theme="light"] button{background:#EFE0CC;border-color:#C98965;color:#593A30}
+body[data-theme="light"] button.primary,body[data-theme="light"] button.active{background:#A5533B;border-color:#A5533B;color:#FFF8EF}
+body[data-theme="light"] input,body[data-theme="light"] select,body[data-theme="light"] textarea{background:#FFF8EF;border-color:#C98965;color:#593A30}
+body[data-theme="light"] .muted,body[data-theme="light"] .mini,body[data-theme="light"] header small{color:#796B60}
+body[data-theme="light"] .row,body[data-theme="light"] th,body[data-theme="light"] td{border-color:#C9896560}
+body[data-theme="light"] .club-tiles .tile,body[data-theme="light"] .club-active{background:linear-gradient(145deg,#F6EDE0,#EBD7BF);border-color:#C98965;color:#593A30}
+body[data-theme="light"] .club-active small,body[data-theme="light"] .club-home-sub{color:#796B60}
+body[data-theme="light"] .club-active-symbol,body[data-theme="light"] .club-active>span:last-child,
+body[data-theme="light"] .club-home-name,body[data-theme="light"] .club-home-suit,
+body[data-theme="light"] .home-panels .recent-date,body[data-theme="light"] .profile-kpis b{color:#A5533B}
+body[data-theme="light"] .profile-kpis>div,body[data-theme="light"] .cash-metric,body[data-theme="light"] .preview,
+body[data-theme="light"] .settings-group,body[data-theme="light"] .settings-menu-item{background:#F1E2CF;border-color:#C98965}
+body[data-theme="light"] .settings-icon{background:#E7C7AB;color:#914D35}
+body[data-theme="light"] .settings-title strong,body[data-theme="light"] .settings-menu-arrow{color:#914D35}
+body[data-theme="light"] .setup{background:#E1D0BB}
+body[data-theme="light"] .chip,body[data-theme="light"] .seat,body[data-theme="light"] .profile-link,
+body[data-theme="light"] .hist-choice,body[data-theme="light"] .hist-mode button,body[data-theme="light"] .hist-picks button{background:#F1E2CF;border-color:#C98965;color:#593A30}
+body[data-theme="light"] .chip.chosen,body[data-theme="light"] .winner.selected{background:#A5533B;color:#FFF8EF}
+body[data-theme="light"] .compact-game-table .seat.filled,body[data-theme="light"] .seating-table .seat.filled,
+body[data-theme="light"] .wedding-table .seat.filled{background:linear-gradient(145deg,#F6EDE0,#E8CFB8);color:#593A30}
+body[data-theme="light"] .compact-game-table .felt,body[data-theme="light"] .seating-table .felt,
+body[data-theme="light"] .wedding-table .felt{background:transparent;border:0;box-shadow:none}
+body[data-theme="light"] .quick-tacken button{background:linear-gradient(145deg,#F5E5D0,#E6C8AA);border-color:#C98965;color:#593A30}
+body[data-theme="light"] .bockbar{background:#E8CFB8;border-color:#C98965;color:#593A30}
+body[data-theme="light"] .bockbar.off{background:#DDE5D8;color:#31543B}
+body[data-theme="light"] .game-controls>.wheel-always,body[data-theme="light"] .bock-extra,
+body[data-theme="light"] .game-controls>.extra-tacken{background:#F1E2CF;border-color:#C98965}
+body[data-theme="light"] .game-controls>.extra-tacken>summary,body[data-theme="light"] .bock-extra>summary{background:#F1E2CF;color:#914D35}
+body[data-theme="light"] .extra-tacken-scroll button,body[data-theme="light"] .compact-solo .compact-solo-choices .check,
+body[data-theme="light"] .bock-extra .triggers label{background:#F5E5D0;border-color:#C98965;color:#593A30}
+body[data-theme="light"] .compact-solo .compact-solo-choices .check:has(input:checked),body[data-theme="light"] .bock-extra .triggers label:has(input:checked){background:#A5533B;color:white}
+body[data-theme="light"] .wheel-selection{background:#A5533B1c;border-color:#A5533B}
+body[data-theme="light"] .stats-kpi-grid>div,body[data-theme="light"] .result-rank-num{background:#A5533B12;border-color:#C98965;color:#914D35}
+body[data-theme="light"] .stats-kpi-grid strong,body[data-theme="light"] .stats-detail>summary,body[data-theme="light"] .record-value{color:#914D35}
+body[data-theme="light"] .good{color:#26754A}body[data-theme="light"] .bad{color:#A8463C}
+
+/* Nachtblau & Champagner */
+body[data-theme="navy"]{
+  --accent:#E5C69B;--card:#21364A;--surface:#142334;--input-bg:#14283A;
+  --page-bg:#142334!important;--safe-top-bg:#142334!important;
+  background:#142334!important;color:#F5F0E9;
+}
+html:has(body[data-theme="navy"]),html:has(body[data-theme="navy"]) body{
+  --page-bg:#142334!important;background:#142334!important;
+}
+:root:has(body[data-theme="navy"]){background:#142334!important;color-scheme:dark}
+body[data-theme="navy"] header{background:#172C3D;border-color:#E5C69B;box-shadow:0 3px 15px #050d16a1}
+body[data-theme="navy"] h1,body[data-theme="navy"] h2,body[data-theme="navy"] h3,body[data-theme="navy"] .big,
+body[data-theme="navy"] .club-home-intro>span{color:#E5C69B}
+body[data-theme="navy"] .card,body[data-theme="navy"] .app-dialog-box{background:#21364A;color:#F5F0E9;border-color:#9C805E;box-shadow:0 7px 22px #0004}
+body[data-theme="navy"] button{background:#2A4358;border-color:#9C805E;color:#F5F0E9}
+body[data-theme="navy"] button.primary,body[data-theme="navy"] button.active{background:#E5C69B;border-color:#E5C69B;color:#142334;font-weight:750}
+body[data-theme="navy"] input,body[data-theme="navy"] select,body[data-theme="navy"] textarea{background:#14283A;border-color:#9C805E;color:#F5F0E9}
+body[data-theme="navy"] .muted,body[data-theme="navy"] .mini,body[data-theme="navy"] header small{color:#BAC6D0}
+body[data-theme="navy"] .row,body[data-theme="navy"] th,body[data-theme="navy"] td{border-color:#8B98A250}
+body[data-theme="navy"] .club-tiles .tile,body[data-theme="navy"] .club-active{background:linear-gradient(145deg,#2A455C,#1C3044);border-color:#9C805E;color:#F5F0E9}
+body[data-theme="navy"] .club-home-name,body[data-theme="navy"] .club-home-suit,
+body[data-theme="navy"] .club-active-symbol,body[data-theme="navy"] .club-active>span:last-child,
+body[data-theme="navy"] .home-panels .recent-date{color:#E5C69B}
+body[data-theme="navy"] .club-active small,body[data-theme="navy"] .club-home-sub{color:#BAC6D0}
+body[data-theme="navy"] .profile-kpis>div,body[data-theme="navy"] .cash-metric,body[data-theme="navy"] .preview,
+body[data-theme="navy"] .settings-group,body[data-theme="navy"] .settings-menu-item{background:#2A4157;border-color:#9C805E}
+body[data-theme="navy"] .settings-icon{background:#3A5367;color:#E5C69B}
+body[data-theme="navy"] .settings-title strong,body[data-theme="navy"] .settings-menu-arrow,body[data-theme="navy"] .profile-kpis b{color:#E5C69B}
+body[data-theme="navy"] .setup{background:#112C33}
+body[data-theme="navy"] .chip,body[data-theme="navy"] .seat,body[data-theme="navy"] .profile-link,
+body[data-theme="navy"] .hist-choice,body[data-theme="navy"] .hist-mode button,body[data-theme="navy"] .hist-picks button{background:#2A455A;border-color:#9C805E;color:#F5F0E9}
+body[data-theme="navy"] .chip.chosen,body[data-theme="navy"] .winner.selected{background:#B89870;color:#142334}
+body[data-theme="navy"] .compact-game-table .seat.filled,body[data-theme="navy"] .seating-table .seat.filled,
+body[data-theme="navy"] .wedding-table .seat.filled{background:linear-gradient(145deg,#345165,#1B3548);color:#F5F0E9}
+body[data-theme="navy"] .quick-tacken button{background:linear-gradient(145deg,#35536B,#243E54);border-color:#9C805E;color:#F5F0E9}
+body[data-theme="navy"] .bockbar{background:#4C4A42;color:#F0D1A1;border-color:#D9B17F}
+body[data-theme="navy"] .bockbar.off{background:#2A4A48;border-color:#678B83}
+body[data-theme="navy"] .game-controls>.wheel-always,body[data-theme="navy"] .bock-extra,
+body[data-theme="navy"] .game-controls>.extra-tacken{background:#2A4157;border-color:#9C805E}
+body[data-theme="navy"] .game-controls>.extra-tacken>summary,body[data-theme="navy"] .bock-extra>summary{background:#2A4157;color:#E5C69B}
+body[data-theme="navy"] .extra-tacken-scroll button,body[data-theme="navy"] .compact-solo .compact-solo-choices .check,
+body[data-theme="navy"] .bock-extra .triggers label{background:#355268;border-color:#9C805E;color:#F5F0E9}
+body[data-theme="navy"] .compact-solo .compact-solo-choices .check:has(input:checked),body[data-theme="navy"] .bock-extra .triggers label:has(input:checked){background:#A98B65;color:#142334}
+body[data-theme="navy"] .wheel-selection{border-color:#E5C69B;background:#E5C69B26}
+body[data-theme="navy"] .stats-kpi-grid>div,body[data-theme="navy"] .result-rank-num{background:#E5C69B1c;border-color:#9C805E;color:#E5C69B}
+body[data-theme="navy"] .stats-kpi-grid strong,body[data-theme="navy"] .stats-detail>summary,body[data-theme="navy"] .record-value{color:#E5C69B}
+body[data-theme="navy"] .good{color:#A7E6BE}body[data-theme="navy"] .bad{color:#FFC1A5}
+
+/* Schwarz & Signalorange */
+body[data-theme="noir"]{
+  --accent:#F28B35;--card:#1C2024;--surface:#101214;--input-bg:#191D21;
+  --page-bg:#101214!important;--safe-top-bg:#101214!important;
+  background:#101214!important;color:#F5F5F5;
+}
+html:has(body[data-theme="noir"]),html:has(body[data-theme="noir"]) body{
+  --page-bg:#101214!important;background:#101214!important;
+}
+:root:has(body[data-theme="noir"]){background:#101214!important;color-scheme:dark}
+body[data-theme="noir"] header{background:#171A1E;border-color:#F28B35;box-shadow:0 3px 15px #000a}
+body[data-theme="noir"] h1,body[data-theme="noir"] h2,body[data-theme="noir"] h3,body[data-theme="noir"] .big,
+body[data-theme="noir"] .club-home-intro>span{color:#F28B35}
+body[data-theme="noir"] .card,body[data-theme="noir"] .app-dialog-box{background:#1C2024;color:#F5F5F5;border-color:#484C50;box-shadow:0 7px 22px #0005}
+body[data-theme="noir"] button{background:#24282D;border-color:#565B60;color:#F5F5F5}
+body[data-theme="noir"] button.primary,body[data-theme="noir"] button.active{background:#F28B35;border-color:#F28B35;color:#121416;font-weight:800}
+body[data-theme="noir"] input,body[data-theme="noir"] select,body[data-theme="noir"] textarea{background:#191D21;border-color:#6A5A4D;color:#F5F5F5}
+body[data-theme="noir"] .muted,body[data-theme="noir"] .mini,body[data-theme="noir"] header small{color:#A6A8AB}
+body[data-theme="noir"] .row,body[data-theme="noir"] th,body[data-theme="noir"] td{border-color:#4F545A}
+body[data-theme="noir"] .club-tiles .tile,body[data-theme="noir"] .club-active{background:linear-gradient(145deg,#292D32,#1D2227);border-color:#555B60;color:#F5F5F5}
+body[data-theme="noir"] .club-home-name,body[data-theme="noir"] .club-home-suit,
+body[data-theme="noir"] .club-active-symbol,body[data-theme="noir"] .club-active>span:last-child,
+body[data-theme="noir"] .home-panels .recent-date{color:#F28B35}
+body[data-theme="noir"] .club-active small,body[data-theme="noir"] .club-home-sub{color:#A6A8AB}
+body[data-theme="noir"] .profile-kpis>div,body[data-theme="noir"] .cash-metric,body[data-theme="noir"] .preview,
+body[data-theme="noir"] .settings-group,body[data-theme="noir"] .settings-menu-item{background:#282D32;border-color:#555B60}
+body[data-theme="noir"] .settings-icon{background:#41362D;color:#F28B35}
+body[data-theme="noir"] .settings-title strong,body[data-theme="noir"] .settings-menu-arrow,body[data-theme="noir"] .profile-kpis b{color:#F28B35}
+body[data-theme="noir"] .setup{background:#192A27}
+body[data-theme="noir"] .chip,body[data-theme="noir"] .seat,body[data-theme="noir"] .profile-link,
+body[data-theme="noir"] .hist-choice,body[data-theme="noir"] .hist-mode button,body[data-theme="noir"] .hist-picks button{background:#2B3035;border-color:#6B6055;color:#F5F5F5}
+body[data-theme="noir"] .chip.chosen,body[data-theme="noir"] .winner.selected{background:#D6792A;color:#111}
+body[data-theme="noir"] .compact-game-table .seat.filled,body[data-theme="noir"] .seating-table .seat.filled,
+body[data-theme="noir"] .wedding-table .seat.filled{background:linear-gradient(145deg,#323C3B,#1D2B2A);color:#F5F5F5}
+body[data-theme="noir"] .quick-tacken button{background:linear-gradient(145deg,#363D43,#252A30);border-color:#9C704E;color:#F5F5F5}
+body[data-theme="noir"] .bockbar{background:#4C392E;color:#FFB46B;border-color:#D98B4B}
+body[data-theme="noir"] .bockbar.off{background:#263C34;border-color:#57766B}
+body[data-theme="noir"] .game-controls>.wheel-always,body[data-theme="noir"] .bock-extra,
+body[data-theme="noir"] .game-controls>.extra-tacken{background:#252A2F;border-color:#856347}
+body[data-theme="noir"] .game-controls>.extra-tacken>summary,body[data-theme="noir"] .bock-extra>summary{background:#252A2F;color:#F28B35}
+body[data-theme="noir"] .extra-tacken-scroll button,body[data-theme="noir"] .compact-solo .compact-solo-choices .check,
+body[data-theme="noir"] .bock-extra .triggers label{background:#32373C;border-color:#856347;color:#F5F5F5}
+body[data-theme="noir"] .compact-solo .compact-solo-choices .check:has(input:checked),body[data-theme="noir"] .bock-extra .triggers label:has(input:checked){background:#F28B35;color:#171717}
+body[data-theme="noir"] .wheel-selection{border-color:#F28B35;background:#F28B3524}
+body[data-theme="noir"] .stats-kpi-grid>div,body[data-theme="noir"] .result-rank-num{background:#F28B3516;border-color:#856347;color:#F28B35}
+body[data-theme="noir"] .stats-kpi-grid strong,body[data-theme="noir"] .stats-detail>summary,body[data-theme="noir"] .record-value{color:#F28B35}
+body[data-theme="noir"] .good{color:#B6E6C2}body[data-theme="noir"] .bad{color:#FFB49C}
+
+/* Farbwahl-Ansicht: Farbidentität unabhängig vom aktuell gewählten Thema. */
+.theme-choice{position:relative;padding-left:47px!important;min-height:68px;transition:border-color .15s ease}
+.theme-choice::before{content:"";position:absolute;left:12px;top:15px;width:23px;height:23px;border-radius:8px;border:2px solid currentColor;box-shadow:0 1px 5px #0003}
+.theme-choice[data-choice="forest"]{background:#183B2E;color:#EDC48D;border-color:#C39B67}
+.theme-choice[data-choice="forest"]::before{background:#C39B67}
+.theme-choice[data-choice="copper"]{background:#252C34;color:#F0C19B;border-color:#CD906C}
+.theme-choice[data-choice="copper"]::before{background:#CD906C}
+.theme-choice[data-choice="light"]{background:#E8D8C2;color:#593A30;border-color:#C98965}
+.theme-choice[data-choice="light"]::before{background:#A5533B}
+.theme-choice[data-choice="navy"]{background:#142334;color:#E5C69B;border-color:#9C805E}
+.theme-choice[data-choice="navy"]::before{background:#E5C69B}
+.theme-choice[data-choice="noir"]{background:#101214;color:#F28B35;border-color:#555B60}
+.theme-choice[data-choice="noir"]::before{background:#F28B35}
+.theme-choice.selected{outline:2px solid #E0B87F;outline-offset:2px;box-shadow:0 0 0 2px #0005}
+.theme-choice.selected::after{content:"✓";position:absolute;right:12px;top:10px;font-size:17px;font-weight:900}
+body[data-theme="light"] .theme-choice[data-choice="light"],body[data-theme="copper"] .theme-choice[data-choice="light"]{background:#E8D8C2;color:#593A30;border-color:#C98965}
+body[data-theme="forest"] .theme-choice[data-choice="light"]{background:#E8D8C2;color:#593A30;border-color:#C98965}
+@media(min-width:680px){.compact-theme-choices{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 </style>
 </head>
 <body>
@@ -792,15 +972,15 @@ const button=(label,action,cls="")=>`<button class="${cls}" onclick="${action}">
 function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){alert("Speichern fehlgeschlagen: "+e.message)}}
 function go(p){if(p==='settings')settingsSection="";if(p==='evening'&&current()?.endedAt){eveningId=null;pending=null;}page=p;if(p==="round")winners=[];if(p==='home')historicalSetup=false;render()}
 function render(){
- document.body.dataset.theme=["forest","copper","light"].includes(db.settings.theme)?db.settings.theme:"forest";
- const themeColors={forest:"#183b2e",copper:"#252c34",light:"#e9e4d8"};
+ document.body.dataset.theme=["forest","copper","light","navy","noir"].includes(db.settings.theme)?db.settings.theme:"forest";
+ const themeColors={forest:"#183b2e",copper:"#252c34",light:"#E8D8C2",navy:"#142334",noir:"#101214"};
  const themeMeta=document.querySelector('meta[name="theme-color"]');
  if(themeMeta)themeMeta.setAttribute("content",themeColors[document.body.dataset.theme]);
  document.documentElement.style.backgroundColor=themeColors[document.body.dataset.theme];
- document.documentElement.style.setProperty("--safe-top-bg",({forest:"#183b2e",copper:"#252c34",light:"#e9e4d8"})[document.body.dataset.theme]);
- document.body.style.setProperty("--safe-top-bg",({forest:"#183b2e",copper:"#252c34",light:"#e9e4d8"})[document.body.dataset.theme]);
+ document.documentElement.style.setProperty("--safe-top-bg",themeColors[document.body.dataset.theme]);
+ document.body.style.setProperty("--safe-top-bg",themeColors[document.body.dataset.theme]);
  // iOS may keep the previous standalone safe-area paint until a new frame.
- requestAnimationFrame(()=>{document.documentElement.style.backgroundColor=({forest:'#183b2e',copper:'#252c34',light:'#e9e4d8'})[document.body.dataset.theme];document.body.style.setProperty('--safe-top-bg',({forest:'#183b2e',copper:'#252c34',light:'#e9e4d8'})[document.body.dataset.theme]);});
+ requestAnimationFrame(()=>{document.documentElement.style.backgroundColor=themeColors[document.body.dataset.theme];document.body.style.setProperty('--safe-top-bg',themeColors[document.body.dataset.theme]);});
  const tabs=[["home","⌂ Start"],["settings","⚙"]];
  $("appTitle").textContent="♠ "+(db.settings.appName||"Doppelkopf Club");
  $("headerStats").innerHTML=`<span>Treffen <b>${db.evenings.length}</b></span><span>Spiele <b>${db.evenings.reduce((a,e)=>a+(e.historicalMode==='stats'?Number(e.historicalStats?.totalRounds||0):(e.rounds?.length||0)),0)}</b></span>`;
@@ -1223,7 +1403,7 @@ function settings(){
  const members=`<p class="muted">Namen ändern oder Stammspieler hinzufügen. Vorhandene Ergebnisse bleiben zugeordnet.</p>${db.players.filter(p=>!p.guest).map(p=>`<div class="member-edit"><input aria-label="Name ${esc(p.name)}" id="member_${p.id}" maxlength="60" value="${esc(p.name)}"><button onclick="renameMember('${p.id}')">Speichern</button></div>`).join('')}<form onsubmit="addMember(event)"><label>Neuer Stammspieler</label><input id="newMemberName" maxlength="60" placeholder="Name" required><button class="primary">Hinzufügen</button></form><p class="muted">Gäste werden beim Spielabend hinzugefügt. Die Sitzordnung und Rotation wählst du beim Start eines Spielabends.</p>`;
  const rules=`<label>Euro pro Tacken</label><input id="tack" type="number" min="0" step=".01" value="${db.settings.tack}"><label>Bock-Faktor (×)</label><input id="bockMultiplier" type="number" min="1" max="20" step="1" value="${db.settings.bockMultiplier||2}"><p class="muted">Solo und Hochzeit werden direkt am Kartentisch ausgewählt. Der Bock-Faktor gilt für zukünftige Buchungen.</p>${button('Regeln speichern','saveSettings()','primary')}`;
  const fees=`<details class="settings-fold" open><summary>💶 Kassenverwaltung & Buchungen</summary>${cashManagement()}</details><details class="settings-fold"><summary>📊 Jahresabschluss & PDF</summary>${yearCashClose()}</details><details class="settings-fold"><summary>✓ Automatische Datenprüfung</summary>${dataCheckHtml()}</details><details class="settings-fold"><summary>🗓 Spielabend nachtragen</summary><p class="muted">Alte Tacken-Endstände für die Statistik erfassen – ohne Kassenbuchung.</p>${button('Spielabend nachtragen','startHistorical()')}</details><details class="settings-fold"><summary>⚙ Beiträge & Gebühren</summary><label>Startgebühr in Euro</label><input id="startFee" type="number" min="0" step=".01" value="${db.settings.startFee}"><label>Solo-Strafe in Euro</label><input id="soloFee" type="number" min="0" step=".01" value="${db.settings.soloFee}"><p class="muted">Die Abwesenheitsregel wird automatisch bei der Abrechnung berücksichtigt.</p>${button('Beiträge speichern','saveSettings()','primary')}</details>`;
- const themes=`<h3>Design auswählen</h3><p class="muted">Sofortige Vorschau. Deine Spielstände bleiben erhalten.</p><div class="theme-choices compact-theme-choices">${[['forest','Klassisch Grün','Standard · Waldgrün & Bronze'],['copper','Anthrazit & Kupfer','Eleganter Dunkelmodus mit Kupfer'],['light','Cremeweiß & Kupfer','Helles, elegantes Design']].map(([id,title,desc])=>`<button type="button" class="theme-choice ${((db.settings.theme||'forest')===id)?'selected':''}" data-choice="${id}" onclick="setTheme('${id}')"><strong>${title}</strong><small>${desc}</small></button>`).join('')}</div>`;
+ const themes=`<h3>Design auswählen</h3><p class="muted">Die App lädt beim Farbwechsel kurz neu. Deine Spielstände bleiben erhalten.</p><div class="theme-choices compact-theme-choices">${[['forest','Waldgrün & Bronze','Klassischer Club-Look'],['copper','Anthrazit & Kupfer','Eleganter Dunkelmodus'],['light','Terrakotta & Sand','Warm und hell'],['navy','Nachtblau & Champagner','Dunkelblau mit edlen Akzenten'],['noir','Schwarz & Signalorange','Sportlich und kontrastreich']].map(([id,title,desc])=>`<button type="button" class="theme-choice ${((db.settings.theme||'forest')===id)?'selected':''}" data-choice="${id}" onclick="setTheme('${id}')"><strong>${title}</strong><small>${desc}</small></button>`).join('')}</div>`;
  const app=`<label>Clubname</label><input id="appNameInput" maxlength="70" value="${esc(db.settings.appName||'Doppelkopf Club')}">${button('Clubnamen speichern','saveAppName()','primary')}<hr><h3>Datensicherung</h3><p class="muted">Die Daten liegen nur auf diesem Gerät. Vor Gerätewechsel und regelmäßig sichern.</p><div class="backup-help">📦 Das Backup enthält Spielabende, Kasse, Spieler und Einstellungen. Speichere die JSON-Datei außerhalb des Tablets, z. B. in Dateien oder auf einem USB-Stick.</div><p class="mini">Zuletzt Backup angestoßen: ${stamp(Number(localStorage.getItem('doko-last-backup-at')||0))} · Bitte prüfen, ob die Datei in „Dateien“ gespeichert wurde.</p>${button('Vollständiges Backup herunterladen','backup()','primary')}<label>Backup wiederherstellen</label><input type="file" accept=".json,application/json" onchange="restore(event)"><p class="muted">Beim Wiederherstellen werden die aktuellen Daten auf diesem Gerät ersetzt. Vorher wird eine Sicherheitskopie angeboten.</p><hr><h3>Speicherübersicht</h3><div id="storageOverview">${storageOverviewHtml()}</div><div class="storage-actions">${button('Daten löschen','requestDataDeletion()','danger delete-data-btn')}</div><p class="mini">Löscht nur die Daten auf diesem Gerät. Gesicherte Backup-Dateien bleiben bestehen.</p><hr><h3>Offline-App</h3><p class="muted">Nach dem ersten Online-Aufruf kann die App offline geöffnet werden. Zum Installieren im Browser „Zum Home-Bildschirm“ (iPhone) bzw. „App installieren“ (Android) wählen. Wichtig: Daten bleiben gerätegebunden.</p><hr><p class="muted" style="font-size:11px">Doppelkopf Club · Version ${APP_VERSION} · by Tom Bücker</p><details><summary class="muted" style="cursor:pointer">Versionsverlauf</summary>${VERSION_NOTES.map(n=>`<p class="muted">${esc(n)}</p>`).join('')}</details>`;
  const internationalRules=`<h3>Unsere Clubregeln</h3><p class="muted">Stichpunkte nach euren Vereinbarungen. Änderungen werden auf diesem Gerät gespeichert und im vollständigen Backup mitgesichert.</p><textarea id="clubRulesEditor" class="rule-editor" aria-label="Unsere Clubregeln" spellcheck="true">${esc(db.settings.clubRules ?? DEFAULT_CLUB_RULES)}</textarea><div class="actions">${button('Clubregeln speichern','saveClubRules()','primary')}</div><hr><h3>Original-Regelwerk (PDF)</h3><p class="muted">Die hochgeladene zweiseitige PDF bleibt unverändert. Sie enthält auch Spielvarianten, die von euren Clubregeln abweichen können.</p><button type="button" onclick="openRulesPdf()">PDF öffnen (offline)</button>`;
  const sections=[
@@ -1231,7 +1411,7 @@ function settings(){
   ['rules','♣','Spielwerte & Bock',`${euro(db.settings.tack)} / Tacken · Bock ×${db.settings.bockMultiplier||2}`,rules],
   ['international','♠','Internationale DoKo Regel','Clubregeln bearbeiten · Original-PDF',internationalRules],
   ['fees','€','Kasse & Beiträge',`Start ${euro(db.settings.startFee)} · Solo ${euro(db.settings.soloFee)}`,fees],
-  ['design','◈','Design & Darstellung','Farben · Drei Designs',themes],
+  ['design','◈','Design & Darstellung','Farben · Fünf Designs',themes],
   ['app','⚙','App & Datensicherung','Clubname · Backup · Speicher',app]
  ];
  const selectedSection=sections.find(s=>s[0]===settingsSection);
@@ -1260,7 +1440,7 @@ async function requestDataDeletion(){
  }catch(err){alert('Löschen fehlgeschlagen: '+err.message)}
 }
 function setTheme(theme){
- if(!['forest','copper','light'].includes(theme))return;
+ if(!['forest','copper','light','navy','noir'].includes(theme))return;
  if(db.settings.theme===theme)return;
  db.settings.theme=theme;
  save();
@@ -1331,8 +1511,8 @@ async function restore(ev){
  finally{if(ev.target)ev.target.value=''}
 }
 /* Version 3: Original-Tischansicht beibehalten, Spielregeln erweitert */
-const APP_VERSION='1.9.23';
-const VERSION_NOTES=['1.9.23 · Ergebnis-Ranglisten und Statistik-Kennzahlen im kompakten Design','1.9.22 · Kassen-Dashboard, kompakte Beträge und aufklappbare Verwaltungsbereiche','1.9.21 · Jahresabschluss als echte PDF-Datei mit Teilen-Funktion','1.9.20 · Partnerschaften, Serien, Kassenabschluss, PDF-Druckansicht und Backup nach sechs Abenden','1.9.19 · Solo-Rekorde aus Spielrunden auswerten und Rekordkarten übersichtlicher darstellen','1.9.18 · Hochzeiten aus Sonderbuchungen in Club- und Spielerstatistik zählen','1.9.17 · Sitzordnung und Hochzeit mit ovalem Kartentisch, kompakten Hinweisen und einheitlichen Spielerfeldern','1.9.16 · Neue Startkacheln, ovaler Filz-Kartentisch und verfeinerte Tacken-Tasten (nur Optik)','1.9.15 · Automatisches Neuladen beim Designwechsel (iOS-Statusleiste)','1.9.14 · iOS-Statusleiste: veralteten Transparenzmodus und Farboverlays entfernt','1.9.12 · Alle Bockauslöser im aufgeklappten Feld sichtbar','1.9.11 · Kompaktes Zahlenrad 8–16 wieder direkt wischbar','1.9.10 · Bockauslöser-Fehler bei normalen Runden und Soli behoben','1.9.8 · Zahlenrad 8–16 dauerhaft sichtbar, direkt durch Drehen und Antippen buchen','1.9.7 · Überflüssiges Erklärfeld bei der Tackenauswahl entfernt','1.9.5 · Vertikales Zahlenrad 7–16 mit Buchungsbestätigung, gleich hohe Felder und iOS-Leisten-Farbwechsel','1.9.4 · Obere iPhone-Leiste und Bockauslöser folgen dem gewählten Design; Tacken 7–16 scrollbar neben Bockauslöser','1.9.3 · Designwechsel der oberen iPhone-Leiste angepasst; Tacken 0–7 direkt und 8–16 aufklappbar; Bockauslöser darunter','1.9.2 · Persönliche Spielerstatistik als eigene App-Seite mit Zurück-Navigation; Spielernamen als farbige Schaltflächen','1.9.1 · Kartenfächer mit sichtbaren Symbolen, Tackenauswahl 0–14 ohne Tastatur, Regelbereich mit bearbeitbarem Clubtext und Offline-PDF','1.9.0 · Quadratische Spielerkacheln auf allen vier Tischseiten, schwarz-rote Kartenfarben bei der Sitzordnung und vier ausgespielte Karten während des Spiels','1.8.12 · Kompakte Clubstatistik mit Jahresvergleich, persönlichen Spielhistorien und ewigen Rekorden','1.8.11 · Statistik-Nachtrag aus Tacken-Endständen, faire €/Runde-Rangliste, App-Bestätigungsdialoge und Theme-Statusleiste','1.8.10 · Einstellungen als fünf kompakte Unterseiten, Designauswahl gestrafft, Hintergrundfarbe inklusive iPhone-Statusleistenbereich angepasst','1.8.9 · Nachtrag mit Endbeträgen inklusive Gebühren, Rückgängig, Clubrekorde, Kassen-Jahresabschluss, Datenprüfung und Backup-Erinnerung','1.8.8 · Drei vollständige Designs, Speicherübersicht, zweifach bestätigtes Datenlöschen und Zahnrad-Navigation','1.8.7 · Spielerprofile, Clubstatistiken, korrigierbare Spielabende, kompakte Kasse und neue Startseite','1.8.6 · Online-/Offline-Anzeige in Kopfzeile entfernt','1.8.5 · Historische Einzelrunden oder Endergebnisse ohne Tischansicht, strukturierte Spielarten','1.8.4 · Kassenprüfung und Korrekturen unter Mehr, Anfangsbestand einmalig','1.8.3 · Offene Zahlungen direkt mit Bezahlen begleichen','1.8.2 · Kompakte Solo- und Bockauswahl, Abrechnung oben rechts, Startseite gestrafft','1.8.1 · Tablet-Querformat, installierbare Offline-App und geprüfte Datensicherung','1.7.3 · Stilles Solo und vier auswählbare App-Designs','1.7.2 · Ergebnisse zeigen vier neueste Tabellen, ältere aufklappbar','1.7.1 · Kassenübersicht gestrafft, Korrekturbuchungen und Zahlungsprüfung ergänzt','1.7.0 · Papierlisten mobil erfassen, einzelne Zeilen korrigieren und löschen, Folgewerte automatisch neu berechnen','1.6.9 · Einstellungen in vier übersichtliche aufklappbare Bereiche gegliedert','1.6.8 · Schlanke Euro-Jahresrangliste nur für Stammspieler mit antippbaren Spielerprofilen','1.6.7 · Klassischer Kartentisch kompakter; Bockstatus in der Tischmitte; Solo/Hochzeit und Tacken ohne Scrollen','1.6.6 · Solo-Fehler behoben; Solo/Hochzeit direkt unter dem Tisch; Bockauslöser aufklappbar','1.6.5 · Tacken direkt am Kartentisch buchen; Soloart per Häkchen, gewonnen als Standard','1.6.4 · Nach vollständiger Zahlung zurück zur Startseite; letzte vier abgeschlossene Spielabende und Historienmenü','1.6.3 · Gewinner nach jeder Runde automatisch abwählen; aktive Spieler hervorheben und nächste Runde direkt vorbereiten','1.6.2 · Nach Spielabend beenden zurück zur Startseite; neuer Abend startet bei Spieler- und Gastgeberauswahl','1.6.1 · Bronze-Auswahlfelder in der Spielabend-Einrichtung','1.6.0 · Kompakte Spielabend-Einrichtung und Ergebnishistorie wie Abrechnung; Runden- und Start-Spalten entfernt','1.5.9 · Mobile Abrechnung mit fünf Spalten; Startgebühr automatisch; offene Zahlungen einheitlich zweizeilig','1.5.8 · Spielernamen mit Finger oder Maus an den Kartentisch ziehen; Antippen bleibt möglich','1.5.7 · Papierlisten zeilenweise in Euro nachtragen; Kassenanfangsbestand mit Korrekturverlauf','1.5.6 · Bock-Multiplikator unter Einstellungen frei wählbar (Standard ×2)','1.5.5 · Hochzeit am Kartentisch auswählen und sofort buchen, ohne Mischerwechsel','1.5.4 · Gewinner und Solospieler türkis markiert; Mischer bleibt bronze','1.5.3 · Solo: Spieler direkt am Tisch wählen, 1–7 Tacken sofort buchen','1.5.2 · Spielabend beenden nur noch in der Abrechnung','1.5.1 · Startseite kompakter: Zahlungen und letzte Treffen nebeneinander; Treffen/Spiele im Kopf','1.5.0 · Gewinner am Kartentisch, Tacken 1–7 sofort buchen, freie Eingabe und Mischerwechsel','1.4.9 · Jahresstatistik mit Spitzenreitern, Soloquote und Teilnahme-Rangliste','1.4.8 · Kasse mit offenen Spielerbeträgen, Zahlungsverlauf, Einnahmen/Ausgaben und Jahresfilter','1.4.7 · Nur vollständige Zahlungen mit Datum; Gewinner-Hinweis direkt in der App','1.4.6 · Start und Mehr fest in Kopfzeile, Spiel-Navigation entfernt; Clubname einstellbar; Entwicklerhinweis','1.4.5 · Laufenden Spielabend mit Gastgeber, Runden und Bockstand auf der Startseite anzeigen','1.4.4 · Doppelte Navigationseinträge Spieler und Kasse oben entfernt','1.4.3 · Spielabend nachtragen unter Mehr statt auf der Startseite','1.4.2 · Vergangene Spielabende Runde für Runde nachtragen; historisch bezahlt ohne Kassenbuchung','1.4.1 · Ergebnisse als Jahresliste mit Statistik-Umschalter','1.4.0 · Jahresstatistik für Spielabende, Tacken und Soli','1.3.1 · Gastgeber-Hinweis innerhalb der App; nur noch letzte Runde korrigieren','1.3.0 · Nur letzte Runde korrigieren oder rückgängig machen','1.2.6 · Spielabend ohne Browser-Bestätigung direkt beenden','1.2.5 · Spielabend direkt aus Abrechnung beenden; Abwesende automatisch als offen führen','1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
+const APP_VERSION='1.9.25';
+const VERSION_NOTES=['1.9.25 · Fünf Farbdesigns: Terrakotta statt Cremeweiß sowie Nachtblau und Schwarz-Orange','1.9.24 · Startseite ohne doppelten Clubnamen, kompakte letzte Spielabende','1.9.23 · Ergebnis-Ranglisten und Statistik-Kennzahlen im kompakten Design','1.9.22 · Kassen-Dashboard, kompakte Beträge und aufklappbare Verwaltungsbereiche','1.9.21 · Jahresabschluss als echte PDF-Datei mit Teilen-Funktion','1.9.20 · Partnerschaften, Serien, Kassenabschluss, PDF-Druckansicht und Backup nach sechs Abenden','1.9.19 · Solo-Rekorde aus Spielrunden auswerten und Rekordkarten übersichtlicher darstellen','1.9.18 · Hochzeiten aus Sonderbuchungen in Club- und Spielerstatistik zählen','1.9.17 · Sitzordnung und Hochzeit mit ovalem Kartentisch, kompakten Hinweisen und einheitlichen Spielerfeldern','1.9.16 · Neue Startkacheln, ovaler Filz-Kartentisch und verfeinerte Tacken-Tasten (nur Optik)','1.9.15 · Automatisches Neuladen beim Designwechsel (iOS-Statusleiste)','1.9.14 · iOS-Statusleiste: veralteten Transparenzmodus und Farboverlays entfernt','1.9.12 · Alle Bockauslöser im aufgeklappten Feld sichtbar','1.9.11 · Kompaktes Zahlenrad 8–16 wieder direkt wischbar','1.9.10 · Bockauslöser-Fehler bei normalen Runden und Soli behoben','1.9.8 · Zahlenrad 8–16 dauerhaft sichtbar, direkt durch Drehen und Antippen buchen','1.9.7 · Überflüssiges Erklärfeld bei der Tackenauswahl entfernt','1.9.5 · Vertikales Zahlenrad 7–16 mit Buchungsbestätigung, gleich hohe Felder und iOS-Leisten-Farbwechsel','1.9.4 · Obere iPhone-Leiste und Bockauslöser folgen dem gewählten Design; Tacken 7–16 scrollbar neben Bockauslöser','1.9.3 · Designwechsel der oberen iPhone-Leiste angepasst; Tacken 0–7 direkt und 8–16 aufklappbar; Bockauslöser darunter','1.9.2 · Persönliche Spielerstatistik als eigene App-Seite mit Zurück-Navigation; Spielernamen als farbige Schaltflächen','1.9.1 · Kartenfächer mit sichtbaren Symbolen, Tackenauswahl 0–14 ohne Tastatur, Regelbereich mit bearbeitbarem Clubtext und Offline-PDF','1.9.0 · Quadratische Spielerkacheln auf allen vier Tischseiten, schwarz-rote Kartenfarben bei der Sitzordnung und vier ausgespielte Karten während des Spiels','1.8.12 · Kompakte Clubstatistik mit Jahresvergleich, persönlichen Spielhistorien und ewigen Rekorden','1.8.11 · Statistik-Nachtrag aus Tacken-Endständen, faire €/Runde-Rangliste, App-Bestätigungsdialoge und Theme-Statusleiste','1.8.10 · Einstellungen als fünf kompakte Unterseiten, Designauswahl gestrafft, Hintergrundfarbe inklusive iPhone-Statusleistenbereich angepasst','1.8.9 · Nachtrag mit Endbeträgen inklusive Gebühren, Rückgängig, Clubrekorde, Kassen-Jahresabschluss, Datenprüfung und Backup-Erinnerung','1.8.8 · Drei vollständige Designs, Speicherübersicht, zweifach bestätigtes Datenlöschen und Zahnrad-Navigation','1.8.7 · Spielerprofile, Clubstatistiken, korrigierbare Spielabende, kompakte Kasse und neue Startseite','1.8.6 · Online-/Offline-Anzeige in Kopfzeile entfernt','1.8.5 · Historische Einzelrunden oder Endergebnisse ohne Tischansicht, strukturierte Spielarten','1.8.4 · Kassenprüfung und Korrekturen unter Mehr, Anfangsbestand einmalig','1.8.3 · Offene Zahlungen direkt mit Bezahlen begleichen','1.8.2 · Kompakte Solo- und Bockauswahl, Abrechnung oben rechts, Startseite gestrafft','1.8.1 · Tablet-Querformat, installierbare Offline-App und geprüfte Datensicherung','1.7.3 · Stilles Solo und vier auswählbare App-Designs','1.7.2 · Ergebnisse zeigen vier neueste Tabellen, ältere aufklappbar','1.7.1 · Kassenübersicht gestrafft, Korrekturbuchungen und Zahlungsprüfung ergänzt','1.7.0 · Papierlisten mobil erfassen, einzelne Zeilen korrigieren und löschen, Folgewerte automatisch neu berechnen','1.6.9 · Einstellungen in vier übersichtliche aufklappbare Bereiche gegliedert','1.6.8 · Schlanke Euro-Jahresrangliste nur für Stammspieler mit antippbaren Spielerprofilen','1.6.7 · Klassischer Kartentisch kompakter; Bockstatus in der Tischmitte; Solo/Hochzeit und Tacken ohne Scrollen','1.6.6 · Solo-Fehler behoben; Solo/Hochzeit direkt unter dem Tisch; Bockauslöser aufklappbar','1.6.5 · Tacken direkt am Kartentisch buchen; Soloart per Häkchen, gewonnen als Standard','1.6.4 · Nach vollständiger Zahlung zurück zur Startseite; letzte vier abgeschlossene Spielabende und Historienmenü','1.6.3 · Gewinner nach jeder Runde automatisch abwählen; aktive Spieler hervorheben und nächste Runde direkt vorbereiten','1.6.2 · Nach Spielabend beenden zurück zur Startseite; neuer Abend startet bei Spieler- und Gastgeberauswahl','1.6.1 · Bronze-Auswahlfelder in der Spielabend-Einrichtung','1.6.0 · Kompakte Spielabend-Einrichtung und Ergebnishistorie wie Abrechnung; Runden- und Start-Spalten entfernt','1.5.9 · Mobile Abrechnung mit fünf Spalten; Startgebühr automatisch; offene Zahlungen einheitlich zweizeilig','1.5.8 · Spielernamen mit Finger oder Maus an den Kartentisch ziehen; Antippen bleibt möglich','1.5.7 · Papierlisten zeilenweise in Euro nachtragen; Kassenanfangsbestand mit Korrekturverlauf','1.5.6 · Bock-Multiplikator unter Einstellungen frei wählbar (Standard ×2)','1.5.5 · Hochzeit am Kartentisch auswählen und sofort buchen, ohne Mischerwechsel','1.5.4 · Gewinner und Solospieler türkis markiert; Mischer bleibt bronze','1.5.3 · Solo: Spieler direkt am Tisch wählen, 1–7 Tacken sofort buchen','1.5.2 · Spielabend beenden nur noch in der Abrechnung','1.5.1 · Startseite kompakter: Zahlungen und letzte Treffen nebeneinander; Treffen/Spiele im Kopf','1.5.0 · Gewinner am Kartentisch, Tacken 1–7 sofort buchen, freie Eingabe und Mischerwechsel','1.4.9 · Jahresstatistik mit Spitzenreitern, Soloquote und Teilnahme-Rangliste','1.4.8 · Kasse mit offenen Spielerbeträgen, Zahlungsverlauf, Einnahmen/Ausgaben und Jahresfilter','1.4.7 · Nur vollständige Zahlungen mit Datum; Gewinner-Hinweis direkt in der App','1.4.6 · Start und Mehr fest in Kopfzeile, Spiel-Navigation entfernt; Clubname einstellbar; Entwicklerhinweis','1.4.5 · Laufenden Spielabend mit Gastgeber, Runden und Bockstand auf der Startseite anzeigen','1.4.4 · Doppelte Navigationseinträge Spieler und Kasse oben entfernt','1.4.3 · Spielabend nachtragen unter Mehr statt auf der Startseite','1.4.2 · Vergangene Spielabende Runde für Runde nachtragen; historisch bezahlt ohne Kassenbuchung','1.4.1 · Ergebnisse als Jahresliste mit Statistik-Umschalter','1.4.0 · Jahresstatistik für Spielabende, Tacken und Soli','1.3.1 · Gastgeber-Hinweis innerhalb der App; nur noch letzte Runde korrigieren','1.3.0 · Nur letzte Runde korrigieren oder rückgängig machen','1.2.6 · Spielabend ohne Browser-Bestätigung direkt beenden','1.2.5 · Spielabend direkt aus Abrechnung beenden; Abwesende automatisch als offen führen','1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
 const oldRender=render;
 function dateDE(iso){const m=String(iso||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);return m?m[3]+'.'+m[2]+'.'+m[1]:String(iso||'')}
 function stamp(ms){return ms?new Date(ms).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'}):'–'}
@@ -1833,7 +2013,7 @@ function home(){
  const debtCard=`<div class="card"><h2>Offene Zahlungen</h2>${debts.length?`<p class="muted">Offene Beträge · zum Bezahlen antippen.</p>${debts.map(d=>`<div class="debt-entry"><b class="debt-name">${esc(name(d.id))}</b><div class="debt-bottom"><b class="bad">${euro(d.amount)}</b>${button('Bezahlen',`payAllPlayer('${d.id}')`,'primary')}</div></div>`).join('')}`:'<p class="muted">Alles bezahlt ✓</p>'}</div>`;
  const recentEvenings=[...db.evenings].filter(e=>isClosed(e)).sort((a,b)=>String(b.date||'').localeCompare(String(a.date||''))||Number(b.endedAt||b.startedAt||0)-Number(a.endedAt||a.startedAt||0)).slice(0,4);
  const recentCard=`<div class="card"><div class="recent-heading"><h2>Letzte Spielabende</h2><details class="recent-menu"><summary aria-label="Spielabend-Historie öffnen" title="Weitere Optionen">•••</summary><div class="recent-menu-content">${button('Gesamte Spielabend-Historie',"go('resultsOverview')")}</div></details></div>${recentEvenings.map(e=>`<div class="recent-item"><button type="button" class="recent-open" onclick="openEvening('${e.id}')"><span class="recent-date">${esc(dateDE(e.date))}</span><span class="recent-name">${esc(name(e.host))}</span></button></div>`).join('')||'<p class="muted">Noch kein abgeschlossener Spielabend.</p>'}</div>`;
- return `<section class="club-home"><div class="club-home-brand"><span class="club-home-suit" aria-hidden="true">♠</span><div><div class="club-home-name">${esc(db.settings.appName||'Doppelkopf Club')}</div><div class="club-home-sub">ihrseidsokindisch · seit 2029</div></div></div>
+ return `<section class="club-home"><div class="club-home-intro"><span>Übersicht</span><small>Dein Kartenclub auf einen Blick</small></div>
  ${active?`<button type="button" class="club-active" onclick="openEvening('${active.id}')"><span class="club-active-symbol">♣</span><span><b>Spielabend fortsetzen</b><small>${esc(dateDE(active.date))} · ${active.rounds.length} Runden · ${active.present.length} Spieler</small></span><span aria-hidden="true">›</span></button>`:''}
  <div class="tiles home-tiles club-tiles">${button(tileGraphic('game')+'<span>Spielabend</span>',"go('evening')",'tile')}${button(tileGraphic('players')+'<span>Spieler</span>',"go('players')",'tile')}${button(tileGraphic('results')+'<span>Ergebnisse</span>','showResults()','tile')}${button(tileGraphic('cash')+'<span>Kasse</span>',"go('cash')",'tile')}</div></section>
  ${backupReminder()}

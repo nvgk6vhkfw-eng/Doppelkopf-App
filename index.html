@@ -1250,6 +1250,258 @@ body[data-visual-style="edel"][data-theme="light"] .seating-screen .actions butt
 @media(max-width:380px){body[data-visual-style="edel"] .seating-screen .chip{padding:11px 2px;font-size:11px}body[data-visual-style="edel"] .seating-screen .actions button{font-size:12px}}
 @media(prefers-reduced-motion:reduce){body[data-visual-style="edel"] .club-tiles .tile{transition:none}}
 
+
+/* V1.9.32 – wirklich zwei eigenständige Oberflächen (Farbschema unabhängig) */
+body[data-visual-style="kachel"] .club-home::before,
+body[data-visual-style="kachel"] .club-home::after{display:none!important}
+body[data-visual-style="kachel"] .club-tiles .tile{
+ background:linear-gradient(150deg,var(--lux-panel1),var(--lux-panel2))!important;
+ border:1px solid var(--lux-edge)!important;
+ border-radius:17px!important;
+ box-shadow:inset 0 1px #ffffff13,0 3px 9px #0003!important;
+ min-height:clamp(126px,34vw,173px);
+ padding:13px 7px 10px;
+}
+body[data-visual-style="kachel"] .club-tiles .tile::before,
+body[data-visual-style="kachel"] .club-tiles .tile::after{display:none!important}
+body[data-visual-style="kachel"] .club-tiles .tile .tile-icon{
+ width:90px;height:76px;margin:0 auto 3px;filter:none!important
+}
+body[data-visual-style="kachel"] .club-tiles .tile .tile-flat-art{
+ width:100%;height:100%;display:block;filter:none
+}
+body[data-visual-style="kachel"] .club-tiles .tile span:not(.tile-icon){
+ font-size:clamp(15px,4vw,19px);font-weight:700;text-shadow:none;margin:1px auto 2px
+}
+body[data-visual-style="kachel"] .home-panels .card{
+ background:linear-gradient(150deg,var(--lux-panel1),var(--lux-panel2))!important;
+ border:1px solid var(--lux-edge)!important;
+ border-radius:16px!important;
+ box-shadow:inset 0 1px #ffffff11,0 3px 9px #0002!important
+}
+body[data-visual-style="kachel"] .home-panels .home-debt-check{
+ box-shadow:none;border:1.5px solid #b4b786;background:#254639;font-size:31px;
+ width:55px;height:55px
+}
+body[data-visual-style="kachel"] .seating-screen{
+ box-shadow:0 3px 10px #0002!important;border-radius:17px!important
+}
+body[data-visual-style="kachel"] .seating-screen .chip{
+ box-shadow:none!important;border-radius:11px!important
+}
+body[data-visual-style="kachel"] .compact-game-table .layout::before{
+ box-shadow:inset 0 0 0 2px #c69561,inset 0 0 14px #032c21,0 3px 7px #0004!important
+}
+body[data-visual-style="kachel"] .compact-game-table .seat{
+ box-shadow:0 2px 6px #0004!important
+}
+body[data-visual-style="kachel"] header{
+ box-shadow:0 2px 7px #0002
+}
+/* Edles Design retains the 3D icons and copper highlights; enhance contrast. */
+body[data-visual-style="edel"] .club-tiles .tile .tile-icon{
+ width:min(92%,153px);height:clamp(88px,24vw,121px)
+}
+body[data-visual-style="edel"] .seating-screen .layout::before{
+ box-shadow:inset 0 0 0 3px #e9bf82,inset 0 0 25px #02150f,0 7px 19px #0008,0 0 16px #c68a5866!important
+}
+body .visual-mode:focus-visible{outline:3px solid var(--lux-accent,#e9bd82);outline-offset:3px}
+@media(max-width:370px){body[data-visual-style="kachel"] .club-tiles .tile .tile-icon{height:66px;width:78px}}
+
+
+/* ==========================================================
+   V1.9.33 – Zwei vollständig unterscheidbare Darstellungsarten
+   Ausschließlich CSS + Bilder in den Kacheln; Datenschema unverändert.
+   Farben bleiben separat über data-theme auswählbar.
+   ========================================================== */
+body[data-visual-style="kachel"]{
+ --doko-flat-shadow:0 2px 6px #00000024;
+}
+/* KACHEL DESIGN – originale, schlichte Kopfzeile ohne Logo-Bild. */
+body[data-visual-style="kachel"] header .brand-card-fan,
+body[data-visual-style="kachel"] header .brand-strapline,
+body[data-visual-style="kachel"] header .brand-typography::after{display:none!important}
+body[data-visual-style="kachel"] header .brand-lockup{gap:0!important}
+body[data-visual-style="kachel"] header .brand-typography{display:flex;align-items:center;min-width:0!important}
+body[data-visual-style="kachel"] header .brand-typography h1{
+ color:var(--bronze,#e9b77e)!important;
+ font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+ font-size:clamp(15px,4.1vw,21px)!important;
+ line-height:1.1!important;font-weight:780!important;letter-spacing:-.35px!important;
+ text-shadow:none!important;white-space:normal;
+}
+body[data-visual-style="kachel"] header .brand-typography h1::before{content:"♠ ";font-family:Georgia,serif}
+body[data-visual-style="kachel"] header{box-shadow:none!important}
+body[data-visual-style="kachel"] .club-tiles .tile{
+ border-radius:15px!important;border:1.2px solid var(--lux-edge,#a17b61)!important;
+ box-shadow:var(--doko-flat-shadow)!important;
+ background:var(--lux-panel1,#29473b)!important;
+ min-height:clamp(132px,37vw,185px)!important;
+}
+body[data-visual-style="kachel"] .club-tiles .tile::before,
+body[data-visual-style="kachel"] .club-tiles .tile::after{content:none!important;display:none!important}
+body[data-visual-style="kachel"] .club-tiles .tile .tile-icon{
+ width:clamp(68px,21vw,102px)!important;height:clamp(62px,18vw,84px)!important;
+ filter:none!important;
+}
+body[data-visual-style="kachel"] .club-tiles .tile .tile-flat-art{filter:none!important;display:block!important}
+body[data-visual-style="kachel"] .club-tiles .tile>span:last-child{font-size:clamp(16px,4.5vw,20px)!important;font-weight:560!important;letter-spacing:0!important}
+body[data-visual-style="kachel"] .home-panels{grid-template-columns:repeat(2,minmax(0,1fr))!important;align-items:stretch!important;gap:10px}
+body[data-visual-style="kachel"] .home-panels .card{
+ padding:12px 11px!important;border-radius:15px!important;
+ background:var(--lux-panel1,#29473b)!important;
+ border:1.2px solid var(--lux-edge,#a17b61)!important;
+ box-shadow:var(--doko-flat-shadow)!important;
+ min-height:0;
+}
+body[data-visual-style="kachel"] .home-panels h2{font-size:clamp(13px,4vw,17px)!important;line-height:1.28!important}
+body[data-visual-style="kachel"] .home-panels .home-debt-check{width:52px;height:52px;box-shadow:none!important}
+body[data-visual-style="kachel"] .home-panels .recent-calendar{display:none!important}
+body[data-visual-style="kachel"] .home-panels .recent-open{display:flex;flex-direction:column;align-items:flex-start;gap:1px!important;padding:0!important}
+body[data-visual-style="kachel"] .home-panels .recent-item{padding:7px 0!important}
+body[data-visual-style="kachel"] .home-panels .recent-date{font-size:clamp(11px,3.1vw,14px)!important}
+body[data-visual-style="kachel"] .home-panels .recent-name{font-size:clamp(11px,3vw,13px)!important;text-align:left!important}
+body[data-visual-style="kachel"] .seating-screen,
+body[data-visual-style="kachel"] .compact-evening{box-shadow:var(--doko-flat-shadow)!important}
+body[data-visual-style="kachel"] .seating-screen h2,
+body[data-visual-style="kachel"] .compact-evening h2{
+ font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+ text-shadow:none!important;letter-spacing:-.5px!important;
+}
+body[data-visual-style="kachel"] .seating-screen .name-pool::before{display:none!important}
+body[data-visual-style="kachel"] .seating-screen .chip{
+ border-radius:10px!important;box-shadow:none!important;
+ background:var(--lux-panel1,#29473b)!important;
+}
+body[data-visual-style="kachel"] .seating-screen .chip.used{opacity:.44}
+body[data-visual-style="kachel"] .compact-game-table .layout::before{
+ border:5px solid #a47a53!important;
+ background:radial-gradient(ellipse at 45% 30%,#086447,#063f31 80%)!important;
+ box-shadow:inset 0 0 0 2px #bc9369,0 3px 6px #0004!important;
+}
+body[data-visual-style="kachel"] .compact-game-table .seat{border-radius:12px!important;box-shadow:0 2px 4px #0003!important}
+body[data-visual-style="kachel"] .compact-game-table .felt::after{display:none!important}
+body[data-visual-style="kachel"] .compact-evening .quick-tacken button{
+ border-radius:12px!important;box-shadow:0 2px 5px #0002!important;
+}
+body[data-visual-style="kachel"] .club-tiles .tile:focus-visible,
+body[data-visual-style="kachel"] .seating-screen .chip:focus-visible{outline:3px solid var(--lux-edge,#bd986c);outline-offset:3px}
+
+/* EDLES DESIGN – reliefartige Kupferrahmen, Glanzkante und klare Hierarchie. */
+body[data-visual-style="edel"]{
+ --premium-copper:#dca873;--premium-glow:#ffcf95;
+}
+body[data-visual-style="edel"] header{
+ background:radial-gradient(ellipse at 85% -35%,#dba16623,transparent 57%),linear-gradient(145deg,var(--lux-top),var(--lux-bottom))!important;
+ border-bottom:1px solid var(--lux-rim)!important;
+ box-shadow:0 3px 20px #0007,inset 0 -1px 0 var(--lux-glint)!important;
+}
+body[data-visual-style="edel"] header .brand-card-fan{filter:drop-shadow(0 3px 5px #0007) drop-shadow(0 0 4px #e9ae6d66)!important}
+body[data-visual-style="edel"] header .brand-typography h1{
+ font-family:Georgia,"Iowan Old Style",serif!important;
+ font-size:clamp(16px,4.4vw,25px)!important;font-weight:800!important;
+ color:var(--lux-title)!important;text-shadow:0 1px 2px #0009,0 0 9px #eabb7952!important;
+}
+body[data-visual-style="edel"] header .brand-strapline{letter-spacing:2px!important;color:var(--lux-glint)!important;opacity:.95}
+body[data-visual-style="edel"] main::before{
+ content:"";position:fixed;left:-17%;right:-17%;top:110px;height:140px;
+ pointer-events:none;z-index:-1;
+ background:radial-gradient(ellipse at center,#b6813b12,transparent 68%);
+}
+body[data-visual-style="edel"] .club-tiles .tile{
+ border:1.5px solid var(--lux-rim)!important;
+ background:radial-gradient(ellipse at 50% 0%,#ffffff1f,transparent 60%),linear-gradient(155deg,var(--lux-top),var(--lux-bottom))!important;
+ box-shadow:inset 0 1px 0 #ffebc785,inset 0 0 14px #e6aa5f24,0 11px 20px #0006,0 0 11px #d99b5733!important;
+}
+body[data-visual-style="edel"] .club-tiles .tile::before{
+ display:block!important;content:""!important;position:absolute;top:0;left:10%;right:10%;height:2px;
+ background:linear-gradient(90deg,transparent,var(--lux-glint),transparent)!important;
+ box-shadow:0 0 15px 2px #eab36e9c!important;
+}
+body[data-visual-style="edel"] .club-tiles .tile .tile-icon{
+ width:clamp(82px,24vw,151px)!important;height:clamp(72px,23vw,146px)!important;
+ filter:drop-shadow(0 5px 8px #0009) drop-shadow(0 0 6px #f2be8455)!important;
+}
+body[data-visual-style="edel"] .club-tiles .tile>span:last-child{
+ font-family:system-ui,-apple-system,sans-serif!important;
+ font-size:clamp(15px,4.3vw,21px)!important;font-weight:800!important;
+ text-shadow:0 1px 3px #0008;
+}
+body[data-visual-style="edel"] .home-panels{grid-template-columns:repeat(2,minmax(0,1fr))!important;align-items:stretch!important;gap:9px}
+body[data-visual-style="edel"] .home-panels .card{
+ border:1.5px solid var(--lux-rim)!important;border-radius:20px!important;
+ background:radial-gradient(ellipse at 50% 0%,#ffffff16,transparent 60%),linear-gradient(135deg,var(--lux-top),var(--lux-bottom))!important;
+ box-shadow:inset 0 1px 0 #fff2d95c,0 10px 18px #0006,0 0 8px #f5bc7a26!important;
+ min-width:0;
+}
+body[data-visual-style="edel"] .home-panels .card h2,
+body[data-visual-style="edel"] .seating-screen>h2,
+body[data-visual-style="edel"] .compact-evening>h2{
+ color:var(--lux-title)!important;text-shadow:0 1px 2px #0008;
+}
+body[data-visual-style="edel"] .home-panels .recent-open{display:flex;align-items:baseline;justify-content:space-between;gap:4px}
+body[data-visual-style="edel"] .home-panels .recent-calendar{color:var(--lux-glint)!important}
+body[data-visual-style="edel"] .home-panels .home-debt-check{
+ background:radial-gradient(circle at 30% 22%,#4e805a,#123525 70%)!important;
+ border:2px solid #d5daa3!important;
+ box-shadow:inset 0 1px #ffffff9c,0 0 17px #b8d5948f!important;
+}
+body[data-visual-style="edel"] .seating-screen,
+body[data-visual-style="edel"] .compact-evening{
+ position:relative;border:1.5px solid var(--lux-rim)!important;
+ background:radial-gradient(ellipse at 55% -10%,#ffffff14,transparent 55%),linear-gradient(160deg,var(--lux-top),var(--lux-bottom))!important;
+ box-shadow:inset 0 1px 0 #ffefcf70,0 12px 30px #0005,0 0 9px #be8b5644!important;
+}
+body[data-visual-style="edel"] .seating-screen::before{
+ content:"";position:absolute;left:12%;right:12%;top:0;height:2px;
+ background:linear-gradient(90deg,transparent,var(--lux-glint),transparent);
+ box-shadow:0 0 14px 3px #de9f6277;pointer-events:none;
+}
+body[data-visual-style="edel"] .seating-screen .chip{
+ border:1.5px solid var(--lux-rim)!important;
+ background:linear-gradient(160deg,var(--lux-top),var(--lux-bottom))!important;
+ box-shadow:inset 0 1px #ffedb882,0 5px 10px #0005,0 0 6px #e4b37b26!important;
+}
+body[data-visual-style="edel"] .seating-screen .chip:active{transform:scale(.97)}
+body[data-visual-style="edel"] .compact-game-table .layout::before{
+ border:7px solid #b88351!important;
+ background:radial-gradient(ellipse at 41% 36%,#0b8058 0%,#075f43 48%,#023a2a 100%)!important;
+ box-shadow:0 0 0 2px var(--lux-glint),inset 0 0 0 3px #e3b57c,inset 0 0 0 9px #7b4b2c,inset 0 0 23px #001b0a96,0 9px 19px #0009,0 0 11px #dc9b5666!important;
+}
+body[data-visual-style="edel"] .compact-game-table .seat{
+ border:1.8px solid var(--lux-glint)!important;
+ box-shadow:inset 0 1px #ffdfaf8c,inset 0 0 6px #d7a1733d,0 5px 11px #0009,0 0 7px #e3b6814d!important;
+}
+body[data-visual-style="edel"] .compact-game-table .felt strong{
+ font-family:Georgia,serif!important;color:#ffdc9d!important;
+ text-shadow:0 2px 3px #000c,0 0 9px #edb77685;
+}
+body[data-visual-style="edel"] .compact-evening .quick-tacken button{
+ border-radius:11px!important;border:1px solid var(--lux-rim)!important;
+ box-shadow:inset 0 1px #ffefc263,0 4px 8px #0005!important;
+}
+body[data-visual-style="edel"] .compact-evening .quick-tacken button:active{transform:translateY(1px)}
+body[data-visual-style="edel"] .seating-screen .actions button{
+ border:1px solid var(--lux-rim)!important;
+ box-shadow:inset 0 1px #ffedc659,0 3px 7px #0004!important;
+}
+body[data-visual-style="edel"] .visual-mode.chosen,
+body[data-visual-style="kachel"] .visual-mode.chosen{
+ outline:2px solid var(--lux-accent,#dfa878);outline-offset:2px;
+}
+body[data-visual-style="edel"] .visual-mode:focus-visible,
+body[data-visual-style="kachel"] .visual-mode:focus-visible{outline:3px solid var(--lux-accent,#e7b57a);outline-offset:3px}
+@media(max-width:390px){
+ body[data-visual-style="edel"] header .brand-strapline{letter-spacing:1px!important}
+ body[data-visual-style="edel"] .home-panels .card,
+ body[data-visual-style="kachel"] .home-panels .card{padding:10px 8px!important}
+ body[data-visual-style="edel"] .home-panels .card h2,
+ body[data-visual-style="kachel"] .home-panels .card h2{font-size:clamp(12px,3.6vw,15px)!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body[data-visual-style="edel"] .club-tiles .tile{transition:none!important}
+}
+
 </style>
 </head>
 <body>
@@ -1573,8 +1825,10 @@ function toggleSolo(){
  previewRound();
 }
 function selectedTriggers(){
- return [...document.querySelectorAll('.trigger:checked')].map(el=>el.value);
+ return [...document.querySelectorAll('input.trigger:checked')].map(el=>el.value);
 }
+// Robust wrapper for old saved evenings and both visual presentation modes.
+function readGameTriggers(){return selectedTriggers()}
 function calcRound(){
  const e=current(),ids=rotation(e).playing,points={};
  const bock=$("bock").checked,solo=$("solo").checked;
@@ -1740,7 +1994,7 @@ function settings(){
  const rules=`<label>Euro pro Tacken</label><input id="tack" type="number" min="0" step=".01" value="${db.settings.tack}"><label>Bock-Faktor (×)</label><input id="bockMultiplier" type="number" min="1" max="20" step="1" value="${db.settings.bockMultiplier||2}"><p class="muted">Solo und Hochzeit werden direkt am Kartentisch ausgewählt. Der Bock-Faktor gilt für zukünftige Buchungen.</p>${button('Regeln speichern','saveSettings()','primary')}`;
  const fees=`<details class="settings-fold" open><summary>💶 Kassenverwaltung & Buchungen</summary>${cashManagement()}</details><details class="settings-fold"><summary>📊 Jahresabschluss & PDF</summary>${yearCashClose()}</details><details class="settings-fold"><summary>✓ Automatische Datenprüfung</summary>${dataCheckHtml()}</details><details class="settings-fold"><summary>🗓 Spielabend nachtragen</summary><p class="muted">Alte Tacken-Endstände für die Statistik erfassen – ohne Kassenbuchung.</p>${button('Spielabend nachtragen','startHistorical()')}</details><details class="settings-fold"><summary>⚙ Beiträge & Gebühren</summary><label>Startgebühr in Euro</label><input id="startFee" type="number" min="0" step=".01" value="${db.settings.startFee}"><label>Solo-Strafe in Euro</label><input id="soloFee" type="number" min="0" step=".01" value="${db.settings.soloFee}"><p class="muted">Die Abwesenheitsregel wird automatisch bei der Abrechnung berücksichtigt.</p>${button('Beiträge speichern','saveSettings()','primary')}</details>`;
  const visualStyle=db.settings.visualStyle==='edel'?'edel':'kachel';
- const designModes=`<h3>Darstellungsart</h3><p class="muted">Wähle die Optik für die Startseite und den Kartentisch. Die fünf Farbvarianten kannst du darunter unabhängig davon auswählen.</p><div class="visual-mode-choices" role="group" aria-label="Darstellungsart wählen">${[['edel','Edles Design','Eleganter Kartentisch mit Lichtkanten und tiefen Kacheln'],['kachel','Kachel Design','Die bisherige, schlichtere und bewährte Darstellung']].map(([id,title,desc])=>`<button type="button" class="visual-mode ${visualStyle===id?'chosen':''}" aria-pressed="${visualStyle===id}" onclick="setVisualStyle('${id}')"><span class="visual-mode-thumb visual-mode-thumb-${id}" aria-hidden="true"><span class="preview-mark">♠</span><span class="preview-block"></span><span class="preview-block"></span><span class="preview-felt">♣ ♥ ♠ ♦</span></span><span class="visual-mode-text"><strong>${title}</strong><small>${desc}</small></span><span class="visual-mode-check" aria-hidden="true">${visualStyle===id?'✓':'○'}</span></button>`).join('')}</div><div class="design-color-divider"></div>`;
+ const designModes=`<h3>Darstellungsart</h3><p class="muted">Wähle zwischen zwei deutlich verschiedenen Oberflächen. Die App lädt danach einmal neu; die fünf Farben bleiben unabhängig davon.</p><div class="visual-mode-choices" role="group" aria-label="Darstellungsart wählen">${[['edel','Edles Design','Edle Schrift, plastische Symbole, glänzender Kartentisch'],['kachel','Kachel Design','Klassische Kopfzeile, klare Kacheln, schlichter Spieltisch']].map(([id,title,desc])=>`<button type="button" class="visual-mode ${visualStyle===id?'chosen':''}" aria-pressed="${visualStyle===id}" onclick="setVisualStyle('${id}')"><span class="visual-mode-thumb visual-mode-thumb-${id}" aria-hidden="true"><span class="preview-mark">♠</span><span class="preview-block"></span><span class="preview-block"></span><span class="preview-felt">♣ ♥ ♠ ♦</span></span><span class="visual-mode-text"><strong>${title}</strong><small>${desc}</small></span><span class="visual-mode-check" aria-hidden="true">${visualStyle===id?'✓':'○'}</span></button>`).join('')}</div><div class="design-color-divider"></div>`;
  const themes=`${designModes}<h3>Farbvariante auswählen</h3><p class="muted">Die App lädt beim Farbwechsel kurz neu. Deine Spielstände bleiben erhalten.</p><div class="theme-choices compact-theme-choices">${[['forest','Waldgrün & Bronze','Klassischer Club-Look'],['copper','Anthrazit & Kupfer','Eleganter Dunkelmodus'],['light','Terrakotta & Sand','Warm und hell'],['navy','Nachtblau & Champagner','Dunkelblau mit edlen Akzenten'],['noir','Schwarz & Signalorange','Sportlich und kontrastreich']].map(([id,title,desc])=>`<button type="button" class="theme-choice ${((db.settings.theme||'forest')===id)?'selected':''}" data-choice="${id}" onclick="setTheme('${id}')"><strong>${title}</strong><small>${desc}</small></button>`).join('')}</div>`;
  const app=`<label>Clubname – jederzeit frei änderbar</label><input id="appNameInput" maxlength="70" value="${esc(db.settings.appName||'Doppelkopf Club')}"><p class="mini">Der Name erscheint automatisch im neuen Club-Schriftzug. Karten und Farben passen sich an das gewählte Design an.</p>${button('Clubnamen speichern','saveAppName()','primary')}<hr><h3>Datensicherung</h3><p class="muted">Die Daten liegen nur auf diesem Gerät. Vor Gerätewechsel und regelmäßig sichern.</p><div class="backup-help">📦 Das Backup enthält Spielabende, Kasse, Spieler und Einstellungen. Speichere die JSON-Datei außerhalb des Tablets, z. B. in Dateien oder auf einem USB-Stick.</div><p class="mini">Zuletzt Backup angestoßen: ${stamp(Number(localStorage.getItem('doko-last-backup-at')||0))} · Bitte prüfen, ob die Datei in „Dateien“ gespeichert wurde.</p>${button('Vollständiges Backup herunterladen','backup()','primary')}<label>Backup wiederherstellen</label><input type="file" accept=".json,application/json" onchange="restore(event)"><p class="muted">Beim Wiederherstellen werden die aktuellen Daten auf diesem Gerät ersetzt. Vorher wird eine Sicherheitskopie angeboten.</p><hr><h3>Speicherübersicht</h3><div id="storageOverview">${storageOverviewHtml()}</div><div class="storage-actions">${button('Daten löschen','requestDataDeletion()','danger delete-data-btn')}</div><p class="mini">Löscht nur die Daten auf diesem Gerät. Gesicherte Backup-Dateien bleiben bestehen.</p><hr><h3>Offline-App</h3><p class="muted">Nach dem ersten Online-Aufruf kann die App offline geöffnet werden. Zum Installieren im Browser „Zum Home-Bildschirm“ (iPhone) bzw. „App installieren“ (Android) wählen. Wichtig: Daten bleiben gerätegebunden.</p><hr><p class="muted" style="font-size:11px">Doppelkopf Club · Version ${APP_VERSION} · by Tom Bücker</p><details><summary class="muted" style="cursor:pointer">Versionsverlauf</summary>${VERSION_NOTES.map(n=>`<p class="muted">${esc(n)}</p>`).join('')}</details>`;
  const internationalRules=`<h3>Unsere Clubregeln</h3><p class="muted">Stichpunkte nach euren Vereinbarungen. Änderungen werden auf diesem Gerät gespeichert und im vollständigen Backup mitgesichert.</p><textarea id="clubRulesEditor" class="rule-editor" aria-label="Unsere Clubregeln" spellcheck="true">${esc(db.settings.clubRules ?? DEFAULT_CLUB_RULES)}</textarea><div class="actions">${button('Clubregeln speichern','saveClubRules()','primary')}</div><hr><h3>Original-Regelwerk (PDF)</h3><p class="muted">Die hochgeladene zweiseitige PDF bleibt unverändert. Sie enthält auch Spielvarianten, die von euren Clubregeln abweichen können.</p><button type="button" onclick="openRulesPdf()">PDF öffnen (offline)</button>`;
@@ -1780,9 +2034,14 @@ async function requestDataDeletion(){
 function setVisualStyle(style){
  if(!["edel","kachel"].includes(style))return;
  if((db.settings.visualStyle||"kachel")===style)return;
+ // Entirely visual setting – never change rounds, cash, player IDs or statistics.
  db.settings.visualStyle=style;
  save();
+ // Immediately redraw with the correct tiles and table, then refresh iOS PWA paint.
  render();
+ // Preserve the design selection screen across the same reload used by color themes.
+ try{sessionStorage.setItem('doko-theme-reload','1')}catch(e){}
+ window.location.reload();
 }
 function setTheme(theme){
  if(!['forest','copper','light','navy','noir'].includes(theme))return;
@@ -1856,8 +2115,8 @@ async function restore(ev){
  finally{if(ev.target)ev.target.value=''}
 }
 /* Version 3: Original-Tischansicht beibehalten, Spielregeln erweitert */
-const APP_VERSION='1.9.31';
-const VERSION_NOTES=['1.9.31 · Umschaltbares Edles Design und Kachel Design; Startseite, Sitzordnung und Spieltisch','1.9.30 · Kontrastreiche Spielerkacheln und entzerrtes Clublogo in der Kopfzeile','1.9.29 · Dynamischer Club-Schriftzug mit Kartenfächer, weiterhin frei umbenennbar','1.9.28 · Startseite: Offene Zahlungen und letzte Spielabende gleich groß','1.9.27 · Grafische Startseite und kompakte Clubstatistik','1.9.26 · Startseite: Offene Zahlungen und letzte Spielabende wieder nebeneinander, mobil kompakt','1.9.25 · Fünf Farbdesigns: Terrakotta statt Cremeweiß sowie Nachtblau und Schwarz-Orange','1.9.24 · Startseite ohne doppelten Clubnamen, kompakte letzte Spielabende','1.9.23 · Ergebnis-Ranglisten und Statistik-Kennzahlen im kompakten Design','1.9.22 · Kassen-Dashboard, kompakte Beträge und aufklappbare Verwaltungsbereiche','1.9.21 · Jahresabschluss als echte PDF-Datei mit Teilen-Funktion','1.9.20 · Partnerschaften, Serien, Kassenabschluss, PDF-Druckansicht und Backup nach sechs Abenden','1.9.19 · Solo-Rekorde aus Spielrunden auswerten und Rekordkarten übersichtlicher darstellen','1.9.18 · Hochzeiten aus Sonderbuchungen in Club- und Spielerstatistik zählen','1.9.17 · Sitzordnung und Hochzeit mit ovalem Kartentisch, kompakten Hinweisen und einheitlichen Spielerfeldern','1.9.16 · Neue Startkacheln, ovaler Filz-Kartentisch und verfeinerte Tacken-Tasten (nur Optik)','1.9.15 · Automatisches Neuladen beim Designwechsel (iOS-Statusleiste)','1.9.14 · iOS-Statusleiste: veralteten Transparenzmodus und Farboverlays entfernt','1.9.12 · Alle Bockauslöser im aufgeklappten Feld sichtbar','1.9.11 · Kompaktes Zahlenrad 8–16 wieder direkt wischbar','1.9.10 · Bockauslöser-Fehler bei normalen Runden und Soli behoben','1.9.8 · Zahlenrad 8–16 dauerhaft sichtbar, direkt durch Drehen und Antippen buchen','1.9.7 · Überflüssiges Erklärfeld bei der Tackenauswahl entfernt','1.9.5 · Vertikales Zahlenrad 7–16 mit Buchungsbestätigung, gleich hohe Felder und iOS-Leisten-Farbwechsel','1.9.4 · Obere iPhone-Leiste und Bockauslöser folgen dem gewählten Design; Tacken 7–16 scrollbar neben Bockauslöser','1.9.3 · Designwechsel der oberen iPhone-Leiste angepasst; Tacken 0–7 direkt und 8–16 aufklappbar; Bockauslöser darunter','1.9.2 · Persönliche Spielerstatistik als eigene App-Seite mit Zurück-Navigation; Spielernamen als farbige Schaltflächen','1.9.1 · Kartenfächer mit sichtbaren Symbolen, Tackenauswahl 0–14 ohne Tastatur, Regelbereich mit bearbeitbarem Clubtext und Offline-PDF','1.9.0 · Quadratische Spielerkacheln auf allen vier Tischseiten, schwarz-rote Kartenfarben bei der Sitzordnung und vier ausgespielte Karten während des Spiels','1.8.12 · Kompakte Clubstatistik mit Jahresvergleich, persönlichen Spielhistorien und ewigen Rekorden','1.8.11 · Statistik-Nachtrag aus Tacken-Endständen, faire €/Runde-Rangliste, App-Bestätigungsdialoge und Theme-Statusleiste','1.8.10 · Einstellungen als fünf kompakte Unterseiten, Designauswahl gestrafft, Hintergrundfarbe inklusive iPhone-Statusleistenbereich angepasst','1.8.9 · Nachtrag mit Endbeträgen inklusive Gebühren, Rückgängig, Clubrekorde, Kassen-Jahresabschluss, Datenprüfung und Backup-Erinnerung','1.8.8 · Drei vollständige Designs, Speicherübersicht, zweifach bestätigtes Datenlöschen und Zahnrad-Navigation','1.8.7 · Spielerprofile, Clubstatistiken, korrigierbare Spielabende, kompakte Kasse und neue Startseite','1.8.6 · Online-/Offline-Anzeige in Kopfzeile entfernt','1.8.5 · Historische Einzelrunden oder Endergebnisse ohne Tischansicht, strukturierte Spielarten','1.8.4 · Kassenprüfung und Korrekturen unter Mehr, Anfangsbestand einmalig','1.8.3 · Offene Zahlungen direkt mit Bezahlen begleichen','1.8.2 · Kompakte Solo- und Bockauswahl, Abrechnung oben rechts, Startseite gestrafft','1.8.1 · Tablet-Querformat, installierbare Offline-App und geprüfte Datensicherung','1.7.3 · Stilles Solo und vier auswählbare App-Designs','1.7.2 · Ergebnisse zeigen vier neueste Tabellen, ältere aufklappbar','1.7.1 · Kassenübersicht gestrafft, Korrekturbuchungen und Zahlungsprüfung ergänzt','1.7.0 · Papierlisten mobil erfassen, einzelne Zeilen korrigieren und löschen, Folgewerte automatisch neu berechnen','1.6.9 · Einstellungen in vier übersichtliche aufklappbare Bereiche gegliedert','1.6.8 · Schlanke Euro-Jahresrangliste nur für Stammspieler mit antippbaren Spielerprofilen','1.6.7 · Klassischer Kartentisch kompakter; Bockstatus in der Tischmitte; Solo/Hochzeit und Tacken ohne Scrollen','1.6.6 · Solo-Fehler behoben; Solo/Hochzeit direkt unter dem Tisch; Bockauslöser aufklappbar','1.6.5 · Tacken direkt am Kartentisch buchen; Soloart per Häkchen, gewonnen als Standard','1.6.4 · Nach vollständiger Zahlung zurück zur Startseite; letzte vier abgeschlossene Spielabende und Historienmenü','1.6.3 · Gewinner nach jeder Runde automatisch abwählen; aktive Spieler hervorheben und nächste Runde direkt vorbereiten','1.6.2 · Nach Spielabend beenden zurück zur Startseite; neuer Abend startet bei Spieler- und Gastgeberauswahl','1.6.1 · Bronze-Auswahlfelder in der Spielabend-Einrichtung','1.6.0 · Kompakte Spielabend-Einrichtung und Ergebnishistorie wie Abrechnung; Runden- und Start-Spalten entfernt','1.5.9 · Mobile Abrechnung mit fünf Spalten; Startgebühr automatisch; offene Zahlungen einheitlich zweizeilig','1.5.8 · Spielernamen mit Finger oder Maus an den Kartentisch ziehen; Antippen bleibt möglich','1.5.7 · Papierlisten zeilenweise in Euro nachtragen; Kassenanfangsbestand mit Korrekturverlauf','1.5.6 · Bock-Multiplikator unter Einstellungen frei wählbar (Standard ×2)','1.5.5 · Hochzeit am Kartentisch auswählen und sofort buchen, ohne Mischerwechsel','1.5.4 · Gewinner und Solospieler türkis markiert; Mischer bleibt bronze','1.5.3 · Solo: Spieler direkt am Tisch wählen, 1–7 Tacken sofort buchen','1.5.2 · Spielabend beenden nur noch in der Abrechnung','1.5.1 · Startseite kompakter: Zahlungen und letzte Treffen nebeneinander; Treffen/Spiele im Kopf','1.5.0 · Gewinner am Kartentisch, Tacken 1–7 sofort buchen, freie Eingabe und Mischerwechsel','1.4.9 · Jahresstatistik mit Spitzenreitern, Soloquote und Teilnahme-Rangliste','1.4.8 · Kasse mit offenen Spielerbeträgen, Zahlungsverlauf, Einnahmen/Ausgaben und Jahresfilter','1.4.7 · Nur vollständige Zahlungen mit Datum; Gewinner-Hinweis direkt in der App','1.4.6 · Start und Mehr fest in Kopfzeile, Spiel-Navigation entfernt; Clubname einstellbar; Entwicklerhinweis','1.4.5 · Laufenden Spielabend mit Gastgeber, Runden und Bockstand auf der Startseite anzeigen','1.4.4 · Doppelte Navigationseinträge Spieler und Kasse oben entfernt','1.4.3 · Spielabend nachtragen unter Mehr statt auf der Startseite','1.4.2 · Vergangene Spielabende Runde für Runde nachtragen; historisch bezahlt ohne Kassenbuchung','1.4.1 · Ergebnisse als Jahresliste mit Statistik-Umschalter','1.4.0 · Jahresstatistik für Spielabende, Tacken und Soli','1.3.1 · Gastgeber-Hinweis innerhalb der App; nur noch letzte Runde korrigieren','1.3.0 · Nur letzte Runde korrigieren oder rückgängig machen','1.2.6 · Spielabend ohne Browser-Bestätigung direkt beenden','1.2.5 · Spielabend direkt aus Abrechnung beenden; Abwesende automatisch als offen führen','1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
+const APP_VERSION='1.9.33';
+const VERSION_NOTES=['1.9.33 · Klar getrenntes Kachel/Edles Design für Startseite, Spieltisch und Sitzordnung; robustere Bockauslöser','1.9.32 · Deutlich unterscheidbare Ansichten, zuverlässiger Wechsel mit Neuladen und gespeicherter Auswahl','1.9.31 · Umschaltbares Edles Design und Kachel Design; Startseite, Sitzordnung und Spieltisch','1.9.30 · Kontrastreiche Spielerkacheln und entzerrtes Clublogo in der Kopfzeile','1.9.29 · Dynamischer Club-Schriftzug mit Kartenfächer, weiterhin frei umbenennbar','1.9.28 · Startseite: Offene Zahlungen und letzte Spielabende gleich groß','1.9.27 · Grafische Startseite und kompakte Clubstatistik','1.9.26 · Startseite: Offene Zahlungen und letzte Spielabende wieder nebeneinander, mobil kompakt','1.9.25 · Fünf Farbdesigns: Terrakotta statt Cremeweiß sowie Nachtblau und Schwarz-Orange','1.9.24 · Startseite ohne doppelten Clubnamen, kompakte letzte Spielabende','1.9.23 · Ergebnis-Ranglisten und Statistik-Kennzahlen im kompakten Design','1.9.22 · Kassen-Dashboard, kompakte Beträge und aufklappbare Verwaltungsbereiche','1.9.21 · Jahresabschluss als echte PDF-Datei mit Teilen-Funktion','1.9.20 · Partnerschaften, Serien, Kassenabschluss, PDF-Druckansicht und Backup nach sechs Abenden','1.9.19 · Solo-Rekorde aus Spielrunden auswerten und Rekordkarten übersichtlicher darstellen','1.9.18 · Hochzeiten aus Sonderbuchungen in Club- und Spielerstatistik zählen','1.9.17 · Sitzordnung und Hochzeit mit ovalem Kartentisch, kompakten Hinweisen und einheitlichen Spielerfeldern','1.9.16 · Neue Startkacheln, ovaler Filz-Kartentisch und verfeinerte Tacken-Tasten (nur Optik)','1.9.15 · Automatisches Neuladen beim Designwechsel (iOS-Statusleiste)','1.9.14 · iOS-Statusleiste: veralteten Transparenzmodus und Farboverlays entfernt','1.9.12 · Alle Bockauslöser im aufgeklappten Feld sichtbar','1.9.11 · Kompaktes Zahlenrad 8–16 wieder direkt wischbar','1.9.10 · Bockauslöser-Fehler bei normalen Runden und Soli behoben','1.9.8 · Zahlenrad 8–16 dauerhaft sichtbar, direkt durch Drehen und Antippen buchen','1.9.7 · Überflüssiges Erklärfeld bei der Tackenauswahl entfernt','1.9.5 · Vertikales Zahlenrad 7–16 mit Buchungsbestätigung, gleich hohe Felder und iOS-Leisten-Farbwechsel','1.9.4 · Obere iPhone-Leiste und Bockauslöser folgen dem gewählten Design; Tacken 7–16 scrollbar neben Bockauslöser','1.9.3 · Designwechsel der oberen iPhone-Leiste angepasst; Tacken 0–7 direkt und 8–16 aufklappbar; Bockauslöser darunter','1.9.2 · Persönliche Spielerstatistik als eigene App-Seite mit Zurück-Navigation; Spielernamen als farbige Schaltflächen','1.9.1 · Kartenfächer mit sichtbaren Symbolen, Tackenauswahl 0–14 ohne Tastatur, Regelbereich mit bearbeitbarem Clubtext und Offline-PDF','1.9.0 · Quadratische Spielerkacheln auf allen vier Tischseiten, schwarz-rote Kartenfarben bei der Sitzordnung und vier ausgespielte Karten während des Spiels','1.8.12 · Kompakte Clubstatistik mit Jahresvergleich, persönlichen Spielhistorien und ewigen Rekorden','1.8.11 · Statistik-Nachtrag aus Tacken-Endständen, faire €/Runde-Rangliste, App-Bestätigungsdialoge und Theme-Statusleiste','1.8.10 · Einstellungen als fünf kompakte Unterseiten, Designauswahl gestrafft, Hintergrundfarbe inklusive iPhone-Statusleistenbereich angepasst','1.8.9 · Nachtrag mit Endbeträgen inklusive Gebühren, Rückgängig, Clubrekorde, Kassen-Jahresabschluss, Datenprüfung und Backup-Erinnerung','1.8.8 · Drei vollständige Designs, Speicherübersicht, zweifach bestätigtes Datenlöschen und Zahnrad-Navigation','1.8.7 · Spielerprofile, Clubstatistiken, korrigierbare Spielabende, kompakte Kasse und neue Startseite','1.8.6 · Online-/Offline-Anzeige in Kopfzeile entfernt','1.8.5 · Historische Einzelrunden oder Endergebnisse ohne Tischansicht, strukturierte Spielarten','1.8.4 · Kassenprüfung und Korrekturen unter Mehr, Anfangsbestand einmalig','1.8.3 · Offene Zahlungen direkt mit Bezahlen begleichen','1.8.2 · Kompakte Solo- und Bockauswahl, Abrechnung oben rechts, Startseite gestrafft','1.8.1 · Tablet-Querformat, installierbare Offline-App und geprüfte Datensicherung','1.7.3 · Stilles Solo und vier auswählbare App-Designs','1.7.2 · Ergebnisse zeigen vier neueste Tabellen, ältere aufklappbar','1.7.1 · Kassenübersicht gestrafft, Korrekturbuchungen und Zahlungsprüfung ergänzt','1.7.0 · Papierlisten mobil erfassen, einzelne Zeilen korrigieren und löschen, Folgewerte automatisch neu berechnen','1.6.9 · Einstellungen in vier übersichtliche aufklappbare Bereiche gegliedert','1.6.8 · Schlanke Euro-Jahresrangliste nur für Stammspieler mit antippbaren Spielerprofilen','1.6.7 · Klassischer Kartentisch kompakter; Bockstatus in der Tischmitte; Solo/Hochzeit und Tacken ohne Scrollen','1.6.6 · Solo-Fehler behoben; Solo/Hochzeit direkt unter dem Tisch; Bockauslöser aufklappbar','1.6.5 · Tacken direkt am Kartentisch buchen; Soloart per Häkchen, gewonnen als Standard','1.6.4 · Nach vollständiger Zahlung zurück zur Startseite; letzte vier abgeschlossene Spielabende und Historienmenü','1.6.3 · Gewinner nach jeder Runde automatisch abwählen; aktive Spieler hervorheben und nächste Runde direkt vorbereiten','1.6.2 · Nach Spielabend beenden zurück zur Startseite; neuer Abend startet bei Spieler- und Gastgeberauswahl','1.6.1 · Bronze-Auswahlfelder in der Spielabend-Einrichtung','1.6.0 · Kompakte Spielabend-Einrichtung und Ergebnishistorie wie Abrechnung; Runden- und Start-Spalten entfernt','1.5.9 · Mobile Abrechnung mit fünf Spalten; Startgebühr automatisch; offene Zahlungen einheitlich zweizeilig','1.5.8 · Spielernamen mit Finger oder Maus an den Kartentisch ziehen; Antippen bleibt möglich','1.5.7 · Papierlisten zeilenweise in Euro nachtragen; Kassenanfangsbestand mit Korrekturverlauf','1.5.6 · Bock-Multiplikator unter Einstellungen frei wählbar (Standard ×2)','1.5.5 · Hochzeit am Kartentisch auswählen und sofort buchen, ohne Mischerwechsel','1.5.4 · Gewinner und Solospieler türkis markiert; Mischer bleibt bronze','1.5.3 · Solo: Spieler direkt am Tisch wählen, 1–7 Tacken sofort buchen','1.5.2 · Spielabend beenden nur noch in der Abrechnung','1.5.1 · Startseite kompakter: Zahlungen und letzte Treffen nebeneinander; Treffen/Spiele im Kopf','1.5.0 · Gewinner am Kartentisch, Tacken 1–7 sofort buchen, freie Eingabe und Mischerwechsel','1.4.9 · Jahresstatistik mit Spitzenreitern, Soloquote und Teilnahme-Rangliste','1.4.8 · Kasse mit offenen Spielerbeträgen, Zahlungsverlauf, Einnahmen/Ausgaben und Jahresfilter','1.4.7 · Nur vollständige Zahlungen mit Datum; Gewinner-Hinweis direkt in der App','1.4.6 · Start und Mehr fest in Kopfzeile, Spiel-Navigation entfernt; Clubname einstellbar; Entwicklerhinweis','1.4.5 · Laufenden Spielabend mit Gastgeber, Runden und Bockstand auf der Startseite anzeigen','1.4.4 · Doppelte Navigationseinträge Spieler und Kasse oben entfernt','1.4.3 · Spielabend nachtragen unter Mehr statt auf der Startseite','1.4.2 · Vergangene Spielabende Runde für Runde nachtragen; historisch bezahlt ohne Kassenbuchung','1.4.1 · Ergebnisse als Jahresliste mit Statistik-Umschalter','1.4.0 · Jahresstatistik für Spielabende, Tacken und Soli','1.3.1 · Gastgeber-Hinweis innerhalb der App; nur noch letzte Runde korrigieren','1.3.0 · Nur letzte Runde korrigieren oder rückgängig machen','1.2.6 · Spielabend ohne Browser-Bestätigung direkt beenden','1.2.5 · Spielabend direkt aus Abrechnung beenden; Abwesende automatisch als offen führen','1.2.4 · Gastgeber direkt neben anwesenden Spielern auswählen','1.2.3 · Bezahlt ohne Browser-Bestätigungsfenster','1.2.2 · Zahlungs-Häkchen in Abrechnung, Teilzahlung und Sammelschulden auf Startseite','1.2.1 · Abwesende zahlen den höchsten Gesamtbetrag ohne Zuschlag; Kassenüberschriften neutral','1.2.0 · Kassenbuch, Zahlungsverlauf und Jahresübersicht','1.1.2 · Stammspieler in Einstellungen umbenennen und ergänzen','1.1.1 · Sonderregel beim Spielstart entfernt; Versionsinfo unter Mehr','1.1.0 · Auszählen, Euro-Abrechnung, Kassen-Gesamtsumme, Versionsanzeige','1.0.0 · Kartentisch, Bock, Solo, Hochzeit und Clubkasse'];
 const oldRender=render;
 function dateDE(iso){const m=String(iso||'').match(/^(\d{4})-(\d{2})-(\d{2})$/);return m?m[3]+'.'+m[2]+'.'+m[1]:String(iso||'')}
 function stamp(ms){return ms?new Date(ms).toLocaleString('de-DE',{dateStyle:'short',timeStyle:'short'}):'–'}
@@ -1943,7 +2202,7 @@ function round(){const e=current();if(!assertOpen(e))return '<div class="card">A
 function quickSaveRound(n){if(winners.length!==2)return roundError('Bitte zuerst genau zwei Gewinner am Kartentisch antippen.');$('points').value=n;if(n===0){const t=[...document.querySelectorAll('.trigger')].find(x=>x.value==='Null Tacken');if(t)t.checked=true;}saveRound()}
 function previewRound(){const e=current();if(!e||!$('preview'))return;const status=$('winnerStatus');if(status)status.textContent=winners.length===2?'✓ Gewinner: '+winners.map(name).join(' & '):winners.length===1?'Noch einen Gewinner auswählen.':'Noch keine Gewinner ausgewählt.';document.querySelectorAll('.seat.pickable').forEach(el=>{const id=el.getAttribute('onclick')?.match(/toggleWinner\('([^']+)'\)/)?.[1];el.classList.toggle('selected',winners.includes(id))});const err=$('roundError');if(err&&winners.length===2)err.style.display='none';if(winners.length!==2){$('preview').innerHTML='';return}const raw=$('points').value;if(raw===''){$('preview').innerHTML='';return}try{const r=calcRound();$('preview').style.display='block';$('preview').innerHTML='<h3>Automatische Verteilung</h3>'+Object.entries(r.points).map(([id,n])=>`<div class="row"><span>${esc(name(id))}</span><b class="${n>=0?'good':'bad'}">${n>0?'+':''}${n} Tacken</b></div>`).join('')}catch(err){$('preview').style.display='block';$('preview').innerHTML=`<p class="muted">${esc(err.message)}</p>`}}
 
-function calcRound(){const e=current(),ids=rotation(editingBase(e)).playing,points={},n=Number($('points').value),bock=editingBock(e);if(winners.length!==2)throw Error('Genau zwei Gewinner auswählen.');if($('points').value===''||!Number.isInteger(n)||n<0)throw Error('Gültige Tackenzahl eingeben.');ids.forEach(id=>points[id]=(winners.includes(id)?n:-n)*(bock?bockFactor():1));return {points,bock,bockFactor:bock?bockFactor():1,solo:false,soloPlayer:null,triggers:selectedTriggers()}}
+function calcRound(){const e=current(),ids=rotation(editingBase(e)).playing,points={},n=Number($('points').value),bock=editingBock(e);if(winners.length!==2)throw Error('Genau zwei Gewinner auswählen.');if($('points').value===''||!Number.isInteger(n)||n<0)throw Error('Gültige Tackenzahl eingeben.');ids.forEach(id=>points[id]=(winners.includes(id)?n:-n)*(bock?bockFactor():1));return {points,bock,bockFactor:bock?bockFactor():1,solo:false,soloPlayer:null,triggers:readGameTriggers()}}
 function roundError(message){const el=$('roundError');if(el){el.textContent=message;el.style.display='block';el.scrollIntoView({block:'nearest'});}else alert(message)}
 function saveRound(){const e=current();if(!assertOpen(e))return;let r;try{r=calcRound()}catch(err){return roundError(err.message)}if(editingLastRoundId){saveCorrectedRound(r);return}const rot=rotation(e);e.rounds.push({id:uid(),at:Date.now(),...r,mixer:rot.mixer,playing:[...rot.playing],sitting:[...rot.sitting]});winners=[];save();go('evening')}
 function solo(){const e=current();if(!assertOpen(e))return '<div class="card">Abend abgeschlossen.</div>';const rot=rotation(editingBase(e)),order=orderOf(e),assigned={};sequence(order.length).forEach((p,i)=>assigned[p]=order[i]);return `<div class="card compact-evening compact-solo"><div class="row"><h2>♠ Solo · Runde ${rot.number}</h2>${button('Zurück',"editingLastRoundId=null;chosenSolo=null;go('evening')")}</div><div class="row game-meta"><span>★ ${esc(name(rot.mixer))} mischt</span><span>${bockRemaining(editingBase(e))?'BOCK · '+bockRemaining(editingBase(e))+' Runden':'Kein Bock'}</span></div>${table(e.present.length,assigned,'solo',rot)}<div id="soloStatus" class="round-guide">${chosenSolo?'✓ '+esc(name(chosenSolo))+' gewählt':'Solospieler am Tisch antippen'}</div><div class="solo-choices compact-solo-choices">
@@ -1957,7 +2216,7 @@ function quickSaveSolo(n){if(!chosenSolo)return roundError('Bitte zuerst den Sol
 
 let chosenSolo=null;
 function chooseSolo(id){chosenSolo=id;previewSolo()}
-function calcSolo(){const e=current(),ids=rotation(editingBase(e)).playing;if(!ids.includes(chosenSolo))throw Error('Solospieler auswählen.');const n=Number($('soloPoints').value);if($('soloPoints').value===''||!Number.isInteger(n)||n<0)throw Error('Gültige Tackenzahl eingeben.');const bock=editingBock(e),won=!$('soloLost').checked,points={};ids.forEach(id=>points[id]=(id===chosenSolo?(won?3:-3):(won?-1:1))*n*(bock?bockFactor():1));return {points,bock,bockFactor:bock?bockFactor():1,solo:true,soloPlayer:chosenSolo,soloType:document.querySelector('input[name="soloKind"]:checked')?.value||'Damen-Solo',soloWon:won,triggers:selectedTriggers()}}
+function calcSolo(){const e=current(),ids=rotation(editingBase(e)).playing;if(!ids.includes(chosenSolo))throw Error('Solospieler auswählen.');const n=Number($('soloPoints').value);if($('soloPoints').value===''||!Number.isInteger(n)||n<0)throw Error('Gültige Tackenzahl eingeben.');const bock=editingBock(e),won=!$('soloLost').checked,points={};ids.forEach(id=>points[id]=(id===chosenSolo?(won?3:-3):(won?-1:1))*n*(bock?bockFactor():1));return {points,bock,bockFactor:bock?bockFactor():1,solo:true,soloPlayer:chosenSolo,soloType:document.querySelector('input[name="soloKind"]:checked')?.value||'Damen-Solo',soloWon:won,triggers:readGameTriggers()}}
 function previewSolo(){const e=current();if(!e||!$('soloPreview'))return;const status=$('soloStatus');if(status)status.textContent=chosenSolo?'✓ Solospieler: '+name(chosenSolo):'Noch kein Solospieler ausgewählt.';document.querySelectorAll('.seat.pickable').forEach(el=>{const id=el.getAttribute('onclick')?.match(/chooseSolo\('([^']+)'\)/)?.[1];el.classList.toggle('selected',chosenSolo===id)});const err=$('roundError');if(err&&chosenSolo)err.style.display='none';if(!chosenSolo){$('soloPreview').innerHTML='<p class="muted">Solospieler am Tisch auswählen.</p>';return}if($('soloPoints').value===''){$('soloPreview').innerHTML='<p class="muted">Jetzt 0–7 wählen oder 8–16 aufklappen.</p>';return}try{const r=calcSolo();$('soloPreview').innerHTML='<h3>Automatische Verteilung</h3>'+Object.entries(r.points).map(([id,n])=>`<div class="row"><span>${esc(name(id))}</span><b class="${n>=0?'good':'bad'}">${n>0?'+':''}${n} Tacken</b></div>`).join('')}catch(err){$('soloPreview').innerHTML=`<p class="muted">${esc(err.message)}</p>`}}
 function saveSolo(){const e=current();if(!assertOpen(e))return;let r;try{r=calcSolo()}catch(err){return roundError(err.message)}if(editingLastRoundId){saveCorrectedRound(r);return}const rot=rotation(e);e.rounds.push({id:uid(),at:Date.now(),...r,mixer:rot.mixer,playing:[...rot.playing],sitting:[...rot.sitting]});e.soloPlayers=[...new Set(e.rounds.filter(x=>x.solo).map(x=>x.soloPlayer))];chosenSolo=null;save();go('evening')}
 function hochzeit(){const e=current();if(!assertOpen(e))return '<div class="card">Abend abgeschlossen.</div>';const rot=rotation(e),order=orderOf(e),assigned={};sequence(order.length).forEach((p,i)=>assigned[p]=order[i]);return `<div class="card"><h2>♛ Hochzeit erfassen</h2><p class="round-guide">Hochzeiter direkt am Kartentisch antippen. Die Sondertacken werden sofort gebucht: +3 für den Hochzeiter, je −1 für die drei anderen Aktiven.</p><p>★ Mischer: <b>${esc(name(rot.mixer))}</b> · bleibt bei Hochzeit stehen</p>${table(e.present.length,assigned,'hochzeit',rot)}<p class="mini">${rot.sitting.length?'Setzen aus: '+rot.sitting.map(id=>esc(name(id))).join(', '):'Alle vier spielen.'}</p><div class="actions">${button('Abbrechen',"go('evening')")}</div></div>`}
@@ -2349,6 +2608,7 @@ function tileGraphic(kind){
  if(kind==='players')inner='<g fill="none" stroke="#e9bd82" stroke-width="3.5" stroke-linecap="round"><circle cx="58" cy="24" r="13"/><path d="M35 75V66Q35 48 58 48Q81 48 81 66V75Z"/><circle cx="21" cy="36" r="9"/><path d="M3 70V63Q3 51 24 51"/><circle cx="95" cy="36" r="9"/><path d="M113 70V63Q113 51 92 51"/></g>';
  if(kind==='results')inner='<g fill="none" stroke="#e9bd82" stroke-width="2.5" stroke-linecap="round"><rect x="23" y="5" width="70" height="70" rx="7"/><path d="M36 23H80M36 39H80M36 55H80"/><path d="M36 67L50 73L63 54L75 60L85 42" stroke-width="3"/></g>';
  if(kind==='cash')inner='<g fill="none" stroke="#e9bd82" stroke-width="3"><rect x="19" y="17" width="80" height="56" rx="8"/><path d="M19 34H99"/></g><circle cx="59" cy="53" r="16" fill="#b58b5b"/><text x="59" y="60" text-anchor="middle" font-size="23" font-weight="bold" fill="#17382b">€</text>';
+ if(db.settings.visualStyle!=="edel")return `<span class="tile-icon tile-art-${kind}" aria-hidden="true"><svg class="tile-flat-art" viewBox="0 0 116 86" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">${inner}</svg></span>`;
  return `<span class="tile-icon tile-art-${kind}" aria-hidden="true"><img class="tile-3d-art" alt="" draggable="false" src="data:image/webp;base64,${DOKO_TILE_ART[kind]}"></span>`;
 }
 function openPlayerProfile(id){statisticsPlayer=id;if(!statisticsYear)statisticsYear=String(new Date().getFullYear());go('statisticsProfile')}
